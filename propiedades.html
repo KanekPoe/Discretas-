@@ -1,0 +1,351 @@
+<title>Laboratorio de propiedades</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+/* Layout: una sola pantalla sin scroll. Pestañas y operaciones arriba; la gráfica toma el alto que sobra. Mismos colores que el simulador de homomorfismos. */
+:root{
+  --bg:#F5F6FA; --surface:#FFFFFF; --ink:#151933; --muted:#596080; --line:#DCDFEB;
+  --accent:#2546C4; --accent-ink:#FFFFFF; --accent-soft:#E4E9FB;
+  --cA:#2546C4; --cB:#8E2BAA; --cG:#1C8A4C; --cO:#C26A00; --cM:#8A90AD;
+  --grid:#E6E8F1; --axis:#8A90AD;
+  --ok:#1C7F53; --ok-soft:#DDF3E8; --bad:#B93434; --bad-soft:#F9E1E1; --neu-soft:#E4E9FB;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D1020; --surface:#161A2E; --ink:#E7E9F5; --muted:#9BA1C2; --line:#2A3052;
+  --accent:#93A7FF; --accent-ink:#0D1020; --accent-soft:#1E2752;
+  --cA:#93A7FF; --cB:#D58BEB; --cG:#5BD08C; --cO:#F2A65A; --cM:#6E7499;
+  --grid:#1F2440; --axis:#6E7499;
+  --ok:#55C893; --ok-soft:#12321F; --bad:#FF8A8A; --bad-soft:#3B1818; --neu-soft:#1E2752; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1020; --surface:#161A2E; --ink:#E7E9F5; --muted:#9BA1C2; --line:#2A3052;
+  --accent:#93A7FF; --accent-ink:#0D1020; --accent-soft:#1E2752;
+  --cA:#93A7FF; --cB:#D58BEB; --cG:#5BD08C; --cO:#F2A65A; --cM:#6E7499;
+  --grid:#1F2440; --axis:#6E7499;
+  --ok:#55C893; --ok-soft:#12321F; --bad:#FF8A8A; --bad-soft:#3B1818; --neu-soft:#1E2752; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.35;overflow:hidden}
+.app{height:100%;max-width:640px;margin:0 auto;display:grid;grid-template-rows:auto auto auto auto auto minmax(140px,1fr) auto auto;gap:7px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px}
+.cA{color:var(--cA)} .cB{color:var(--cB)} .cG{color:var(--cG)} .cO{color:var(--cO)} .cM{color:var(--cM)}
+.m{font-family:var(--f-mono)}
+
+.row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.row::-webkit-scrollbar{display:none}
+.tab{flex:none;font:inherit;font-size:14px;font-weight:700;border:0;border-bottom:3px solid transparent;background:none;color:var(--muted);padding:4px 6px;cursor:pointer}
+.tab.on{color:var(--ink);border-bottom-color:var(--accent)}
+.btn{flex:none;font:inherit;font-size:13.5px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 11px;cursor:pointer}
+.btn.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn .x{opacity:.7}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.formula{font-family:var(--f-mono);font-weight:700;font-size:clamp(15px,4.8vw,22px);text-align:center;white-space:nowrap;overflow:hidden}
+.ab{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.box{border:1.5px solid var(--line);border-radius:10px;padding:4px 8px;text-align:center;min-width:0}
+.box.a{border-color:var(--cA)} .box.b{border-color:var(--cB)}
+.box small{display:block;font-size:11px;color:var(--muted);font-weight:700}
+.box .m{font-size:clamp(12px,3.5vw,16px);font-weight:600;display:block;overflow-wrap:anywhere}
+
+.sliders{display:grid;gap:10px}
+.sliders label{display:flex;flex-direction:column;font-size:13px;font-weight:700;min-width:0;white-space:nowrap}
+.sliders input{width:100%;accent-color:var(--accent);margin:2px 0 0}
+
+.plot{position:relative;min-height:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.plot canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.legend{position:absolute;left:6px;right:6px;top:6px;display:flex;flex-wrap:wrap;gap:4px;pointer-events:none}
+.tog{pointer-events:auto;display:flex;align-items:center;gap:6px;font:inherit;font-family:var(--f-mono);font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:2px 8px;cursor:pointer}
+.tog.off{opacity:.4;text-decoration:line-through}
+.sw{display:inline-block;width:16px;border-top:3px solid currentColor}
+.sw.dash{border-top-style:dashed}
+
+.read{font-family:var(--f-mono);font-size:13.5px;display:flex;flex-direction:column;gap:1px;white-space:nowrap;overflow:hidden}
+.read span{overflow:hidden;text-overflow:ellipsis}
+.verdict{border-radius:10px;padding:7px 10px;font-weight:700;font-size:14px;display:flex;flex-direction:column;gap:3px;background:var(--neu-soft)}
+.verdict.good{background:var(--ok-soft);color:var(--ok)}
+.verdict.bad{background:var(--bad-soft);color:var(--bad)}
+.verdict .note{font-weight:400;color:var(--ink);font-size:13px}
+.verdict .note b{font-weight:700}
+</style>
+
+<main class="app">
+  <div class="row" id="tabs" role="tablist" aria-label="Propiedad"></div>
+  <div class="row" id="ops" role="group" aria-label="Operación"></div>
+  <p class="formula" id="formula"></p>
+  <div class="ab">
+    <div class="box a"><small id="la"></small><span class="m cA" id="fA"></span></div>
+    <div class="box b"><small id="lb"></small><span class="m" id="fB"></span></div>
+  </div>
+  <div class="sliders" id="sliders"></div>
+  <div class="plot" id="plot">
+    <canvas id="cv" aria-label="Gráfica de A y B"></canvas>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="read" id="read"></div>
+  <div class="verdict" id="ver"></div>
+</main>
+
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const fmt = x => { if (typeof x !== 'number' || !isFinite(x)) return '—'; const r = Math.round(x); return Math.abs(x-r)<1e-9 ? String(r) : String(+x.toFixed(3)); };
+const par = v => v < 0 ? `(${fmt(v)})` : fmt(v);
+const sgn = v => v < 0 ? `− ${fmt(-v)}` : `+ ${fmt(v)}`;
+const c = (cls, t) => `<span class="${cls}">${t}</span>`;
+const near = (u,v) => isFinite(u) && isFinite(v) && Math.abs(u-v) < 1e-9*Math.max(1,Math.abs(u),Math.abs(v));
+const P = (k, label, r, v, st=.1) => ({k, label, r, v, st});
+
+/* ---------------- Definición de pestañas y operaciones ---------------- */
+const TABS = [
+{ name:'Conmutativa',
+  formula: `${c('cA','a * b')} = ${c('cB','b * a')}`,
+  la:'A · x * b', lb:'B · b * x',
+  ops:[
+    {name:'suma', ok:true, params:[P('b','b',[-4,4],2)], xr:[-5,5], yr:[-10,10], x0:1,
+     A:(x,p)=>x+p.b, B:(x,p)=>p.b+x, sA:p=>`x ${sgn(p.b)}`, sB:p=>`${fmt(p.b)} + x`},
+    {name:'producto', ok:true, params:[P('b','b',[-3,3],2)], xr:[-5,5], yr:[-15,15], x0:1,
+     A:(x,p)=>x*p.b, B:(x,p)=>p.b*x, sA:p=>`x · ${par(p.b)}`, sB:p=>`${par(p.b)} · x`},
+    {name:'resta', ok:false, params:[P('b','b',[-4,4],2)], xr:[-5,5], yr:[-10,10], x0:-1,
+     A:(x,p)=>x-p.b, B:(x,p)=>p.b-x, sA:p=>`x − ${par(p.b)}`, sB:p=>`${fmt(p.b)} − x`,
+     special:(x,p)=>`Coinciden solo en <b>x = b = ${fmt(p.b)}</b>, porque ahí ambos lados dan 0. Las rectas forman una X: un punto no basta.`},
+    {name:'potencia', ok:false, params:[P('b','b',[.5,4],2)], xr:[.1,5], yr:[-1,35], x0:3,
+     A:(x,p)=>Math.pow(x,p.b), B:(x,p)=>Math.pow(p.b,x), sA:p=>`x<sup>${fmt(p.b)}</sup>`, sB:p=>`${fmt(p.b)}<sup>x</sup>`,
+     special:(x,p,A)=> near(x,p.b) ? `Coinciden en <b>x = b</b>, cosa que pasa siempre (bᵇ = bᵇ).` : `¡Coinciden en x = ${fmt(x)}! x<sup>b</sup> = b<sup>x</sup> = ${fmt(A)}. Es una casualidad, como 2⁴ = 4² = 16, no una regla.`},
+    {name:'máximo', ok:true, params:[P('b','b',[-4,4],1)], xr:[-5,5], yr:[-5,6], x0:-2,
+     A:(x,p)=>Math.max(x,p.b), B:(x,p)=>Math.max(p.b,x), sA:p=>`máx(x, ${fmt(p.b)})`, sB:p=>`máx(${fmt(p.b)}, x)`},
+  ]},
+{ name:'Asociativa',
+  formula: `${c('cA','(a * b) * c')} = ${c('cB','a * (b * c)')}`,
+  la:'A · (x * b) * c', lb:'B · x * (b * c)',
+  ops:[
+    {name:'suma', ok:true, params:[P('b','b',[-3,3],2),P('c','c',[-3,3],1)], xr:[-5,5], yr:[-12,12], x0:1,
+     A:(x,p)=>(x+p.b)+p.c, B:(x,p)=>x+(p.b+p.c), sA:p=>`(x ${sgn(p.b)}) ${sgn(p.c)}`, sB:p=>`x + (${fmt(p.b)} ${sgn(p.c)})`},
+    {name:'producto', ok:true, params:[P('b','b',[-3,3],2),P('c','c',[-3,3],1.5)], xr:[-5,5], yr:[-30,30], x0:1,
+     A:(x,p)=>(x*p.b)*p.c, B:(x,p)=>x*(p.b*p.c), sA:p=>`(x · ${par(p.b)}) · ${par(p.c)}`, sB:p=>`x · (${fmt(p.b)} · ${par(p.c)})`},
+    {name:'resta', ok:false, params:[P('b','b',[-3,3],2),P('c','c',[-3,3],1)], xr:[-5,5], yr:[-12,12], x0:1,
+     A:(x,p)=>(x-p.b)-p.c, B:(x,p)=>x-(p.b-p.c), sA:p=>`(x − ${par(p.b)}) − ${par(p.c)}`, sB:p=>`x − (${fmt(p.b)} − ${par(p.c)})`,
+     extra:(x,p)=>`Son rectas paralelas: B − A = 2c = ${fmt(2*p.c)}.`,
+     special:(x,p)=>`Con <b>c = 0</b> coinciden porque restar 0 no cambia nada. Mueve c y se separan en dos rectas paralelas.`},
+    {name:'promedio', ok:false, params:[P('b','b',[-3,3],2),P('c','c',[-3,3],-2)], xr:[-5,5], yr:[-5,5], x0:1,
+     A:(x,p)=>((x+p.b)/2+p.c)/2, B:(x,p)=>(x+(p.b+p.c)/2)/2, sA:p=>`((x ${sgn(p.b)})/2 ${sgn(p.c)})/2`, sB:p=>`(x + (${fmt(p.b)} ${sgn(p.c)})/2)/2`,
+     extra:()=>`Tienen distinta pendiente: ¼ contra ½.`,
+     special:()=>`Se cruzan en este punto, pero tienen distinta pendiente (¼ y ½), así que en el resto se separan.`},
+    {name:'máximo', ok:true, params:[P('b','b',[-4,4],1),P('c','c',[-4,4],-1)], xr:[-5,5], yr:[-5,6], x0:-3,
+     A:(x,p)=>Math.max(Math.max(x,p.b),p.c), B:(x,p)=>Math.max(x,Math.max(p.b,p.c)), sA:p=>`máx(máx(x, ${fmt(p.b)}), ${fmt(p.c)})`, sB:p=>`máx(x, máx(${fmt(p.b)}, ${fmt(p.c)}))`},
+  ]},
+{ name:'Identidad', kind:'id',
+  formula: `${c('cA','a * e')} = ${c('cB','e * a')} = ${c('cG','a')}`,
+  la:'A · x * e', lb:'B · e * x',
+  extras:[{k:'G', label:'y = x', cls:'cG', f:x=>x}],
+  ops:[
+    {name:'suma', idE:0, params:[P('e','e',[-3,3],2)], xr:[-5,5], yr:[-8,8], x0:2,
+     A:(x,p)=>x+p.e, B:(x,p)=>p.e+x, sA:p=>`x ${sgn(p.e)}`, sB:p=>`${fmt(p.e)} + x`},
+    {name:'producto', idE:1, params:[P('e','e',[-2,3],2)], xr:[-5,5], yr:[-8,8], x0:2,
+     A:(x,p)=>x*p.e, B:(x,p)=>p.e*x, sA:p=>`x · ${par(p.e)}`, sB:p=>`${par(p.e)} · x`},
+    {name:'resta', idE:null, params:[P('e','e',[-3,3],2)], xr:[-5,5], yr:[-8,8], x0:2,
+     A:(x,p)=>x-p.e, B:(x,p)=>p.e-x, sA:p=>`x − ${par(p.e)}`, sB:p=>`${fmt(p.e)} − x`,
+     noId:`La resta no tiene identidad: x − 0 = x, pero 0 − x = −x.`},
+    {name:'potencia', idE:null, params:[P('e','e',[.5,3],2)], xr:[.1,4], yr:[-1,10], x0:2,
+     A:(x,p)=>Math.pow(x,p.e), B:(x,p)=>Math.pow(p.e,x), sA:p=>`x<sup>${fmt(p.e)}</sup>`, sB:p=>`${fmt(p.e)}<sup>x</sup>`,
+     noId:`x¹ = x funciona por la derecha, pero 1ˣ = 1: no hay identidad por los dos lados.`},
+    {name:'máximo', idE:null, params:[P('e','e',[-5,3],1)], xr:[-4,4], yr:[-5,5], x0:2,
+     A:(x,p)=>Math.max(x,p.e), B:(x,p)=>Math.max(p.e,x), sA:p=>`máx(x, ${fmt(p.e)})`, sB:p=>`máx(${fmt(p.e)}, x)`,
+     noId:`En la ventana parece funcionar, pero falla para todo x &lt; e. En ℝ no hay identidad para máx (e tendría que ser menor que todos). En ℕ sí: e = 0.`},
+  ]},
+{ name:'Inverso', kind:'inv',
+  formula: `${c('cA','a′')} tal que ${c('cB','a * a′')} = ${c('cO','e')}`,
+  la:'A · el inverso x′', lb:'B · x * x′',
+  ops:[
+    {name:'suma en ℝ', e:0, xr:[-5,5], yr:[-6,6], x0:2, params:[],
+     inv:x=>-x, op:(u,v)=>u+v, sA:()=>`x′ = −x`, sB:()=>`x + (−x) = ${c('cO','0')}`},
+    {name:'producto en ℝ', e:1, xr:[-5,5], yr:[-6,6], x0:2, params:[],
+     inv:x=>Math.abs(x)<1e-9?NaN:1/x, op:(u,v)=>u*v, sA:()=>`x′ = 1/x`, sB:()=>`x · (1/x) = ${c('cO','1')}`},
+    {name:'producto en ℤ', e:1, xr:[-6,6], yr:[-2.5,2.5], x0:2, params:[], disc:true,
+     inv:x=>(x===1||x===-1)?x:NaN, op:(u,v)=>u*v, sA:()=>`x′ = 1/x ∈ ℤ`, sB:()=>`x · x′ = ${c('cO','1')}`,
+     ghost:{label:'1/x ∉ ℤ', f:x=>1/x}},
+  ]},
+{ name:'Distributiva',
+  formula: `${c('cA','a·(b + c)')} = ${c('cB','a·b + a·c')}`,
+  la:'A · aplicar sobre (x + c)', lb:'B · aplicar a cada uno',
+  ops:[
+    {name:'· sobre +', ok:true, params:[P('b','a',[-3,3],2),P('c','c',[-3,3],1)], xr:[-5,5], yr:[-20,20], x0:1,
+     A:(x,p)=>p.b*(x+p.c), B:(x,p)=>p.b*x+p.b*p.c, sA:p=>`${par(p.b)}·(x ${sgn(p.c)})`, sB:p=>`${par(p.b)}·x + ${par(p.b)}·${par(p.c)}`},
+    {name:'( )² sobre +', ok:false, params:[P('c','c',[-3,3],2)], xr:[-5,5], yr:[-3,35], x0:1,
+     A:(x,p)=>(x+p.c)**2, B:(x,p)=>x*x+p.c*p.c, sA:p=>`(x ${sgn(p.c)})²`, sB:p=>`x² + ${par(p.c)}²`,
+     extra:(x,p)=>`El hueco entre las curvas es 2cx = ${fmt(2*p.c*x)}.`,
+     special:()=>`Coinciden porque aquí <b>2cx = 0</b> (x = 0 o c = 0). En cualquier otro punto, (x + c)² = x² + 2cx + c².`},
+    {name:'2^ sobre +', ok:false, params:[P('c','c',[-2,2],1)], xr:[-4,4], yr:[-1,25], x0:2,
+     A:(x,p)=>Math.pow(2,x+p.c), B:(x,p)=>Math.pow(2,x)+Math.pow(2,p.c), sA:p=>`2<sup>x ${sgn(p.c)}</sup>`, sB:p=>`2<sup>x</sup> + 2<sup>${fmt(p.c)}</sup>`,
+     extra:()=>`Lo correcto es 2<sup>x+c</sup> = 2ˣ · 2ᶜ (un producto, no una suma).`,
+     special:()=>`Se cruzan en este punto por casualidad. La regla correcta es 2<sup>x+c</sup> = 2ˣ · 2ᶜ.`},
+    {name:'+ sobre ·', ok:false, params:[P('b','a',[-3,3],1),P('c','c',[-3,3],2)], xr:[-5,5], yr:[-20,20], x0:1,
+     A:(x,p)=>p.b+x*p.c, B:(x,p)=>(p.b+x)*(p.b+p.c), sA:p=>`${fmt(p.b)} + x·${par(p.c)}`, sB:p=>`(${fmt(p.b)} + x)·(${fmt(p.b)} ${sgn(p.c)})`,
+     extra:()=>`La suma no se distribuye sobre el producto.`,
+     special:()=>`Coinciden en este punto, pero no en general: la suma no se distribuye sobre el producto.`},
+  ]},
+];
+
+/* ---------------- Estado ---------------- */
+let T = TABS[0], O = T.ops[0], x = 1, p = {}, show = {};
+$('#tabs').innerHTML = TABS.map((t,i)=>`<button class="tab" role="tab" data-i="${i}">${t.name}</button>`).join('');
+$('#tabs').addEventListener('click', e=>{ const b=e.target.closest('.tab'); if(b) loadTab(TABS[+b.dataset.i]); });
+$('#ops').addEventListener('click', e=>{ const b=e.target.closest('.btn'); if(b) loadOp(T.ops[+b.dataset.i]); });
+$('#legend').addEventListener('click', e=>{ const t=e.target.closest('.tog'); if(!t) return; const k=t.dataset.c; show[k]=!show[k]; t.classList.toggle('off', !show[k]); draw(); });
+
+function loadTab(t){
+  T = t;
+  document.querySelectorAll('#tabs .tab').forEach((b,i)=>{ const on = TABS[i]===t; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  $('#formula').innerHTML = t.formula; $('#la').textContent = t.la; $('#lb').textContent = t.lb;
+  $('#ops').innerHTML = t.ops.map((o,i)=>{ const mark = o.ok===false || o.idE===null ? ' <span class="x">✗</span>' : ''; return `<button class="btn" data-i="${i}">${o.name}${mark}</button>`; }).join('');
+  loadOp(t.ops[0]);
+}
+function curves(){
+  if (T.kind==='inv'){
+    const list = [
+      {k:'A', label:'x′', cls:'cA', f:x=>O.inv(x), main:'A'},
+      {k:'B', label:'x * x′', cls:'cB', f:x=>O.op(x,O.inv(x)), main:'B'},
+      {k:'E', label:`y = e = ${O.e}`, cls:'cO', f:()=>O.e, line:true},
+    ];
+    if (O.ghost) list.unshift({k:'H', label:O.ghost.label, cls:'cM', f:O.ghost.f, line:true, dash:[4,4]});
+    return list;
+  }
+  const list = [{k:'A', label:'A', cls:'cA', f:x=>O.A(x,p), main:'A'}, {k:'B', label:'B', cls:'cB', f:x=>O.B(x,p), main:'B'}];
+  (T.extras||[]).forEach(e=>list.push({...e, line:true}));
+  return list;
+}
+function loadOp(o){
+  O = o; x = o.x0; p = {}; o.params.forEach(q=>p[q.k]=q.v);
+  document.querySelectorAll('#ops .btn').forEach((b,i)=>b.classList.toggle('on', T.ops[i]===o));
+  const st = o.disc ? 1 : .1;
+  const sl = [{k:'x', label:'x', cls:'', r:o.xr, v:x, st}].concat(o.params.map(q=>({...q, cls:'cO'})));
+  $('#sliders').style.gridTemplateColumns = `repeat(${sl.length},1fr)`;
+  $('#sliders').innerHTML = sl.map(q=>`<label for="s_${q.k}"><span>${q.label} = <span class="m ${q.cls}" id="v_${q.k}"></span>${q.k==='x'?' <span style="color:var(--muted);font-weight:400">(punto)</span>':''}</span><input type="range" id="s_${q.k}" min="${q.r[0]}" max="${q.r[1]}" step="${q.st}" value="${q.v}"></label>`).join('');
+  sl.forEach(q=>$('#s_'+q.k).addEventListener('input', e=>{ const v=+e.target.value; if(q.k==='x') x=v; else p[q.k]=v; update(); }));
+  show = {};
+  $('#legend').innerHTML = curves().map(cv=>{ show[cv.k]=true; return `<button class="tog ${cv.cls}" data-c="${cv.k}"><span class="sw ${cv.k==='B'||cv.dash?'dash':''}"></span>${cv.label}</button>`; }).join('');
+  update();
+}
+
+/* ---------------- Veredictos ---------------- */
+function sampleXs(){ const xs=[]; for(let i=0;i<=80;i++) xs.push(O.xr[0]+(O.xr[1]-O.xr[0])*i/80); return xs; }
+function update(){
+  $('#v_x').textContent = fmt(x); O.params.forEach(q=>$('#v_'+q.k).textContent = fmt(p[q.k]));
+  const v = $('#ver'); let cls='', main='', note='';
+  if (T.kind==='inv'){
+    $('#fA').innerHTML = O.sA(); $('#fB').innerHTML = O.sB();
+    const xi = O.disc ? Math.round(x) : x, inv = O.inv(xi), prod = O.op(xi,inv);
+    if (isFinite(inv)){
+      $('#read').innerHTML = `<span class="cA">x = ${fmt(xi)} → x′ = ${fmt(inv)}</span><span class="cB">x * x′ = ${fmt(xi)} ${O.name.startsWith('suma')?'+':'·'} ${par(inv)} = <b>${fmt(prod)}</b> ${c('cO','= e')}</span>`;
+    } else {
+      const why = O.disc ? `1/${fmt(xi)} = ${fmt(1/xi)} ∉ ℤ` : `1/0 no existe`;
+      $('#read').innerHTML = `<span class="cA">x = ${fmt(xi)} → x′ = ${why}</span><span class="cB">no hay x′ con x * x′ = ${c('cO', 'e')}</span>`;
+    }
+    if (O.name==='suma en ℝ'){ cls='good'; main='✓ Todo x tiene inverso −x: la curva B se queda pegada a la recta y = 0 = e. (ℝ, +) es grupo.'; }
+    else if (!O.disc){ if (isFinite(inv)){ cls='good'; main='✓ x · (1/x) = 1 = e. Todos tienen inverso menos el 0: la hipérbola se rompe en x = 0.'; }
+      else { cls='bad'; main='✗ El 0 no tiene inverso: ningún x′ cumple 0 · x′ = 1. Por eso el grupo es (ℝ − {0}, ·).'; } }
+    else { if (isFinite(inv)){ cls='good'; main=`✓ ${fmt(xi)} · ${fmt(inv)} = 1. Pero en ℤ solo 1 y −1 tienen inverso.`; }
+      else { cls='bad'; main=`✗ ${fmt(xi)} no tiene inverso en ℤ: 1/${fmt(xi)} no es entero. Por eso (ℤ, ·) no es grupo.`; } }
+  } else {
+    $('#fA').innerHTML = `A(x) = ${O.sA(p)}`; $('#fB').innerHTML = `B(x) = ${O.sB(p)}`;
+    const A = O.A(x,p), B = O.B(x,p);
+    $('#read').innerHTML = `<span class="cA">A(${fmt(x)}) = <b>${fmt(A)}</b></span><span class="cB">B(${fmt(x)}) = <b>${fmt(B)}</b></span>`;
+    if (T.kind==='id'){
+      const xs = sampleXs(), right = xs.every(t=>near(O.A(t,p),t)), left = xs.every(t=>near(O.B(t,p),t));
+      const isId = O.idE!==null && near(p.e, O.idE);
+      if (isId){ cls='good'; main=`✓ e = ${fmt(p.e)} es la identidad: A, B y la recta verde y = x se enciman.`; }
+      else if (right && left){ cls='bad'; main=`✗ e = ${fmt(p.e)} parece funcionar en esta ventana…`; note=O.noId; }
+      else if (right || left){ cls='bad'; main=`✗ Solo funciona por ${right?'la derecha (x * e = x)':'la izquierda (e * x = x)'}. La identidad debe funcionar por los dos lados.`; note=O.noId||''; }
+      else { cls=''; main=`Mueve e hasta que A y B se encimen con la recta verde y = x.${O.idE===null?' ¿Existirá alguno?':''}`; }
+    } else {
+      const eqHere = near(A,B);
+      if (O.ok){ cls='good'; main='✓ A = B en todo x: las curvas se enciman. La propiedad se cumple.'; }
+      else if (eqHere){ cls='bad'; main='✗ A = B solo en este punto; en el resto se separan.'; note = O.special ? O.special(x,p,A,B) : ''; }
+      else { cls='bad'; main=`✗ A = ${fmt(A)} ≠ B = ${fmt(B)}: la propiedad NO se cumple. ${O.extra?O.extra(x,p):''}`; }
+      if (O.name==='resta' && T.name==='Asociativa' && near(p.c,0)){ note = O.special(); }
+    }
+  }
+  v.className = 'verdict ' + cls;
+  v.innerHTML = `<span>${main}</span>${note?`<span class="note">${note}</span>`:''}`;
+  draw();
+}
+
+/* ---------------- Gráfica ---------------- */
+const cv = $('#cv'), ctx = cv.getContext('2d');
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const colOf = cls => css({cA:'--cA',cB:'--cB',cG:'--cG',cO:'--cO',cM:'--cM'}[cls]);
+function niceStep(range, n){ const raw = range/n, q = Math.pow(10, Math.floor(Math.log10(raw))), m = raw/q; return (m<1.5?1:m<3.5?2:m<7.5?5:10)*q; }
+function draw(){
+  const W = cv.clientWidth, H = cv.clientHeight, dpr = window.devicePixelRatio || 1;
+  if (!W || !H) return;
+  cv.width = W*dpr; cv.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  const [x0,x1] = O.xr, [y0,y1] = O.yr, pad = 6;
+  const X = t => pad + (t-x0)/(x1-x0)*(W-2*pad), Y = y => H-pad - (y-y0)/(y1-y0)*(H-2*pad);
+  ctx.clearRect(0,0,W,H); ctx.font = '11px ' + css('--f-mono');
+  const sx = niceStep(x1-x0, 8), sy = niceStep(y1-y0, Math.max(3, Math.round(H/45)));
+  ctx.lineWidth = 1; ctx.strokeStyle = css('--grid');
+  for (let t = Math.ceil(x0/sx)*sx; t <= x1; t += sx){ ctx.beginPath(); ctx.moveTo(X(t),0); ctx.lineTo(X(t),H); ctx.stroke(); }
+  for (let y = Math.ceil(y0/sy)*sy; y <= y1; y += sy){ ctx.beginPath(); ctx.moveTo(0,Y(y)); ctx.lineTo(W,Y(y)); ctx.stroke(); }
+  const ax = Math.min(Math.max(0,x0),x1), ay = Math.min(Math.max(0,y0),y1);
+  ctx.strokeStyle = css('--axis'); ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(0,Y(ay)); ctx.lineTo(W,Y(ay)); ctx.moveTo(X(ax),0); ctx.lineTo(X(ax),H); ctx.stroke();
+  ctx.fillStyle = css('--muted');
+  for (let t = Math.ceil(x0/sx)*sx; t <= x1+1e-9; t += sx){ if (Math.abs(t)<1e-9) continue; ctx.textAlign='center'; ctx.fillText(fmt(t), X(t), Math.min(H-4, Y(ay)+14)); }
+  for (let y = Math.ceil(y0/sy)*sy; y <= y1+1e-9; y += sy){ if (Math.abs(y)<1e-9) continue; ctx.textAlign='left'; ctx.fillText(fmt(y), X(ax)+5, Y(y)-3); }
+  const list = curves();
+  const order = ['H','G','E','A','B'];
+  list.sort((a,b)=>order.indexOf(a.k)-order.indexOf(b.k));
+  for (const cu of list){
+    if (!show[cu.k]) continue;
+    const col = colOf(cu.cls); ctx.strokeStyle = col; ctx.fillStyle = col;
+    if (O.disc && !cu.line){
+      for (let t = Math.ceil(x0); t <= x1; t++){
+        const y = cu.f(t); if (!isFinite(y) || y<y0 || y>y1) continue;
+        ctx.beginPath();
+        if (cu.k==='B'){ ctx.lineWidth = 2.5; ctx.arc(X(t),Y(y),9,0,7); ctx.stroke(); }
+        else { ctx.arc(X(t),Y(y),6,0,7); ctx.fill(); }
+      }
+      continue;
+    }
+    const isA = cu.k==='A', isB = cu.k==='B';
+    ctx.globalAlpha = isA ? .55 : 1;
+    ctx.lineWidth = isA ? 6 : isB ? 3 : 2;
+    ctx.setLineDash(isB ? [9,7] : (cu.dash || []));
+    ctx.beginPath(); let pen = false; const N = 600;
+    for (let i=0;i<=N;i++){
+      const t = x0 + (x1-x0)*i/N, y = cu.f(t);
+      if (!isFinite(y) || y < y0-(y1-y0) || y > y1+(y1-y0)){ pen = false; continue; }
+      if (pen) ctx.lineTo(X(t),Y(y)); else { ctx.moveTo(X(t),Y(y)); pen = true; }
+    }
+    ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+  }
+  // punto actual
+  const xp = O.disc ? Math.round(x) : x;
+  ctx.strokeStyle = css('--axis'); ctx.setLineDash([4,4]); ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(X(xp),0); ctx.lineTo(X(xp),H); ctx.stroke(); ctx.setLineDash([]);
+  for (const cu of list){
+    if (!show[cu.k] || !cu.main) continue;
+    const y = cu.f(xp); if (!isFinite(y) || y<y0 || y>y1) continue;
+    ctx.beginPath(); ctx.arc(X(xp),Y(y), cu.k==='B'?11:7, 0, 7);
+    if (cu.k==='B'){ ctx.strokeStyle = colOf('cB'); ctx.lineWidth = 3; ctx.stroke(); }
+    else { ctx.fillStyle = colOf('cA'); ctx.fill(); ctx.strokeStyle = css('--bg'); ctx.lineWidth = 1.5; ctx.stroke(); }
+  }
+}
+function pick(e){
+  const r = cv.getBoundingClientRect(), [x0,x1] = O.xr, st = O.disc ? 1 : .1;
+  let t = x0 + (e.clientX - r.left - 6)/(r.width-12)*(x1-x0);
+  t = Math.round(t/st)*st; t = Math.min(x1, Math.max(x0, t));
+  x = +t.toFixed(4); $('#s_x').value = x; update();
+}
+let drag = false;
+cv.addEventListener('pointerdown', e=>{ drag = true; cv.setPointerCapture(e.pointerId); pick(e); });
+cv.addEventListener('pointermove', e=>{ if (drag) pick(e); });
+cv.addEventListener('pointerup', ()=>{ drag = false; });
+if ('ResizeObserver' in window) new ResizeObserver(draw).observe($('#plot')); else addEventListener('resize', draw);
+try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw); } catch(e){}
+new MutationObserver(draw).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+loadTab(TABS[0]);
+})();
+</script>
