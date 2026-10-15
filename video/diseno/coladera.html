@@ -1,0 +1,30 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<link rel="stylesheet" href="base.css"></head><body>
+<svg id="s" width="1920" height="1080" viewBox="0 0 1920 1080"></svg>
+<script>
+const B=[['Sistema algebraico','#7B9CFF'],['Semigrupo','#58C4DD'],['Monoide','#5CD0B3'],['Grupo','#83C167'],['Grupo abeliano','#B8D86B'],['Anillo','#F0AC5F'],['Dominio entero','#FC6255'],['Campo','#E3639B']];
+const RULES=['asociativa','identidad','inversos','conmutativa','2ª operación + distributiva','sin divisores de cero','inverso para todo a ≠ 0'];
+const T=[['(ℤ, −)','(5−3)−1 ≠ 5−(3−1)'],['(ℤ⁺, +)','0 ∉ ℤ⁺'],['(ℕ, +)','−3 ∉ ℕ'],['S₃','ρ₁μ₁ ≠ μ₁ρ₁'],['(ℤ, +)','solo una operación'],['(ℤ₆, +, ·)','2 · 3 = 0'],['(ℤ, +, ·)','½ ∉ ℤ'],['(ℚ, +, ·)','cumple todo']];
+const TOP=175, bh=(1045-TOP)/8, X0=430, X1=1860, colX=i=>575+i*172; let h='';
+h+=`<text x="90" y="78" font-size="54" fill="#ECECEC">¿Hasta dónde llega cada uno?</text>`;
+h+=`<text x="90" y="124" font-size="27" fill="#9A9A9A">Cada línea es una regla. Cada ejemplo cae hasta la primera regla que <tspan fill="#FC6255">no</tspan> cumple.</text>`;
+B.forEach(([n,c],i)=>{const y=TOP+i*bh;
+  h+=`<rect x="${X0}" y="${y}" width="${X1-X0}" height="${bh}" fill="${c}" fill-opacity="${i%2?.035:.06}"/>`;
+  h+=`<text x="90" y="${y+bh/2+9}" font-size="29" font-weight="600" fill="${c}">${n}</text>`;
+  if(i<7){const fy=y+bh;
+    h+=`<line x1="${X0}" y1="${fy}" x2="${X1}" y2="${fy}" stroke="${B[i+1][1]}" stroke-width="3" stroke-dasharray="16 9" opacity=".85"/>`;
+    h+=`<text x="${X0-14}" y="${fy+7}" text-anchor="end" font-size="20" font-style="italic" fill="#9A9A9A">+ ${RULES[i]}</text>`;}});
+T.forEach(([lab,why],i)=>{const x=colX(i), c=B[i][1], last=i==7;
+  const fy= last ? TOP+8*bh-20 : TOP+(i+1)*bh, ty = last ? TOP+7*bh+bh/2 : fy-30;
+  h+=`<line x1="${x}" y1="${TOP-6}" x2="${x}" y2="${ty-26}" stroke="${c}" stroke-width="2" stroke-dasharray="3 7" opacity=".7"/>`;
+  for(let k=0;k<Math.min(i,7);k++){const yy=TOP+(k+1)*bh; h+=`<circle cx="${x}" cy="${yy}" r="11" fill="#1C1C1C" stroke="#83C167" stroke-width="2.5"/><path d="M${x-5},${yy} l3.5,4 l6,-8" fill="none" stroke="#83C167" stroke-width="2.5" stroke-linecap="round"/>`;}
+  if(last) h+=`<ellipse cx="${x}" cy="${ty}" rx="100" ry="48" fill="#FFE066" opacity=".12"/>`;
+  h+=`<rect x="${x-78}" y="${ty-26}" width="156" height="52" rx="26" fill="#1C1C1C" stroke="${c}" stroke-width="${last?4:3}"/><rect x="${x-78}" y="${ty-26}" width="156" height="52" rx="26" fill="${c}" fill-opacity=".18"/>`;
+  h+=`<text x="${x}" y="${ty+9}" text-anchor="middle" font-size="26" fill="#ECECEC">${lab}</text>`;
+  if(!last){h+=`<text x="${x}" y="${fy+8}" text-anchor="middle" font-size="26" font-weight="600" fill="#FC6255">✗</text>`;
+            h+=`<text x="${x}" y="${fy+36}" text-anchor="middle" font-size="19" font-style="italic" fill="#FC6255" opacity=".9">${why}</text>`;}
+  else h+=`<text x="${x}" y="${ty+50}" text-anchor="middle" font-size="21" font-style="italic" fill="#FFE066">✓ ${why}</text>`;
+});
+document.getElementById('s').innerHTML=h;
+</script></body></html>

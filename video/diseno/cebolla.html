@@ -1,0 +1,22 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<link rel="stylesheet" href="base.css"></head><body>
+<svg id="s" width="1920" height="1080" viewBox="0 0 1920 1080"></svg>
+<script>
+const L=[['Sistema algebraico','(ℤ, −)','#7B9CFF'],['Semigrupo','(ℤ⁺, +)','#58C4DD'],['Monoide','(ℕ, +)','#5CD0B3'],['Grupo','S₃','#83C167'],
+['Grupo abeliano','(ℤ, +)','#B8D86B'],['Anillo','ℤ₆','#F0AC5F'],['Dominio entero','ℤ','#FC6255'],['Campo','ℚ,  ℝ,  ℤ₇','#E3639B']];
+const cx=700, cy=560; let h='';
+L.forEach(([n,e,c],k)=>{const rx=k==7?150:620-k*68, ry=k==7?92:445-k*48;
+  h+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${c}" fill-opacity="${k==7?.22:.06}" stroke="${c}" stroke-width="${k==7?4:2.5}"/>`;});
+L.forEach(([n,e,c],k)=>{const ry=445-k*48;
+  if(k<7){h+=`<text x="${cx}" y="${cy-ry+33}" text-anchor="middle" font-size="27" font-weight="600" fill="${c}">${n}</text>`;
+          h+=`<text x="${cx}" y="${cy+ry-15}" text-anchor="middle" font-size="25" fill="#ECECEC" opacity=".85">${e}</text>`;}
+  else {h+=`<text x="${cx}" y="${cy-14}" text-anchor="middle" font-size="40" font-weight="600" fill="${c}">${n}</text>`;
+        h+=`<text x="${cx}" y="${cy+36}" text-anchor="middle" font-size="34" fill="#ECECEC">${e}</text>`;}});
+// panel derecho
+const X=1390; h+=`<text x="${X}" y="150" font-size="56" fill="#ECECEC">Cada regla nueva</text><text x="${X}" y="215" font-size="56" fill="#ECECEC">encierra a <tspan fill="#FFE066">menos</tspan></text>`;
+const inv=[...L].reverse(); inv.forEach(([n,e,c],i)=>{const y=330+i*66;
+  h+=`<text x="${X}" y="${y}" font-size="34">${i?'<tspan fill="#9A9A9A">⊂ </tspan>':'<tspan fill="#9A9A9A">   </tspan>'}<tspan fill="${c}">${n}</tspan></text>`;});
+h+=`<text x="${X}" y="900" font-size="28" fill="#9A9A9A">Hacia adentro:</text><text x="${X}" y="942" font-size="28" fill="#9A9A9A">más reglas, menos miembros.</text>`;
+document.getElementById('s').innerHTML=h;
+</script></body></html>

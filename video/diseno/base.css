@@ -1,0 +1,6 @@
+/* Estilo divulgación (3Blue1Brown): fondo carbón, tipografía tipo LaTeX, pocos colores con significado fijo. */
+:root{--bg:#1C1C1C;--ink:#ECECEC;--muted:#9A9A9A;--ok:#83C167;--bad:#FC6255;--hi:#FFE066}
+*{margin:0;box-sizing:border-box}
+html,body{width:1920px;height:1080px;background:var(--bg);overflow:hidden}
+body{font-family:"STIX Two Text","Times New Roman",serif;color:var(--ink)}
+svg{position:absolute;inset:0}
