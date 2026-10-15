@@ -80,6 +80,8 @@ input.in{font:inherit;font-family:var(--f-mono);font-size:17px;color:var(--ink);
 .out{font-family:var(--f-mono);font-size:14.5px;white-space:pre-wrap;overflow-wrap:anywhere}
 .hint{font-size:14px;color:var(--muted)}
 
+.verdict.note{background:var(--accent-soft);color:var(--ink);font-weight:400;display:flex;flex-direction:column;gap:6px}
+.verdict.note b{font-weight:700}
 /* Plano cartesiano */
 .cA{color:var(--p1)} .cB{color:var(--p2)} .cFa{color:var(--cFa)} .cFb{color:var(--cFb)}
 .big{font-family:var(--f-mono);font-size:clamp(17px,4.6vw,24px);font-weight:600;text-align:center;line-height:1.5}
@@ -149,6 +151,7 @@ canvas.plot{width:100%;display:block;border-radius:10px;background:var(--bg);bor
       </div>
     </div>
     <div class="verdict" id="verdict"></div>
+    <div class="verdict note" id="special" hidden></div>
   </section>
 
   <section class="card" id="plano">
@@ -173,6 +176,7 @@ canvas.plot{width:100%;display:block;border-radius:10px;background:var(--bg);bor
     </div>
     <div class="readout" id="gRead"></div>
     <div class="verdict" id="gVer"></div>
+    <div class="verdict note" id="gSpecial" hidden></div>
     <p class="hint">Toca o arrastra sobre la gráfica para mover a. Apaga y prende las curvas para construir B por partes: primero <span class="cFa">f(x)</span>, luego <span class="cFb">f(b)</span> y al final su combinación <span class="cB">B</span>.</p>
   </section>
 
@@ -265,6 +269,18 @@ function render(){
   if (step < 5){ v.className='verdict'; v.textContent = step===0 ? 'Pulsa "Siguiente paso" para recorrer los caminos.' : `Paso ${step} de 5…`; }
   else if (r.eq){ v.className='verdict good'; v.textContent = `✓ Los dos caminos llegan a ${showT(r.left)}: f(a ${cur.op} b) = f(a) ${cur.opT} f(b).`; }
   else { v.className='verdict bad'; v.textContent = `✗ ${showT(r.left)} ≠ ${showT(r.right)}: con este par, f NO respeta la operación. Basta un contraejemplo para que no sea homomorfismo.`; }
+  const sp = $('#special');
+  const eS = cur.type==='str' ? '' : (cur.op==='·' ? 1 : 0);
+  const eT = cur.opT==='·' ? 1 : (cur.opT==='⊕' ? 'par' : 0);
+  const nameOp = o => ({'+':'la suma','·':'la multiplicación','+₃':'la suma mod 3','⊕':'⊕'})[o] || o;
+  if (step >= 5 && b === eS){
+    const fe = cur.f(eS), ok = cur.eq(fe, eT);
+    sp.hidden = false;
+    sp.innerHTML = `<b>Caso especial: b = ${show(eS)} es la identidad de ${cur.S}.</b>
+      <span>Como a ${cur.op} ${show(eS)} = a, el camino 1 da simplemente f(a). Eso pasa con <b>cualquier</b> función, así que este par no prueba nada.</span>
+      <span>Lo que sí enseña está en el camino 2: f(a) ${cur.opT} f(${show(eS)}) solo vale f(a) si f(${show(eS)}) es la identidad de ${cur.T}, o sea ${showT(eT)}.
+      Aquí f(${show(eS)}) = <b>${showT(fe)}</b> ${ok ? `✓ Sí es la identidad de ${nameOp(cur.opT)}: se cumple <b>f(e) = e′</b>. Todo homomorfismo lo cumple, pero no basta para serlo: prueba con otros valores de b.` : `✗ No es la identidad (debía dar ${showT(eT)}). Por eso f no es homomorfismo: un homomorfismo siempre manda e a e′.`}</span>`;
+  } else sp.hidden = true;
   $('#next').disabled = step >= 5;
   drawSq(r, a, b);
 }
@@ -371,6 +387,17 @@ function update(){
   if (always){ v.className='verdict good'; v.textContent = `A = B en todo x: las curvas A y B quedan encimadas (la morada punteada cubre a la azul). f es homomorfismo.`; }
   else if (eqHere){ v.className='verdict bad'; v.textContent = `Aquí A = B, pero solo en este punto: en el resto de la gráfica las curvas se separan. f NO es homomorfismo.`; }
   else { v.className='verdict bad'; v.textContent = `A = ${fmt(A)} ≠ B = ${fmt(B)}: las curvas A y B son distintas. f NO es homomorfismo.`; }
+  const eS = g.op==='·' ? 1 : 0, eT = g.opT==='·' ? 1 : 0;
+  const opName = o => ({'+':'la suma','·':'la multiplicación','+₃':'la suma mod 3'})[o] || o;
+  const spc = $('#gSpecial');
+  if (Math.abs(b - eS) < 1e-9){
+    const fe = g.f(eS), ok = Math.abs(fe - eT) < 1e-9;
+    spc.hidden = false;
+    spc.innerHTML = `<b>Caso especial: b = ${eS} es la identidad de ${opName(g.op)}.</b>
+      <span>Como x ${g.op} ${eS} = x, la curva ${c('cA','A')} queda igual a ${c('cFa','f(x)')}: la azul se encima con la verde. Esto pasa con <b>cualquier</b> función, así que no prueba nada.</span>
+      <span>Fíjate en la recta ${c('cFb','f(b)')}: ahora vale f(${eS}) = <b>${fmt(fe)}</b>. Para que ${c('cB','B')} = ${c('cFa','f(x)')} ${c('cB',g.opT)} ${c('cFb',fmt(fe))} sea igual a f(x), ese valor tiene que ser la identidad de ${opName(g.opT)}, es decir ${eT}.
+      ${ok ? `✓ Lo es: se cumple <b>f(e) = e′</b>. Todo homomorfismo lo cumple, pero no basta para serlo: mueve b para comprobar el resto.` : `✗ No lo es (debía ser ${eT}), así que ${c('cB','B')} se separa de ${c('cA','A')}. Un homomorfismo siempre manda e a e′, y este no.`}</span>`;
+  } else spc.hidden = true;
   draw();
 }
 const cv = $('#gCv'), ctx = cv.getContext('2d');
