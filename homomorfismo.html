@@ -1,0 +1,265 @@
+<title>Simulador de homomorfismos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: una columna; arriba el cuadrado conmutativo (el corazón de la idea), abajo los dos caminos paso a paso y la prueba masiva. */
+:root{
+  --bg:#F5F6FA; --surface:#FFFFFF; --ink:#151933; --muted:#596080; --line:#DCDFEB;
+  --accent:#2546C4; --accent-ink:#FFFFFF; --accent-soft:#E4E9FB;
+  --p1:#2546C4; --p1-soft:#E4E9FB;      /* camino 1: operar → transformar */
+  --p2:#A3530B; --p2-soft:#FBEBD9;      /* camino 2: transformar → operar */
+  --ok:#1C7F53; --ok-soft:#DDF3E8; --bad:#B93434; --bad-soft:#F9E1E1;
+  --f-display:"Fraunces",Georgia,serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D1020; --surface:#161A2E; --ink:#E7E9F5; --muted:#9BA1C2; --line:#2A3052;
+  --accent:#93A7FF; --accent-ink:#0D1020; --accent-soft:#1E2752;
+  --p1:#93A7FF; --p1-soft:#1E2752; --p2:#F2A65A; --p2-soft:#3A2512;
+  --ok:#55C893; --ok-soft:#12321F; --bad:#FF8A8A; --bad-soft:#3B1818; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1020; --surface:#161A2E; --ink:#E7E9F5; --muted:#9BA1C2; --line:#2A3052;
+  --accent:#93A7FF; --accent-ink:#0D1020; --accent-soft:#1E2752;
+  --p1:#93A7FF; --p1-soft:#1E2752; --p2:#F2A65A; --p2-soft:#3A2512;
+  --ok:#55C893; --ok-soft:#12321F; --bad:#FF8A8A; --bad-soft:#3B1818; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px;display:flex;flex-direction:column;gap:22px}
+h1,h2{font-family:var(--f-display);margin:0;line-height:1.15;text-wrap:balance}
+h1{font-size:clamp(30px,7vw,46px)}
+h2{font-size:22px;font-weight:500}
+p{margin:0}
+.eyebrow{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--accent);letter-spacing:.04em}
+.lead{color:var(--muted);font-size:18px;max-width:62ch}
+.formula{font-family:var(--f-mono);font-size:clamp(18px,5vw,26px);font-weight:600;text-align:center;padding:14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.formula .c1{color:var(--p1)} .formula .c2{color:var(--p2)}
+.tag{font-family:var(--f-mono);font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.btn{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:7px 14px;cursor:pointer;min-height:38px}
+.btn:hover{border-color:var(--accent)}
+.btn.on,.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.info{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:15px;color:var(--muted)}
+.info b{color:var(--ink);font-family:var(--f-mono);font-weight:600}
+.inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:700}
+input.in{font:inherit;font-family:var(--f-mono);font-size:17px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* Cuadrado */
+.square{width:100%;height:auto;display:block}
+.square text{font-family:var(--f-mono)}
+.square .lbl{font-size:12px;fill:var(--muted)}
+.square .val{font-size:15px;font-weight:600;fill:var(--ink)}
+.square .p1{stroke:var(--p1)} .square .p2{stroke:var(--p2)}
+.square .t1{fill:var(--p1)} .square .t2{fill:var(--p2)}
+.square .edge{stroke-width:2.5;fill:none;transition:opacity .3s}
+.square .off{opacity:.15}
+.square .box{fill:var(--bg);stroke:var(--line)}
+
+/* Caminos */
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.paths{grid-template-columns:1fr}}
+.path{border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.path.one{background:var(--p1-soft)} .path.two{background:var(--p2-soft)}
+.path h3{margin:0;font-size:15px}
+.path.one h3{color:var(--p1)} .path.two h3{color:var(--p2)}
+.step{font-family:var(--f-mono);font-size:15px;overflow-wrap:anywhere;transition:opacity .3s}
+.step.hide{opacity:.18}
+.step small{display:block;font-family:var(--f-body);font-size:12.5px;color:var(--muted)}
+.result{font-weight:700}
+.verdict{border-radius:10px;padding:12px 14px;font-weight:700;background:var(--accent-soft)}
+.verdict.good{background:var(--ok-soft);color:var(--ok)}
+.verdict.bad{background:var(--bad-soft);color:var(--bad)}
+.out{font-family:var(--f-mono);font-size:14.5px;white-space:pre-wrap;overflow-wrap:anywhere}
+.hint{font-size:14px;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<main class="wrap">
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <p class="eyebrow">Unidad 3 · 3-1 Sistemas algebraicos</p>
+    <h1>Simulador de homomorfismos</h1>
+    <p class="lead">Un homomorfismo respeta la operación: da lo mismo <strong>operar y luego transformar</strong> que <strong>transformar y luego operar</strong>.</p>
+  </header>
+
+  <p class="formula"><span class="c1">f(a * b)</span> = <span class="c2">f(a) *′ f(b)</span></p>
+
+  <section class="card">
+    <p class="tag">1 · Elige la función</p>
+    <div class="seg" id="presets"></div>
+    <div class="info" id="info"></div>
+  </section>
+
+  <section class="card">
+    <p class="tag">2 · Elige a y b</p>
+    <div class="inputs">
+      <label class="f" for="inA">a<input class="in" id="inA" autocomplete="off" autocapitalize="off"></label>
+      <label class="f" for="inB">b<input class="in" id="inB" autocomplete="off" autocapitalize="off"></label>
+    </div>
+    <div class="row">
+      <button class="btn primary" id="next">Siguiente paso ▸</button>
+      <button class="btn" id="all">Mostrar todo</button>
+      <button class="btn" id="rand">Valores al azar</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <p class="tag">3 · Los dos caminos</p>
+    <svg class="square" id="sq" viewBox="0 0 360 250" role="img" aria-label="Diagrama de los dos caminos"></svg>
+    <div class="paths">
+      <div class="path one">
+        <h3>Camino 1: operar → transformar</h3>
+        <p class="step" data-s="1"></p>
+        <p class="step result" data-s="2"></p>
+      </div>
+      <div class="path two">
+        <h3>Camino 2: transformar → operar</h3>
+        <p class="step" data-s="3"></p>
+        <p class="step result" data-s="4"></p>
+      </div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+  </section>
+
+  <section class="card">
+    <p class="tag">4 · ¿Se cumple siempre?</p>
+    <p class="hint">Que se cumpla con un par no basta. Para ser homomorfismo debe cumplirse con <strong>todos</strong> los pares, y para no serlo basta <strong>un</strong> contraejemplo.</p>
+    <div class="row"><button class="btn" id="mass">Probar 50 pares al azar</button></div>
+    <div class="out" id="massOut"></div>
+  </section>
+</main>
+
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const mod = (a,n) => ((a%n)+n)%n;
+const ri = (lo,hi) => lo + Math.floor(Math.random()*(hi-lo+1));
+const round = x => Math.abs(x - Math.round(x)) < 1e-9 ? String(Math.round(x)) : String(+x.toPrecision(6));
+const close = (x,y) => Math.abs(x-y) <= 1e-9 * Math.max(1, Math.abs(x), Math.abs(y));
+const words = ['ab','hola','sol','x','mundo','casa','abc','','zz','luna'];
+
+const P = [
+  {k:'mod3', name:'n mod 3', S:'(ℤ, +)', T:'(ℤ₃, +₃)', op:'+', opT:'+₃', fn:'f(n) = n mod 3',
+   type:'int', a:'7', b:'5', f:x=>mod(x,3), s:(a,b)=>a+b, t:(x,y)=>(x+y)%3, eq:(x,y)=>x===y,
+   bij:'No es biyectiva (7 y 4 van al mismo 1): es homomorfismo, pero no isomorfismo.', gen:()=>ri(-50,50)},
+  {k:'exp', name:'2ˣ', S:'(ℝ, +)', T:'(ℝ⁺, ·)', op:'+', opT:'·', fn:'f(x) = 2ˣ',
+   type:'real', a:'3', b:'2', f:x=>Math.pow(2,x), s:(a,b)=>a+b, t:(x,y)=>x*y, eq:close,
+   bij:'Es biyectiva, así que es ISOMORFISMO: convierte sumas en multiplicaciones.', gen:()=>ri(-6,8)},
+  {k:'log', name:'log₁₀ x', S:'(ℝ⁺, ·)', T:'(ℝ, +)', op:'·', opT:'+', fn:'f(x) = log₁₀ x',
+   type:'pos', a:'100', b:'1000', f:x=>Math.log10(x), s:(a,b)=>a*b, t:(x,y)=>x+y, eq:close,
+   bij:'Es biyectiva, así que es ISOMORFISMO: convierte multiplicaciones en sumas (así funcionaban las tablas de logaritmos).', gen:()=>ri(1,500)},
+  {k:'len', name:'longitud', S:'(A*, ·)', T:'(ℕ, +)', op:'·', opT:'+', fn:'f(x) = longitud de x',
+   type:'str', a:'hola', b:'mundo', f:x=>Array.from(x).length, s:(a,b)=>a+b, t:(x,y)=>x+y, eq:(x,y)=>x===y,
+   bij:'No es biyectiva ("ab" y "zz" miden lo mismo): es homomorfismo, pero no isomorfismo.', gen:()=>words[ri(0,words.length-1)]},
+  {k:'par', name:'par / impar', S:'(ℤ, +)', T:'({par, impar}, ⊕)', op:'+', opT:'⊕', fn:'f(n) = par o impar',
+   type:'int', a:'8', b:'3', f:x=>mod(x,2)===0?'par':'impar', s:(a,b)=>a+b, t:(x,y)=>x===y?'par':'impar', eq:(x,y)=>x===y,
+   bij:'No es biyectiva: es homomorfismo ("par + impar = impar" sin importar los números).', gen:()=>ri(-50,50)},
+  {k:'sq', name:'x²  ✗', S:'(ℤ, +)', T:'(ℤ, +)', op:'+', opT:'+', fn:'f(x) = x²',
+   type:'int', a:'2', b:'3', f:x=>x*x, s:(a,b)=>a+b, t:(x,y)=>x+y, eq:(x,y)=>x===y,
+   bij:'Ejemplo de función que NO es homomorfismo: (a+b)² ≠ a² + b² en general.', gen:()=>ri(-20,20)},
+  {k:'p1', name:'x + 1  ✗', S:'(ℤ, +)', T:'(ℤ, +)', op:'+', opT:'+', fn:'f(x) = x + 1',
+   type:'int', a:'4', b:'6', f:x=>x+1, s:(a,b)=>a+b, t:(x,y)=>x+y, eq:(x,y)=>x===y,
+   bij:'Nunca es homomorfismo: un lado suma 1 y el otro suma 2.', gen:()=>ri(-50,50)},
+];
+let cur = P[0], step = 0;
+
+$('#presets').innerHTML = P.map((p,i)=>`<button class="btn" data-i="${i}">${p.name}</button>`).join('');
+$('#presets').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; load(P[+b.dataset.i]); });
+
+function load(p){
+  cur = p; step = 0;
+  document.querySelectorAll('#presets .btn').forEach((b,i)=>b.classList.toggle('on', P[i]===p));
+  $('#info').innerHTML = `<span>De <b>${p.S}</b> a <b>${p.T}</b></span><span><b>${p.fn}</b></span><span>${p.bij}</span>`;
+  $('#inA').value = p.a; $('#inB').value = p.b; $('#massOut').textContent = '';
+  ['inA','inB'].forEach(id => { const el = $('#'+id); el.inputMode = p.type==='str' ? 'text' : (p.type==='int' ? 'numeric' : 'decimal'); });
+  render();
+}
+function parse(v){
+  if (cur.type==='str') return {ok:true, v};
+  const n = Number(String(v).replace(',', '.'));
+  if (v.trim()==='' || !isFinite(n)) return {ok:false, msg:'Escribe un número.'};
+  if (cur.type==='int' && !Number.isInteger(n)) return {ok:false, msg:'Este sistema usa enteros.'};
+  if (cur.type==='pos' && n<=0) return {ok:false, msg:'Este sistema usa reales positivos (> 0).'};
+  if (cur.type==='real' && Math.abs(n)>60) return {ok:false, msg:'Usa números entre −60 y 60.'};
+  return {ok:true, v:n};
+}
+const show = v => typeof v === 'number' ? round(v) : (v === '' ? 'Λ' : `"${v}"`);
+const showT = v => typeof v === 'number' ? round(v) : v;
+
+function compute(a,b){
+  const ab = cur.s(a,b), left = cur.f(ab), fa = cur.f(a), fb = cur.f(b), right = cur.t(fa,fb);
+  return {ab, left, fa, fb, right, eq: cur.eq(left, right)};
+}
+
+function render(){
+  const A = parse($('#inA').value), B = parse($('#inB').value);
+  const steps = document.querySelectorAll('.step');
+  if (!A.ok || !B.ok){
+    steps.forEach(s=>{ s.textContent=''; });
+    $('#verdict').className='verdict bad'; $('#verdict').textContent = (A.ok?B:A).msg; drawSq(null); return;
+  }
+  const a = A.v, b = B.v, r = compute(a,b);
+  const txt = {
+    1: `a ${cur.op} b = ${show(a)} ${cur.op} ${show(b)} = ${show(r.ab)}<small>primero operamos en ${cur.S}</small>`,
+    2: `f(a ${cur.op} b) = f(${show(r.ab)}) = ${showT(r.left)}<small>luego transformamos con f</small>`,
+    3: `f(a) = ${showT(r.fa)},  f(b) = ${showT(r.fb)}<small>primero transformamos cada uno</small>`,
+    4: `f(a) ${cur.opT} f(b) = ${showT(r.fa)} ${cur.opT} ${showT(r.fb)} = ${showT(r.right)}<small>luego operamos en ${cur.T}</small>`,
+  };
+  steps.forEach(s => { const k = +s.dataset.s; s.innerHTML = txt[k]; s.classList.toggle('hide', step < k); });
+  const v = $('#verdict');
+  if (step < 5){ v.className='verdict'; v.textContent = step===0 ? 'Pulsa "Siguiente paso" para recorrer los caminos.' : `Paso ${step} de 5…`; }
+  else if (r.eq){ v.className='verdict good'; v.textContent = `✓ Los dos caminos llegan a ${showT(r.left)}: f(a ${cur.op} b) = f(a) ${cur.opT} f(b).`; }
+  else { v.className='verdict bad'; v.textContent = `✗ ${showT(r.left)} ≠ ${showT(r.right)}: con este par, f NO respeta la operación. Basta un contraejemplo para que no sea homomorfismo.`; }
+  $('#next').disabled = step >= 5;
+  drawSq(r, a, b);
+}
+
+function cut(s, n=11){ s = String(s); return s.length > n ? s.slice(0,n-1)+'…' : s; }
+function drawSq(r, a, b){
+  const sq = $('#sq');
+  if (!r){ sq.innerHTML=''; return; }
+  const on = k => step >= k ? '' : 'off';
+  const X1=70, X2=290, Y1=55, Y2=195;
+  const box = (x,y,top,val,cls,k) => `<g class="${on(k)}" style="transition:opacity .3s"><rect class="box" x="${x-62}" y="${y-26}" width="124" height="52" rx="10"/>
+    <text class="lbl" x="${x}" y="${y-8}" text-anchor="middle">${top}</text><text class="val ${cls}" x="${x}" y="${y+14}" text-anchor="middle">${cut(val)}</text></g>`;
+  const arrow = (x1,y1,x2,y2,cls,label,lx,ly,k,anchor='middle') =>
+    `<g class="${on(k)}" style="transition:opacity .3s"><line class="edge ${cls}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#ar${cls})"/><text class="lbl ${cls==='p1'?'t1':'t2'}" x="${lx}" y="${ly}" text-anchor="${anchor}" style="font-size:13px;font-weight:600">${label}</text></g>`;
+  const done = step >= 5;
+  sq.innerHTML = `<defs>
+    <marker id="arp1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--p1)"/></marker>
+    <marker id="arp2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--p2)"/></marker></defs>
+    <text class="lbl" x="6" y="14">${cur.S}</text><text class="lbl" x="6" y="244">${cur.T}</text>
+    <g><rect class="box" x="${X1-62}" y="${Y1-26}" width="124" height="52" rx="10"/><text class="lbl" x="${X1}" y="${Y1-8}" text-anchor="middle">a, b</text><text class="val" x="${X1}" y="${Y1+14}" text-anchor="middle">${cut(show(a)+', '+show(b),14)}</text></g>
+    ${arrow(X1+64,Y1,X2-66,Y1,'p1',cur.op,(X1+X2)/2,Y1-8,1)}
+    ${box(X2,Y1,'a '+cur.op+' b',show(r.ab),'',1)}
+    ${arrow(X2,Y1+28,X2,Y2-30,'p1','f',X2+8,(Y1+Y2)/2+4,2,'start')}
+    ${arrow(X1,Y1+28,X1,Y2-30,'p2','f',X1-8,(Y1+Y2)/2+4,3,'end')}
+    ${box(X1,Y2,'f(a), f(b)',showT(r.fa)+', '+showT(r.fb),'',3)}
+    ${arrow(X1+64,Y2,X2-66,Y2,'p2',cur.opT,(X1+X2)/2,Y2-8,4)}
+    <g class="${step>=2||step>=4?'':'off'}" style="transition:opacity .3s"><rect class="box" x="${X2-62}" y="${Y2-26}" width="124" height="52" rx="10" style="${done?`stroke:${r.eq?'var(--ok)':'var(--bad)'};stroke-width:2.5`:''}"/>
+      <text class="val t1 ${step>=2?'':'off'}" x="${X2}" y="${Y2-4}" text-anchor="middle" style="font-size:13px">${step>=2?cut(showT(r.left)):''}</text>
+      <text class="val t2 ${step>=4?'':'off'}" x="${X2}" y="${Y2+16}" text-anchor="middle" style="font-size:13px">${step>=4?cut(showT(r.right)):''}</text></g>
+    ${done?`<text x="${X2}" y="${Y2+44}" text-anchor="middle" style="font-family:var(--f-mono);font-size:14px;font-weight:700;fill:${r.eq?'var(--ok)':'var(--bad)'}">${r.eq?'= iguales ✓':'≠ distintos ✗'}</text>`:''}`;
+}
+
+$('#next').addEventListener('click', ()=>{ step = Math.min(5, step+1); render(); });
+$('#all').addEventListener('click', ()=>{ step = 5; render(); });
+$('#rand').addEventListener('click', ()=>{ $('#inA').value = cur.gen(); $('#inB').value = cur.gen(); step = 0; render(); });
+['inA','inB'].forEach(id => $('#'+id).addEventListener('input', ()=>{ step = 0; render(); }));
+$('#mass').addEventListener('click', ()=>{
+  let okc = 0, ce = null;
+  for (let i=0;i<50;i++){ const a = cur.gen(), b = cur.gen(), r = compute(a,b); if (r.eq) okc++; else if (!ce) ce = {a,b,r}; }
+  let t = `${cur.fn}:  ${okc} de 50 pares cumplen f(a ${cur.op} b) = f(a) ${cur.opT} f(b)\n`;
+  if (ce) t += `\n✗ Contraejemplo: a = ${show(ce.a)}, b = ${show(ce.b)}\n  f(a ${cur.op} b) = ${showT(ce.r.left)}   pero   f(a) ${cur.opT} f(b) = ${showT(ce.r.right)}\n→ f NO es homomorfismo.`;
+  else t += `\n✓ Ningún contraejemplo. Coincide con lo que se demuestra en general: f es homomorfismo.`;
+  $('#massOut').textContent = t;
+});
+load(P[0]);
+})();
+</script>
