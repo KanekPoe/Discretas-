@@ -96,6 +96,22 @@ ul.plain{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .chain .ar b{font-size:22px;line-height:1;color:var(--accent);font-weight:700}
 .chain .ar em{font-style:normal;color:var(--ink);font-weight:700}
 .chain .ar.big{padding-block:6px}
+.chain{position:relative;padding-left:22px}
+.chain::before{content:"";position:absolute;left:4px;top:0;bottom:0;width:6px;border-radius:3px;background:linear-gradient(#5C7CFA,#C2418F);transform-origin:top}
+.chain .st.campo{box-shadow:0 0 0 0 transparent}
+.chain.play .st,.chain.play .ar{animation:chIn .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*.34s)}
+.chain.play .ar b{animation:chDrop .5s ease-out both;animation-delay:calc(var(--i)*.34s + .1s)}
+.chain.play::before{animation:chBar 1.2s ease-out both;animation-delay:calc(var(--n)*.34s)}
+.chain.play .st.campo{animation:chIn .55s cubic-bezier(.2,.8,.2,1) both,chGlow 1.6s ease-out both;animation-delay:calc(var(--i)*.34s),calc(var(--i)*.34s + .4s)}
+.chain-ends,.chain-note{transition:opacity .6s}
+.chain-wrap.play .chain-ends,.chain-wrap.play .chain-note{animation:chFade .6s both;animation-delay:calc(var(--n)*.34s + .6s)}
+@keyframes chIn{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+@keyframes chDrop{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes chBar{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes chGlow{0%{box-shadow:0 0 0 0 transparent}50%{box-shadow:0 0 34px 6px hsl(340 70% 55% / .6)}100%{box-shadow:0 0 22px 2px hsl(340 70% 55% / .35)}}
+@keyframes chFade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion: reduce){.chain.play *,.chain.play::before,.chain-wrap.play *{animation:none!important}}
+.chain-replay{align-self:flex-start}
 .chain-note{font-size:14.5px;color:var(--muted);max-width:62ch}
 
 /* Tablas */
@@ -271,6 +287,7 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
   <h1>Estructuras algebraicas</h1>
   <p class="lead">Un conjunto más una operación más unas reglas. Con eso describimos desde la suma de enteros hasta las cadenas de un compilador, la aritmética de un procesador y los códigos que corrigen errores.</p>
   <div class="block">
+    <div class="chain-wrap" id="chainWrap" style="display:flex;flex-direction:column;gap:12px">
     <p class="tag">Cada flecha agrega una regla</p>
     <div class="chain-ends"><span>▲ Lo más general: pocas reglas, muchos ejemplos</span></div>
     <ol class="chain">
@@ -288,10 +305,12 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
       <li class="ar" aria-hidden="true"><b>↓</b><span>+ conmutativo, con 1 y <em>sin divisores de cero</em></span></li>
       <li class="st" style="--h:10"><a href="#anillos">Dominio entero</a><span>ej. ℤ</span></li>
       <li class="ar" aria-hidden="true"><b>↓</b><span>+ <em>todo a ≠ 0 tiene inverso</em> (·)</span></li>
-      <li class="st" style="--h:340"><a href="#anillos">Campo</a><span>ej. ℚ, ℝ, ℤ₇</span></li>
+      <li class="st campo" style="--h:340"><a href="#anillos">Campo</a><span>ej. ℚ, ℝ, ℤ₇</span></li>
     </ol>
     <div class="chain-ends"><span>▼ Lo más exigente: cumple todas las reglas</span></div>
     <p class="chain-note">Cada estructura es un caso particular de la de arriba: <strong>todo campo es un dominio entero, todo dominio es un anillo, y la suma de un anillo es un grupo abeliano</strong>. Al revés no: ℤ₆ es anillo pero no dominio, y ℤ es dominio pero no campo.</p>
+    <button class="btn chain-replay" id="chainReplay">▶ Repetir animación</button>
+    </div>
   </div>
   <p class="hint">Cada tema tiene <strong>concepto</strong>, <strong>ejemplo</strong>, un laboratorio para <strong>probarlo</strong>, su <strong>aplicación</strong> y una pregunta rápida. Todo funciona en el celular.</p>
 </section>
@@ -1473,5 +1492,14 @@ if ('ResizeObserver' in window) new ResizeObserver(draw).observe($('#plot')); el
 try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw); } catch(e){}
 new MutationObserver(draw).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
 loadTab(TABS[0]);
+})();
+</script>
+<script>
+(function(){
+const w=document.getElementById('chainWrap'), ch=w.querySelector('.chain'), items=[...ch.children];
+items.forEach((li,i)=>li.style.setProperty('--i',i)); ch.style.setProperty('--n',items.length); w.style.setProperty('--n',items.length);
+const play=()=>{w.classList.remove('play');ch.classList.remove('play');void ch.offsetWidth;w.classList.add('play');ch.classList.add('play');};
+if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){play();io.disconnect();}},{threshold:.25});io.observe(ch);}
+document.getElementById('chainReplay').addEventListener('click',play);
 })();
 </script>
