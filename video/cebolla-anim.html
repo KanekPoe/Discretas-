@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Muñecas rusas · animación</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* Video 1920×1080 estilo divulgación. Cada cuadro depende solo de t: render(t). */
+:root{--bg:#1C1C1C;--ink:#ECECEC;--muted:#9A9A9A;--bad:#FC6255;--hi:#FFE066}
+*{margin:0;box-sizing:border-box}
+html,body{width:1920px;height:1080px;background:var(--bg);overflow:hidden}
+body{font-family:"STIX Two Text","Times New Roman",serif;color:var(--ink);position:relative}
+svg{position:absolute;inset:0}
+.abs{position:absolute}
+#intro{left:0;width:1920px;top:430px;text-align:center}
+#intro h1{font-weight:400;font-size:76px}
+#intro p{font-size:32px;color:var(--muted);margin-top:18px}
+.step{left:1390px;top:250px;width:470px}
+.step .k{font-size:24px;color:var(--muted);letter-spacing:.04em}
+.step .n{font-size:66px;font-weight:600;line-height:1.05;margin-top:10px}
+.step .d{font-size:31px;margin-top:22px;line-height:1.3}
+.step .d b{font-weight:600;color:var(--hi)}
+.step .e{font-size:31px;margin-top:22px;color:var(--ink)}
+.step .o{font-size:27px;margin-top:34px;color:var(--bad);line-height:1.35}
+.step .o i{color:var(--ink);font-style:normal}
+#final{left:1390px;top:105px;width:480px}
+#final h2{font-weight:400;font-size:56px;line-height:1.17}
+#final h2 span{color:var(--hi)}
+#final ul{list-style:none;padding:0;margin-top:58px;display:flex;flex-direction:column;gap:20px;font-size:34px}
+#final ul li .s{color:var(--muted)}
+#final .foot{margin-top:56px;font-size:28px;color:var(--muted);line-height:1.5}
+</style>
+</head>
+<body>
+<svg id="s" width="1920" height="1080" viewBox="0 0 1920 1080"><g id="onion"></g></svg>
+<div class="abs" id="intro"><h1>¿Qué estructura va dentro de cuál?</h1><p>Unidad 3 · Estructuras algebraicas</p></div>
+<div id="steps"></div>
+<div class="abs" id="final">
+  <h2>Cada regla nueva<br>encierra a <span>menos</span></h2>
+  <ul id="incl"></ul>
+  <p class="foot" id="foot">Hacia adentro:<br>más reglas, menos miembros.</p>
+</div>
+<script>
+const L = [
+ {n:'Sistema algebraico', e:'(ℤ, −)',   c:'#7B9CFF', d:'un conjunto + <b>una operación cerrada</b>'},
+ {n:'Semigrupo',          e:'(ℤ⁺, +)',  c:'#58C4DD', d:'Sistema + <b>asociativa</b>',         o:'<i>(ℤ, −)</i> se queda afuera:<br>(5 − 3) − 1 ≠ 5 − (3 − 1)'},
+ {n:'Monoide',            e:'(ℕ, +)',   c:'#5CD0B3', d:'Semigrupo + <b>identidad</b>',        o:'<i>(ℤ⁺, +)</i> se queda afuera:<br>0 ∉ ℤ⁺'},
+ {n:'Grupo',              e:'S₃',       c:'#83C167', d:'Monoide + <b>inversos</b>',           o:'<i>(ℕ, +)</i> se queda afuera:<br>−3 ∉ ℕ'},
+ {n:'Grupo abeliano',     e:'(ℤ, +)',   c:'#B8D86B', d:'Grupo + <b>conmutativa</b>',          o:'<i>S₃</i> se queda afuera:<br>ρ₁μ₁ ≠ μ₁ρ₁'},
+ {n:'Anillo',             e:'ℤ₆',       c:'#F0AC5F', d:'Grupo abeliano + <b>2ª operación (·)</b> y <b>distributiva</b>', o:'<i>(ℤ, +)</i> se queda afuera:<br>solo tiene una operación'},
+ {n:'Dominio entero',     e:'ℤ',        c:'#FC6255', d:'Anillo + <b>sin divisores de cero</b>', o:'<i>ℤ₆</i> se queda afuera:<br>2 · 3 = 0'},
+ {n:'Campo',              e:'ℚ,  ℝ,  ℤ₇', c:'#E3639B', d:'Dominio + <b>inverso para todo a ≠ 0</b>', o:'<i>ℤ</i> se queda afuera:<br>½ ∉ ℤ'},
+];
+const cx=700, cy=560, rxOf=k=>k==7?150:620-k*68, ryOf=k=>k==7?92:445-k*48;
+const T0=3.0, DT=2.5, sOf=k=>T0+k*DT, LAST=sOf(7), FIN=LAST+4.2;
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const ease=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;};
+const pr=(t,a,d)=>ease((t-a)/d);
+const $=id=>document.getElementById(id);
+
+// construir óvalos
+let g='';
+L.forEach((l,k)=>{const rx=rxOf(k), ry=ryOf(k);
+  g+=`<g id="r${k}">`+
+     `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${l.c}" id="f${k}" fill-opacity="0"/>`+
+     `<path id="p${k}" d="M${cx},${cy-ry} A${rx},${ry} 0 1 1 ${cx},${cy+ry} A${rx},${ry} 0 1 1 ${cx},${cy-ry}" pathLength="1" fill="none" stroke="${l.c}" stroke-width="${k==7?4:2.5}" stroke-dasharray="1" stroke-dashoffset="1"/>`;
+  if(k<7){
+    g+=`<text id="n${k}" x="${cx}" y="${cy-ry+33}" text-anchor="middle" font-size="27" font-weight="600" fill="${l.c}" opacity="0">${l.n}</text>`;
+    g+=`<text id="e${k}" x="${cx}" y="${cy+ry-15}" text-anchor="middle" font-size="25" fill="#ECECEC" opacity="0">${l.e}</text>`;
+    g+=`<text id="x${k}" x="${cx+95}" y="${cy+ry-15}" font-size="25" font-weight="600" fill="#FC6255" opacity="0">✗</text>`;
+  } else {
+    g+=`<text id="n${k}" x="${cx}" y="${cy-14}" text-anchor="middle" font-size="40" font-weight="600" fill="${l.c}" opacity="0">${l.n}</text>`;
+    g+=`<text id="e${k}" x="${cx}" y="${cy+36}" text-anchor="middle" font-size="34" fill="#ECECEC" opacity="0" style="white-space:pre">${l.e}</text>`;
+  }
+  g+='</g>';
+});
+g+=`<ellipse id="glow" cx="${cx}" cy="${cy}" rx="230" ry="150" fill="#FFE066" opacity="0"/>`;
+$('onion').innerHTML=g;
+// mover el brillo detrás del campo
+$('onion').insertBefore($('glow'), $('r7'));
+
+// paneles por paso
+$('steps').innerHTML = L.map((l,k)=>`<div class="abs step" id="st${k}"><p class="k">PASO ${k+1} DE 8</p><p class="n" style="color:${l.c}">${l.n}</p><p class="d">= ${l.d}</p><p class="e">ej. ${l.e}</p>${l.o?`<p class="o">✗ ${l.o}</p>`:''}</div>`).join('');
+// lista de inclusiones
+$('incl').innerHTML = [...L].reverse().map((l,i)=>`<li id="i${i}"><span class="s">${i?'⊂ ':''}</span><span style="color:${l.c}">${l.n}</span></li>`).join('');
+
+function render(t){
+  // intro
+  const pin = pr(t,0,.8), pout = pr(t,2.4,.6);
+  $('intro').style.opacity = pin*(1-pout);
+  $('intro').style.transform = `translateY(${(1-pin)*20 - pout*30}px)`;
+  // óvalos
+  L.forEach((l,k)=>{
+    const s=sOf(k), pd=pr(t,s,.9);
+    $('p'+k).setAttribute('stroke-dashoffset', 1-pd);
+    $('f'+k).setAttribute('fill-opacity', (k==7?.22:.06)*pr(t,s+.6,.6));
+    $('n'+k).setAttribute('opacity', pr(t,s+.45,.5));
+    $('e'+k).setAttribute('opacity', pr(t,s+.95,.5));
+    // el ejemplo anterior "se queda afuera": parpadea en rojo
+    if (k<7){
+      const a=sOf(k+1)+.35, flash = clamp(pr(t,a,.3) - pr(t,a+1.9,.4));
+      const ex=$('e'+k);
+      ex.setAttribute('fill', flash>.01 ? `rgb(${236+(252-236)*flash},${236+(98-236)*flash},${236+(85-236)*flash})` : '#ECECEC');
+      $('x'+k).setAttribute('opacity', flash);
+    }
+    // panel del paso
+    const pa = pr(t,s+.2,.45), pb = k<7 ? pr(t,sOf(k+1)-.15,.35) : pr(t,FIN-.5,.5);
+    const st=$('st'+k); st.style.opacity = pa*(1-pb); st.style.transform=`translateX(${(1-pa)*30}px)`;
+  });
+  // brillo del campo
+  const gl = pr(t,LAST+1.0,.8), pulse = 1 + .06*Math.sin(clamp((t-LAST-1)/1.6)*Math.PI);
+  $('glow').setAttribute('opacity', .16*gl);
+  $('glow').setAttribute('rx', 230*pulse); $('glow').setAttribute('ry', 150*pulse);
+  // cierre
+  const pf = pr(t,FIN,.6);
+  $('final').style.opacity = pf;
+  $('final').querySelector('h2').style.transform = `translateY(${(1-pf)*20}px)`;
+  L.forEach((_,i)=>{ const pi=pr(t,FIN+.6+i*.28,.4), li=$('i'+i); li.style.opacity=pi; li.style.transform=`translateX(${(1-pi)*24}px)`; });
+  $('foot').style.opacity = pr(t,FIN+3.2,.6);
+  // leve acercamiento al final
+  const z = 1 + .035*pr(t,LAST,FIN+4-LAST);
+  $('onion').setAttribute('transform', `translate(${cx*(1-z)},${cy*(1-z)}) scale(${z})`);
+}
+window.DURATION = FIN + 6.0;
+render(0);
+</script>
+</body>
+</html>
