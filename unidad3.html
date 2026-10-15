@@ -2,6 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;600&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 /* Layout: una columna de lectura (~720px) con barra de temas fija arriba; los laboratorios interactivos son las únicas tarjetas. */
@@ -103,7 +104,17 @@ ul.plain{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .chain.play .ar b{animation:chDrop .5s ease-out both;animation-delay:calc(var(--i)*.34s + .1s)}
 .chain.play::before{animation:chBar 1.2s ease-out both;animation-delay:calc(var(--n)*.34s)}
 .chain.play .st.campo{animation:chIn .55s cubic-bezier(.2,.8,.2,1) both,chGlow 1.6s ease-out both;animation-delay:calc(var(--i)*.34s),calc(var(--i)*.34s + .4s)}
-.chain-ends,.chain-note{transition:opacity .6s}
+.chain-ends,.onion-wrap{display:flex;flex-direction:column;gap:12px;max-width:560px}
+.onion{width:100%;height:auto;display:block}
+.onion text{font-family:"STIX Two Text","Times New Roman",serif}
+.onion-panel{min-height:190px;display:flex;flex-direction:column;gap:6px}
+.onion-panel .k{font-size:13px;color:var(--muted);letter-spacing:.06em}
+.onion-panel .n{font-family:var(--f-display);font-size:30px;font-weight:700;line-height:1.1}
+.onion-panel .d b{color:var(--hi)}
+.onion-panel .o{color:var(--bad)}
+.onion-panel .o i{color:var(--ink);font-style:normal}
+.onion-panel ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:2px 10px;font-size:17px}
+.chain-note{transition:opacity .6s}
 .chain-wrap.play .chain-ends,.chain-wrap.play .chain-note{animation:chFade .6s both;animation-delay:calc(var(--n)*.34s + .6s)}
 @keyframes chIn{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
 @keyframes chDrop{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
@@ -287,29 +298,11 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
   <h1>Estructuras algebraicas</h1>
   <p class="lead">Un conjunto más una operación más unas reglas. Con eso describimos desde la suma de enteros hasta las cadenas de un compilador, la aritmética de un procesador y los códigos que corrigen errores.</p>
   <div class="block">
-    <div class="chain-wrap" id="chainWrap" style="display:flex;flex-direction:column;gap:12px">
-    <p class="tag">Cada flecha agrega una regla</p>
-    <div class="chain-ends"><span>▲ Lo más general: pocas reglas, muchos ejemplos</span></div>
-    <ol class="chain">
-      <li class="st" style="--h:220"><a href="#s31">Sistema algebraico</a><span>ej. (ℤ, −)</span></li>
-      <li class="ar" aria-hidden="true"><b>↓</b><span>+ <em>asociativa</em></span></li>
-      <li class="st" style="--h:190"><a href="#s32">Semigrupo</a><span>ej. (ℤ⁺, +)</span></li>
-      <li class="ar" aria-hidden="true"><b>↓</b><span>+ <em>identidad</em></span></li>
-      <li class="st" style="--h:160"><a href="#s32">Monoide</a><span>ej. (ℕ, +)</span></li>
-      <li class="ar" aria-hidden="true"><b>↓</b><span>+ <em>inversos</em></span></li>
-      <li class="st" style="--h:130"><a href="#s35">Grupo</a><span>ej. S₃</span></li>
-      <li class="ar" aria-hidden="true"><b>↓</b><span>+ <em>conmutativa</em></span></li>
-      <li class="st" style="--h:100"><a href="#s35">Grupo abeliano</a><span>ej. (ℤ, +)</span></li>
-      <li class="ar big" aria-hidden="true"><b>↓</b><span>+ <em>segunda operación (·)</em>, asociativa y <em>distributiva</em></span></li>
-      <li class="st" style="--h:30"><a href="#anillos">Anillo</a><span>ej. ℤ₆</span></li>
-      <li class="ar" aria-hidden="true"><b>↓</b><span>+ conmutativo, con 1 y <em>sin divisores de cero</em></span></li>
-      <li class="st" style="--h:10"><a href="#anillos">Dominio entero</a><span>ej. ℤ</span></li>
-      <li class="ar" aria-hidden="true"><b>↓</b><span>+ <em>todo a ≠ 0 tiene inverso</em> (·)</span></li>
-      <li class="st campo" style="--h:340"><a href="#anillos">Campo</a><span>ej. ℚ, ℝ, ℤ₇</span></li>
-    </ol>
-    <div class="chain-ends"><span>▼ Lo más exigente: cumple todas las reglas</span></div>
-    <p class="chain-note">Cada estructura es un caso particular de la de arriba: <strong>todo campo es un dominio entero, todo dominio es un anillo, y la suma de un anillo es un grupo abeliano</strong>. Al revés no: ℤ₆ es anillo pero no dominio, y ℤ es dominio pero no campo.</p>
-    <button class="btn chain-replay" id="chainReplay">▶ Repetir animación</button>
+    <div class="onion-wrap" id="onionWrap">
+    <p class="tag">Cada regla nueva encierra a menos</p>
+    <svg class="onion" id="onionSvg" viewBox="0 0 1080 960" role="img" aria-label="Estructuras anidadas: Campo dentro de Dominio entero dentro de Anillo… dentro de Sistema algebraico"></svg>
+    <div class="onion-panel" id="onionPanel" aria-live="polite"></div>
+    <button class="btn" id="onionReplay">▶ Repetir animación</button>
     </div>
   </div>
   <p class="hint">Cada tema tiene <strong>concepto</strong>, <strong>ejemplo</strong>, un laboratorio para <strong>probarlo</strong>, su <strong>aplicación</strong> y una pregunta rápida. Todo funciona en el celular.</p>
@@ -1494,12 +1487,53 @@ new MutationObserver(draw).observe(document.documentElement, {attributes:true, a
 loadTab(TABS[0]);
 })();
 </script>
+
 <script>
 (function(){
-const w=document.getElementById('chainWrap'), ch=w.querySelector('.chain'), items=[...ch.children];
-items.forEach((li,i)=>li.style.setProperty('--i',i)); ch.style.setProperty('--n',items.length); w.style.setProperty('--n',items.length);
-const play=()=>{w.classList.remove('play');ch.classList.remove('play');void ch.offsetWidth;w.classList.add('play');ch.classList.add('play');};
-if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){play();io.disconnect();}},{threshold:.25});io.observe(ch);}
-document.getElementById('chainReplay').addEventListener('click',play);
+const L=[
+ {n:'Sistema algebraico',e:'(ℤ, −)',c:'#7B9CFF',d:'un conjunto + <b>una operación cerrada</b>'},
+ {n:'Semigrupo',e:'(ℤ⁺, +)',c:'#3FB3CF',d:'Sistema + <b>asociativa</b>',o:'<i>(ℤ, −)</i> se queda afuera: (5−3)−1 ≠ 5−(3−1)'},
+ {n:'Monoide',e:'(ℕ, +)',c:'#3DBE9C',d:'Semigrupo + <b>identidad</b>',o:'<i>(ℤ⁺, +)</i> se queda afuera: 0 ∉ ℤ⁺'},
+ {n:'Grupo',e:'S₃',c:'#6FB04F',d:'Monoide + <b>inversos</b>',o:'<i>(ℕ, +)</i> se queda afuera: −3 ∉ ℕ'},
+ {n:'Grupo abeliano',e:'(ℤ, +)',c:'#A2C04A',d:'Grupo + <b>conmutativa</b>',o:'<i>S₃</i> se queda afuera: ρ₁μ₁ ≠ μ₁ρ₁'},
+ {n:'Anillo',e:'ℤ₆',c:'#E39A45',d:'Grupo abeliano + <b>2ª operación (·)</b> y <b>distributiva</b>',o:'<i>(ℤ, +)</i> se queda afuera: solo tiene una operación'},
+ {n:'Dominio entero',e:'ℤ',c:'#F0584A',d:'Anillo + <b>sin divisores de cero</b>',o:'<i>ℤ₆</i> se queda afuera: 2 · 3 = 0'},
+ {n:'Campo',e:'ℚ, ℝ, ℤ₇',c:'#E3639B',d:'Dominio + <b>inverso para todo a ≠ 0</b>',o:'<i>ℤ</i> se queda afuera: ½ ∉ ℤ'}];
+const cx=540,cy=480,rxOf=k=>k==7?128:490-k*51,ryOf=k=>k==7?82:470-k*50;
+const svg=document.getElementById('onionSvg'),panel=document.getElementById('onionPanel'),wrap=document.getElementById('onionWrap');
+let g=`<ellipse id="og" cx="${cx}" cy="${cy}" rx="200" ry="135" fill="#FFE066" opacity="0"/>`;
+L.forEach((l,k)=>{const rx=rxOf(k),ry=ryOf(k);
+ g+=`<ellipse id="of${k}" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${l.c}" fill-opacity="0"/>`+
+ `<path id="op${k}" d="M${cx},${cy-ry} A${rx},${ry} 0 1 1 ${cx},${cy+ry} A${rx},${ry} 0 1 1 ${cx},${cy-ry}" pathLength="1" fill="none" stroke="${l.c}" stroke-width="${k==7?5:3}" stroke-dasharray="1" stroke-dashoffset="1"/>`;
+ if(k<7){g+=`<text id="on${k}" x="${cx}" y="${cy-ry+37}" text-anchor="middle" font-size="30" font-weight="600" fill="${l.c}" opacity="0">${l.n}</text>`+
+   `<text id="oe${k}" x="${cx}" y="${cy+ry-14}" text-anchor="middle" font-size="28" fill="currentColor" opacity="0">${l.e}</text>`;}
+ else{g+=`<text id="on${k}" x="${cx}" y="${cy-12}" text-anchor="middle" font-size="42" font-weight="600" fill="${l.c}" opacity="0">${l.n}</text>`+
+   `<text id="oe${k}" x="${cx}" y="${cy+36}" text-anchor="middle" font-size="34" fill="currentColor" opacity="0">${l.e}</text>`;}});
+svg.innerHTML=g; svg.style.color='var(--ink)';
+// mover brillo justo debajo del campo
+svg.insertBefore(svg.querySelector('#og'), svg.querySelector('#of7'));
+const DT=1.7, FIN=8*DT+.8, cl=(x)=>Math.min(1,Math.max(0,x)), ease=x=>{x=cl(x);return 1-Math.pow(1-x,3)}, pr=(t,a,d)=>ease((t-a)/d);
+const $=id=>svg.querySelector('#'+id);
+let cur=-2;
+function setPanel(k){ if(k===cur) return; cur=k;
+ if(k<0){panel.innerHTML='';return;}
+ if(k>=8){panel.innerHTML=`<p class="n">Hacia adentro: más reglas, menos miembros</p><ul>${[...L].reverse().map((l,i)=>`<li>${i?'<span style="color:var(--muted)">⊂ </span>':''}<span style="color:${l.c};font-weight:700">${l.n}</span></li>`).join('')}</ul>`;return;}
+ const l=L[k]; panel.innerHTML=`<p class="k">PASO ${k+1} DE 8</p><p class="n" style="color:${l.c}">${l.n}</p><p class="d">= ${l.d}</p><p>ej. ${l.e}</p>${l.o?`<p class="o">✗ ${l.o}</p>`:''}`;}
+function render(t){
+ L.forEach((l,k)=>{const s=k*DT;
+  $('op'+k).setAttribute('stroke-dashoffset',1-pr(t,s,.8));
+  $('of'+k).setAttribute('fill-opacity',(k==7?.25:.07)*pr(t,s+.5,.5));
+  $('on'+k).setAttribute('opacity',pr(t,s+.4,.4));
+  const ex=$('oe'+k); ex.setAttribute('opacity',pr(t,s+.8,.4));
+  if(k<7){const a=(k+1)*DT+.3,f=cl(pr(t,a,.25)-pr(t,a+1.2,.3)); ex.setAttribute('fill',f>.05?'#E5484D':'currentColor');}});
+ $('og').setAttribute('opacity',.18*pr(t,7*DT+.8,.8));
+ setPanel(t>=FIN?8:Math.min(7,Math.floor(t/DT)));}
+let t0=null,raf=0;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function loop(ts){if(t0===null)t0=ts;const t=(ts-t0)/1000;render(t);if(t<FIN+.5)raf=requestAnimationFrame(loop);}
+function play(){cancelAnimationFrame(raf);cur=-2;if(reduce){render(FIN+1);return;}t0=null;raf=requestAnimationFrame(loop);}
+render(FIN+1); // completo en reposo
+if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){play();io.disconnect();}},{threshold:.3});io.observe(svg);}
+document.getElementById('onionReplay').addEventListener('click',play);
 })();
 </script>
