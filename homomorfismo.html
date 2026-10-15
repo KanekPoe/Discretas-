@@ -9,7 +9,8 @@
   --bg:#F5F6FA; --surface:#FFFFFF; --ink:#151933; --muted:#596080; --line:#DCDFEB;
   --accent:#2546C4; --accent-ink:#FFFFFF; --accent-soft:#E4E9FB;
   --p1:#2546C4; --p1-soft:#E4E9FB;      /* camino 1: operar → transformar */
-  --p2:#A3530B; --p2-soft:#FBEBD9;      /* camino 2: transformar → operar */
+  --p2:#8E2BAA; --p2-soft:#F3E3F8;      /* camino 2: transformar → operar (B) */
+  --cFa:#1C8A4C; --cFb:#C26A00; --grid:#E6E8F1; --axis:#8A90AD;
   --ok:#1C7F53; --ok-soft:#DDF3E8; --bad:#B93434; --bad-soft:#F9E1E1;
   --f-display:"Fraunces",Georgia,serif;
   --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -18,12 +19,12 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0D1020; --surface:#161A2E; --ink:#E7E9F5; --muted:#9BA1C2; --line:#2A3052;
   --accent:#93A7FF; --accent-ink:#0D1020; --accent-soft:#1E2752;
-  --p1:#93A7FF; --p1-soft:#1E2752; --p2:#F2A65A; --p2-soft:#3A2512;
+  --p1:#93A7FF; --p1-soft:#1E2752; --p2:#D58BEB; --p2-soft:#33183D; --cFa:#5BD08C; --cFb:#F2A65A; --grid:#1F2440; --axis:#6E7499;
   --ok:#55C893; --ok-soft:#12321F; --bad:#FF8A8A; --bad-soft:#3B1818; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0D1020; --surface:#161A2E; --ink:#E7E9F5; --muted:#9BA1C2; --line:#2A3052;
   --accent:#93A7FF; --accent-ink:#0D1020; --accent-soft:#1E2752;
-  --p1:#93A7FF; --p1-soft:#1E2752; --p2:#F2A65A; --p2-soft:#3A2512;
+  --p1:#93A7FF; --p1-soft:#1E2752; --p2:#D58BEB; --p2-soft:#33183D; --cFa:#5BD08C; --cFb:#F2A65A; --grid:#1F2440; --axis:#6E7499;
   --ok:#55C893; --ok-soft:#12321F; --bad:#FF8A8A; --bad-soft:#3B1818; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55}
@@ -78,6 +79,29 @@ input.in{font:inherit;font-family:var(--f-mono);font-size:17px;color:var(--ink);
 .verdict.bad{background:var(--bad-soft);color:var(--bad)}
 .out{font-family:var(--f-mono);font-size:14.5px;white-space:pre-wrap;overflow-wrap:anywhere}
 .hint{font-size:14px;color:var(--muted)}
+
+/* Plano cartesiano */
+.cA{color:var(--p1)} .cB{color:var(--p2)} .cFa{color:var(--cFa)} .cFb{color:var(--cFb)}
+.big{font-family:var(--f-mono);font-size:clamp(17px,4.6vw,24px);font-weight:600;text-align:center;line-height:1.5}
+.big .lbl{font-family:var(--f-body);font-size:13px;font-weight:700;color:var(--muted);display:block}
+.eqs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.eqs{grid-template-columns:1fr}}
+.eqbox{border-radius:12px;padding:12px;background:var(--bg);border:1px solid var(--line);min-width:0}
+.eqbox.a{border-color:var(--p1)} .eqbox.b{border-color:var(--p2)}
+.plotwrap{position:relative;width:100%}
+canvas.plot{width:100%;display:block;border-radius:10px;background:var(--bg);border:1px solid var(--line);touch-action:none;cursor:crosshair}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;font-size:14.5px}
+@media (max-width:460px){.legend{grid-template-columns:1fr}}
+.legend label{display:flex;align-items:center;gap:8px;cursor:pointer;font-family:var(--f-mono)}
+.legend input{width:18px;height:18px;accent-color:var(--accent)}
+.sw{display:inline-block;width:26px;height:0;border-top:4px solid currentColor;flex:none}
+.sw.dash{border-top-style:dashed}
+.sw.dot{width:12px;height:12px;border:0;border-radius:50%;background:currentColor}
+.sliders{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:460px){.sliders{grid-template-columns:1fr}}
+.sliders label{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:700}
+.sliders input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{font-family:var(--f-mono);font-size:15px;display:flex;flex-direction:column;gap:4px;overflow-wrap:anywhere}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 
@@ -125,6 +149,31 @@ input.in{font:inherit;font-family:var(--f-mono);font-size:17px;color:var(--ink);
       </div>
     </div>
     <div class="verdict" id="verdict"></div>
+  </section>
+
+  <section class="card" id="plano">
+    <p class="tag">Vista gráfica · en el plano cartesiano</p>
+    <p class="hint">Fijamos <strong>b</strong> y dejamos que <strong>a</strong> recorra el eje x. Así cada lado de la igualdad se vuelve una función de x y la podemos graficar.</p>
+    <div class="seg" id="gPresets"></div>
+    <p class="big"><span class="cA">f(a <span id="gOp">+</span> b)</span> = <span class="cFa">f(a)</span> <span class="cB" id="gOpT">+</span> <span class="cFb">f(b)</span></p>
+    <div class="eqs">
+      <div class="eqbox a"><p class="big"><span class="lbl">A · una función (la operación va dentro de f)</span><span class="cA" id="gA"></span></p></div>
+      <div class="eqbox b"><p class="big"><span class="lbl">B · dos funciones unidas por la operación *′</span><span id="gB"></span></p></div>
+    </div>
+    <div class="sliders">
+      <label for="gSa"><span>a = <span id="gVa" class="cFa"></span> <span class="hint">(punto que se mueve sobre el eje x)</span></span><input type="range" id="gSa"></label>
+      <label for="gSb"><span>b = <span id="gVb" class="cFb"></span> <span class="hint">(fijo)</span></span><input type="range" id="gSb"></label>
+    </div>
+    <div class="plotwrap"><canvas class="plot" id="gCv" aria-label="Gráfica de A y B"></canvas></div>
+    <div class="legend" id="gLeg">
+      <label class="cA"><input type="checkbox" data-c="A" checked><span class="sw"></span><span id="lA"></span></label>
+      <label class="cB"><input type="checkbox" data-c="B" checked><span class="sw dash"></span><span id="lB"></span></label>
+      <label class="cFa"><input type="checkbox" data-c="Fa" checked><span class="sw" style="border-top-width:2px"></span><span id="lFa"></span></label>
+      <label class="cFb"><input type="checkbox" data-c="Fb" checked><span class="sw" style="border-top-width:2px"></span><span id="lFb"></span></label>
+    </div>
+    <div class="readout" id="gRead"></div>
+    <div class="verdict" id="gVer"></div>
+    <p class="hint">Toca o arrastra sobre la gráfica para mover a. Apaga y prende las curvas para construir B por partes: primero <span class="cFa">f(x)</span>, luego <span class="cFb">f(b)</span> y al final su combinación <span class="cB">B</span>.</p>
   </section>
 
   <section class="card">
@@ -261,5 +310,146 @@ $('#mass').addEventListener('click', ()=>{
   $('#massOut').textContent = t;
 });
 load(P[0]);
+})();
+</script>
+
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const mod = (a,n) => ((a%n)+n)%n;
+const fmt = x => { if (!isFinite(x)) return '—'; const r = Math.round(x); return Math.abs(x-r)<1e-9 ? String(r) : String(+x.toFixed(3)); };
+const sup = n => String(n).replace(/-/g,'⁻').replace(/\./g,'·').split('').map(c=>({'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'})[c]||c).join('');
+const par = v => v < 0 ? `(${fmt(v)})` : fmt(v);
+const sgn = v => v < 0 ? `− ${fmt(-v)}` : `+ ${fmt(v)}`;
+const c = (cls, t) => `<span class="${cls}">${t}</span>`;
+const G = [
+  {name:'3x', op:'+', opT:'+', f:x=>3*x, s:(a,b)=>a+b, t:(u,v)=>u+v, xr:[-4,4], yr:[-22,22], br:[-3,3], b0:2, a0:1, st:.1,
+   A:b=>`3(x ${sgn(b)})`, Fa:'3x', Fb:b=>`3·${par(b)} = ${fmt(3*b)}`},
+  {name:'2ˣ', op:'+', opT:'·', f:x=>Math.pow(2,x), s:(a,b)=>a+b, t:(u,v)=>u*v, xr:[-4,3], yr:[-2,34], br:[-2,2], b0:1, a0:1, st:.1,
+   A:b=>`2<sup>x ${sgn(b)}</sup>`, Fa:'2ˣ', Fb:b=>`2<sup>${fmt(b)}</sup> = ${fmt(Math.pow(2,b))}`},
+  {name:'log₁₀ x', op:'·', opT:'+', f:x=>Math.log10(x), s:(a,b)=>a*b, t:(u,v)=>u+v, xr:[0.05,10], yr:[-1.6,2], br:[.2,5], b0:2, a0:5, st:.05,
+   A:b=>`log(${fmt(b)}x)`, Fa:'log x', Fb:b=>`log ${fmt(b)} = ${fmt(Math.log10(b))}`},
+  {name:'x²  ✗', op:'+', opT:'+', f:x=>x*x, s:(a,b)=>a+b, t:(u,v)=>u+v, xr:[-4,4], yr:[-3,32], br:[-3,3], b0:2, a0:1, st:.1,
+   A:b=>`(x ${sgn(b)})²`, Fa:'x²', Fb:b=>`${par(b)}² = ${fmt(b*b)}`},
+  {name:'x + 1  ✗', op:'+', opT:'+', f:x=>x+1, s:(a,b)=>a+b, t:(u,v)=>u+v, xr:[-4,4], yr:[-8,10], br:[-3,3], b0:2, a0:1, st:.1,
+   A:b=>`(x ${sgn(b)}) + 1`, Fa:'x + 1', Fb:b=>`${fmt(b)} + 1 = ${fmt(b+1)}`},
+  {name:'n mod 3', op:'+', opT:'+₃', f:x=>mod(x,3), s:(a,b)=>a+b, t:(u,v)=>(u+v)%3, xr:[-6,6], yr:[-.6,3.2], br:[-5,5], b0:2, a0:2, st:1, disc:true,
+   A:b=>`(x ${sgn(b)}) mod 3`, Fa:'x mod 3', Fb:b=>`${fmt(b)} mod 3 = ${mod(b,3)}`},
+];
+let g = G[0], a = 1, b = 2;
+const show = {A:true, B:true, Fa:true, Fb:true};
+$('#gPresets').innerHTML = G.map((p,i)=>`<button class="btn" data-i="${i}">${p.name}</button>`).join('');
+$('#gPresets').addEventListener('click', e=>{ const t=e.target.closest('button'); if(t) load(G[+t.dataset.i]); });
+$('#gLeg').addEventListener('change', e=>{ const t=e.target.closest('input'); if(t){ show[t.dataset.c]=t.checked; draw(); } });
+const sa = $('#gSa'), sb = $('#gSb');
+sa.addEventListener('input', ()=>{ a = +sa.value; update(); });
+sb.addEventListener('input', ()=>{ b = +sb.value; update(); });
+function load(p){
+  g = p; a = p.a0; b = p.b0;
+  document.querySelectorAll('#gPresets .btn').forEach((t,i)=>t.classList.toggle('on', G[i]===p));
+  Object.assign(sa, {min:p.xr[0], max:p.xr[1], step:p.st, value:a});
+  Object.assign(sb, {min:p.br[0], max:p.br[1], step:p.st, value:b});
+  $('#gOp').textContent = p.op; $('#gOpT').textContent = p.opT;
+  update();
+}
+function update(){
+  $('#gVa').textContent = fmt(a); $('#gVb').textContent = fmt(b);
+  $('#gA').innerHTML = `A(x) = ${g.A(b)}`;
+  $('#gB').innerHTML = `B(x) = ${c('cFa', g.Fa)} ${c('cB', g.opT)} ${c('cFb', fmt(g.f(b)))}`;
+  $('#lA').innerHTML = `A = f(x ${g.op} b)`;
+  $('#lB').innerHTML = `B = f(x) ${g.opT} f(b)`;
+  $('#lFa').innerHTML = `f(x) = ${g.Fa}`;
+  $('#lFb').innerHTML = `f(b) = ${g.Fb(b)}`;
+  const ab = g.s(a,b), A = g.f(ab), fa = g.f(a), fb = g.f(b), B = g.t(fa,fb);
+  $('#gRead').innerHTML =
+    `${c('cA', `A = f(a ${g.op} b) = f(${fmt(a)} ${g.op} ${par(b)}) = f(${fmt(ab)}) = <b>${fmt(A)}</b>`)}`+
+    `<span>${c('cFa', `f(a) = ${fmt(fa)}`)},  ${c('cFb', `f(b) = ${fmt(fb)}`)}</span>`+
+    `<span class="cB">B = ${c('cFa', fmt(fa))} ${g.opT} ${c('cFb', fmt(fb))} = <b>${fmt(B)}</b></span>`;
+  const eqHere = Math.abs(A-B) < 1e-9*Math.max(1,Math.abs(A));
+  const always = !/✗/.test(g.name);
+  const v = $('#gVer');
+  if (always){ v.className='verdict good'; v.textContent = `A = B en todo x: las curvas A y B quedan encimadas (la morada punteada cubre a la azul). f es homomorfismo.`; }
+  else if (eqHere){ v.className='verdict bad'; v.textContent = `Aquí A = B, pero solo en este punto: en el resto de la gráfica las curvas se separan. f NO es homomorfismo.`; }
+  else { v.className='verdict bad'; v.textContent = `A = ${fmt(A)} ≠ B = ${fmt(B)}: las curvas A y B son distintas. f NO es homomorfismo.`; }
+  draw();
+}
+const cv = $('#gCv'), ctx = cv.getContext('2d');
+function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function niceStep(range){ const raw = range/8, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw/p; return (m<1.5?1:m<3.5?2:m<7.5?5:10)*p; }
+function draw(){
+  const W = cv.clientWidth, H = Math.round(Math.min(440, Math.max(260, W*0.72))), dpr = window.devicePixelRatio || 1;
+  cv.style.height = H+'px'; cv.width = W*dpr; cv.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  const [x0,x1] = g.xr, [y0,y1] = g.yr, pad = 6;
+  const X = x => pad + (x-x0)/(x1-x0)*(W-2*pad), Y = y => H-pad - (y-y0)/(y1-y0)*(H-2*pad);
+  const col = {A:css('--p1'), B:css('--p2'), Fa:css('--cFa'), Fb:css('--cFb'), grid:css('--grid'), axis:css('--axis'), ink:css('--muted'), bg:css('--bg')};
+  ctx.clearRect(0,0,W,H);
+  ctx.font = '11px ' + css('--f-mono');
+  const sx = niceStep(x1-x0), sy = niceStep(y1-y0);
+  ctx.lineWidth = 1;
+  for (let x = Math.ceil(x0/sx)*sx; x <= x1; x += sx){ ctx.strokeStyle = col.grid; ctx.beginPath(); ctx.moveTo(X(x),0); ctx.lineTo(X(x),H); ctx.stroke(); }
+  for (let y = Math.ceil(y0/sy)*sy; y <= y1; y += sy){ ctx.strokeStyle = col.grid; ctx.beginPath(); ctx.moveTo(0,Y(y)); ctx.lineTo(W,Y(y)); ctx.stroke(); }
+  ctx.strokeStyle = col.axis; ctx.lineWidth = 1.5;
+  const ax = Math.min(Math.max(0,x0),x1), ay = Math.min(Math.max(0,y0),y1);
+  ctx.beginPath(); ctx.moveTo(0,Y(ay)); ctx.lineTo(W,Y(ay)); ctx.moveTo(X(ax),0); ctx.lineTo(X(ax),H); ctx.stroke();
+  ctx.fillStyle = col.ink;
+  for (let x = Math.ceil(x0/sx)*sx; x <= x1+1e-9; x += sx){ if (Math.abs(x)<1e-9) continue; ctx.textAlign='center'; ctx.fillText(fmt(x), X(x), Math.min(H-4, Y(ay)+14)); }
+  for (let y = Math.ceil(y0/sy)*sy; y <= y1+1e-9; y += sy){ if (Math.abs(y)<1e-9) continue; ctx.textAlign='left'; ctx.fillText(fmt(y), X(ax)+5, Y(y)-3); }
+  ctx.textAlign='right'; ctx.fillText('x = a', W-8, Y(ay)-6);
+  const fns = {
+    A: x => g.f(g.s(x,b)),
+    B: x => g.t(g.f(x), g.f(b)),
+    Fa: x => g.f(x),
+    Fb: () => g.f(b),
+  };
+  const styles = {Fa:{w:2,dash:[]}, Fb:{w:2,dash:[]}, A:{w:6,dash:[],alpha:.55}, B:{w:3,dash:[9,7]}};
+  for (const k of ['Fa','Fb','A','B']){
+    if (!show[k]) continue;
+    const st = styles[k]; ctx.strokeStyle = col[k]; ctx.fillStyle = col[k]; ctx.globalAlpha = st.alpha || 1;
+    if (g.disc){
+      for (let x = Math.ceil(x0); x <= x1; x++){
+        const y = fns[k](x); if (!isFinite(y)) continue;
+        ctx.beginPath();
+        if (k==='B'){ ctx.lineWidth = 2.5; ctx.arc(X(x),Y(y),9,0,7); ctx.stroke(); }
+        else if (k==='A'){ ctx.arc(X(x),Y(y),6,0,7); ctx.fill(); }
+        else { ctx.lineWidth = 2; ctx.arc(X(x),Y(y),k==='Fa'?3.5:2.5,0,7); ctx.fill(); }
+      }
+      if (k==='Fb'){ ctx.setLineDash([3,4]); ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(0,Y(fns.Fb())); ctx.lineTo(W,Y(fns.Fb())); ctx.stroke(); ctx.setLineDash([]); }
+    } else {
+      ctx.lineWidth = st.w; ctx.setLineDash(st.dash); ctx.beginPath();
+      let pen = false; const N = 500;
+      for (let i=0;i<=N;i++){
+        const x = x0 + (x1-x0)*i/N, y = fns[k](x);
+        if (!isFinite(y) || y < y0-(y1-y0) || y > y1+(y1-y0)){ pen = false; continue; }
+        if (pen) ctx.lineTo(X(x),Y(y)); else { ctx.moveTo(X(x),Y(y)); pen = true; }
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+    }
+    ctx.globalAlpha = 1;
+  }
+  // punto actual
+  ctx.strokeStyle = col.axis; ctx.setLineDash([4,4]); ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(X(a),0); ctx.lineTo(X(a),H); ctx.stroke(); ctx.setLineDash([]);
+  const pts = [['Fa',fns.Fa(a),5],['Fb',fns.Fb(),5],['A',fns.A(a),7],['B',fns.B(a),11]];
+  for (const [k,y,r] of pts){
+    if (!show[k] || !isFinite(y) || y<y0 || y>y1) continue;
+    ctx.beginPath(); ctx.arc(X(a),Y(y),r,0,7);
+    if (k==='B'){ ctx.strokeStyle = col.B; ctx.lineWidth = 3; ctx.stroke(); }
+    else { ctx.fillStyle = col[k]; ctx.fill(); ctx.strokeStyle = col.bg; ctx.lineWidth = 1.5; ctx.stroke(); }
+  }
+}
+function pick(e){
+  const r = cv.getBoundingClientRect(), px = (e.clientX - r.left), [x0,x1] = g.xr;
+  let x = x0 + (px-6)/(r.width-12)*(x1-x0);
+  x = Math.round(x/g.st)*g.st; x = Math.min(x1, Math.max(x0, x));
+  a = +x.toFixed(4); sa.value = a; update();
+}
+let drag = false;
+cv.addEventListener('pointerdown', e=>{ drag = true; cv.setPointerCapture(e.pointerId); pick(e); });
+cv.addEventListener('pointermove', e=>{ if (drag) pick(e); });
+cv.addEventListener('pointerup', ()=>{ drag = false; });
+addEventListener('resize', draw);
+try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw); } catch(e){}
+new MutationObserver(draw).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+load(G[0]);
 })();
 </script>
