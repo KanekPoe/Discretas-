@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Cadena de estructuras · video</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:opsz,wght@9..144,700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Lienzo de video vertical 1080×1920. Cada cuadro depende solo de t (render(t)), para capturar cuadro por cuadro. */
+:root{--bg:#0D1020;--ink:#E7E9F5;--muted:#9BA1C2;--accent:#93A7FF;--chip-ink:#EEF0FA}
+*{box-sizing:border-box;margin:0}
+html,body{width:1080px;height:1920px;background:var(--bg);overflow:hidden}
+body{font-family:"Atkinson Hyperlegible",system-ui,sans-serif;color:var(--ink);position:relative}
+.abs{position:absolute}
+#eyebrow{left:120px;top:110px;font-family:"JetBrains Mono",monospace;font-size:30px;font-weight:700;color:var(--accent);letter-spacing:.04em}
+#title{left:120px;top:160px;font-family:"Fraunces",Georgia,serif;font-size:80px;font-weight:700;line-height:1}
+#sub{left:120px;top:272px;font-size:34px;color:var(--muted)}
+.box{left:120px;width:860px;height:100px;border-radius:18px;display:flex;align-items:center;justify-content:space-between;padding:0 34px;color:var(--chip-ink)}
+.box .n{font-size:44px;font-weight:700}
+.box .e{font-family:"JetBrains Mono",monospace;font-size:32px;opacity:.9}
+.ar{left:120px;width:860px;height:58px}
+.ar svg{position:absolute;left:44px;top:0;overflow:visible}
+.ar .lbl{position:absolute;left:110px;top:8px;font-size:31px;color:var(--muted);white-space:nowrap}
+.ar .lbl b{color:var(--ink)}
+#bar{left:62px;width:12px;border-radius:6px;background:linear-gradient(#5C7CFA,#C2418F)}
+.end{font-size:30px;color:var(--muted);left:120px}
+#note{left:120px;width:860px;top:1730px;font-size:34px;line-height:1.35;color:var(--ink)}
+#note b{color:#fff}
+</style>
+</head>
+<body>
+<div class="abs" id="eyebrow">MATEMÁTICAS DISCRETAS · UNIDAD 3</div>
+<div class="abs" id="title">Estructuras algebraicas</div>
+<div class="abs" id="sub">Cada flecha agrega una regla</div>
+<div id="chain"></div>
+<div class="abs" id="bar"></div>
+<div class="abs end" id="top">▲ Lo más general: pocas reglas</div>
+<div class="abs end" id="bot">▼ Lo más exigente: cumple todas</div>
+<div class="abs" id="note">Todo <b>campo</b> es dominio entero, todo <b>dominio</b> es anillo y la suma de un <b>anillo</b> es grupo abeliano. Al revés, no.</div>
+<script>
+const S = [
+  ['Sistema algebraico','(ℤ, −)',220],
+  ['Semigrupo','(ℤ⁺, +)',190],
+  ['Monoide','(ℕ, +)',160],
+  ['Grupo','S₃',130],
+  ['Grupo abeliano','(ℤ, +)',100],
+  ['Anillo','ℤ₆',30],
+  ['Dominio entero','ℤ',10],
+  ['Campo','ℚ, ℝ, ℤ₇',340],
+];
+const R = [
+  '+ <b>asociativa</b>',
+  '+ <b>identidad</b>',
+  '+ <b>inversos</b>',
+  '+ <b>conmutativa</b>',
+  '+ <b>segunda operación (·)</b> y <b>distributiva</b>',
+  '+ <b>sin divisores de cero</b>',
+  '+ <b>todo a ≠ 0 tiene inverso</b>',
+];
+const Y0 = 420, BH = 100, GAP = 58, STEP = BH + GAP;
+const T0 = 2.0, DT = 1.85;            // inicio y separación de cada estructura
+const chain = document.getElementById('chain');
+S.forEach((s,i)=>{
+  const b = document.createElement('div'); b.className='abs box'; b.id='b'+i;
+  b.style.top = (Y0 + i*STEP)+'px'; b.style.background = `hsl(${s[2]} 42% 30%)`;
+  b.innerHTML = `<span class="n">${s[0]}</span><span class="e">ej. ${s[1]}</span>`;
+  chain.appendChild(b);
+  if (i < R.length){
+    const a = document.createElement('div'); a.className='abs ar'; a.id='a'+i;
+    a.style.top = (Y0 + i*STEP + BH)+'px';
+    a.innerHTML = `<svg width="40" height="58"><line id="l${i}" x1="20" y1="4" x2="20" y2="44" stroke="#93A7FF" stroke-width="6" stroke-linecap="round"/><path id="h${i}" d="M8,38 L20,54 L32,38" fill="none" stroke="#93A7FF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="lbl" id="t${i}">${R[i]}</span>`;
+    chain.appendChild(a);
+  }
+});
+const END = T0 + (S.length-1)*DT;     // aparece Campo
+const clamp = (x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const ease = x => 1 - Math.pow(1-clamp(x),3);
+const prog = (t,start,dur) => ease((t-start)/dur);
+const $ = id => document.getElementById(id);
+
+function render(t){
+  // encabezado
+  [['eyebrow',0],['title',.25],['sub',.6]].forEach(([id,d])=>{ const p=prog(t,d,.7); $(id).style.opacity=p; $(id).style.transform=`translateY(${(1-p)*30}px)`; });
+  S.forEach((s,i)=>{
+    const st = T0 + i*DT, p = prog(t,st,.55), box = $('b'+i);
+    const active = t>=st && t<st+DT && i<S.length-1, last = i===S.length-1 && t>=st;
+    const pulse = last ? 1 + .025*Math.sin(clamp((t-st)/.6)*Math.PI) : 1;
+    box.style.opacity = p;
+    box.style.transform = `translateX(${(1-p)*-120}px) scale(${(active?1.02:1)*pulse})`;
+    box.style.boxShadow = (active||last) && p>0 ? `0 0 0 4px rgba(147,167,255,${active?.9:.0}), 0 0 40px hsla(${s[2]},70%,60%,${last?.55*prog(t,st,.6):.35})` : 'none';
+    if (i < R.length){
+      const a0 = st + .75, pl = prog(t,a0,.45), ph = prog(t,a0+.35,.2), pt = prog(t,a0+.45,.45);
+      $('l'+i).setAttribute('y2', 4 + 40*pl); $('l'+i).style.opacity = pl>0?1:0;
+      $('h'+i).style.opacity = ph;
+      $('t'+i).style.opacity = pt; $('t'+i).style.transform = `translateX(${(1-pt)*24}px)`;
+    }
+  });
+  // barra general → exigente
+  const pb = prog(t, END+1.0, 1.3), top = Y0, full = (S.length-1)*STEP + BH;
+  $('bar').style.top = top+'px'; $('bar').style.height = (full*pb)+'px'; $('bar').style.opacity = pb>0?1:0;
+  $('top').style.top = (Y0-46)+'px'; $('top').style.opacity = prog(t,END+1.0,.5);
+  $('bot').style.top = (Y0+full+12)+'px'; $('bot').style.opacity = prog(t,END+2.0,.5);
+  // nota final (sustituye el subtítulo de abajo)
+  const pn = prog(t, END+2.8, .7); $('note').style.opacity = pn; $('note').style.transform=`translateY(${(1-pn)*24}px)`;
+  $('note').style.top = (Y0+full+64)+'px';
+}
+window.DURATION = END + 6.5;
+render(0);
+</script>
+</body>
+</html>
