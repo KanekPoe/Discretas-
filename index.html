@@ -1,0 +1,1143 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><title>Estructuras algebraicas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: una columna de lectura (~720px) con barra de temas fija arriba; los laboratorios interactivos son las únicas tarjetas. */
+:root{
+  --bg:#F5F6FA; --bg-glass:rgba(245,246,250,.93); --surface:#FFFFFF; --ink:#151933; --muted:#596080; --line:#DCDFEB;
+  --accent:#2546C4; --accent-ink:#FFFFFF; --accent-soft:#E4E9FB;
+  --hi:#9A6400; --hi-soft:#FBF0D5;
+  --ok:#1C7F53; --ok-soft:#DDF3E8; --bad:#B93434; --bad-soft:#F9E1E1;
+  --chip-s:62%; --chip-l:86%; --chip-ink:#151933; --dot-l:56%;
+  --f-display:"Fraunces",Georgia,"Times New Roman",serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1020; --bg-glass:rgba(13,16,32,.93); --surface:#161A2E; --ink:#E7E9F5; --muted:#9BA1C2; --line:#2A3052;
+    --accent:#93A7FF; --accent-ink:#0D1020; --accent-soft:#1E2752;
+    --hi:#F0B544; --hi-soft:#3A2D10;
+    --ok:#55C893; --ok-soft:#12321F; --bad:#FF8A8A; --bad-soft:#3B1818;
+    --chip-s:42%; --chip-l:30%; --chip-ink:#EEF0FA; --dot-l:60%;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1020; --bg-glass:rgba(13,16,32,.93); --surface:#161A2E; --ink:#E7E9F5; --muted:#9BA1C2; --line:#2A3052;
+  --accent:#93A7FF; --accent-ink:#0D1020; --accent-soft:#1E2752;
+  --hi:#F0B544; --hi-soft:#3A2D10;
+  --ok:#55C893; --ok-soft:#12321F; --bad:#FF8A8A; --bad-soft:#3B1818;
+  --chip-s:42%; --chip-l:30%; --chip-ink:#EEF0FA; --dot-l:60%;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;-webkit-text-size-adjust:100%}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* Barra superior */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg-glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;flex-direction:column;gap:4px;padding-block:8px 6px}
+.brand{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:none;font-size:14px;text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;white-space:nowrap}
+.nav a b{font-family:var(--f-mono);font-weight:600;font-size:12px;color:var(--muted);margin-right:4px}
+.nav a.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.nav a.on b{color:var(--accent-ink)}
+.progress{height:3px;background:var(--accent);width:0;position:absolute;left:0;bottom:-1px}
+
+/* Tipografía */
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(38px,9vw,64px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:clamp(28px,6vw,40px);font-weight:700}
+h3{font-size:21px;font-weight:500;margin-top:8px}
+p{margin:0}
+.eyebrow{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--accent);letter-spacing:.04em}
+.lead{font-size:19px;color:var(--muted);max-width:62ch}
+.tag{font-family:var(--f-mono);font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.m{font-family:var(--f-mono);font-size:.92em;white-space:nowrap}
+.m.w{white-space:normal}
+.eq{font-family:var(--f-mono);font-size:15.5px;background:var(--accent-soft);border-radius:8px;padding:10px 12px;overflow-x:auto;white-space:nowrap}
+strong{font-weight:700}
+a{color:var(--accent)}
+
+/* Secciones */
+.hero{padding-block:40px 28px;display:flex;flex-direction:column;gap:18px}
+section.topic{padding-block:44px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:26px}
+.head{display:flex;flex-direction:column;gap:10px}
+.block{display:flex;flex-direction:column;gap:12px}
+.block > p, .block li{max-width:66ch}
+ul.plain{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+
+/* Lista de propiedades */
+.props{display:grid;grid-template-columns:minmax(110px,auto) 1fr;margin:0;border-top:1px solid var(--line)}
+.props dt,.props dd{margin:0;padding:9px 0;border-bottom:1px solid var(--line)}
+.props dt{font-weight:700;padding-right:14px}
+.props dd{min-width:0;overflow-x:auto}
+@media (max-width:460px){.props{grid-template-columns:1fr}.props dt{border-bottom:0;padding-bottom:0}.props dd{padding-top:2px}}
+
+/* Escalera de estructuras */
+.ladder{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:560px){.ladder{grid-template-columns:1fr}}
+.ladder ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.ladder li{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 12px;border-radius:8px;background:hsl(var(--h) var(--chip-s) var(--chip-l));color:var(--chip-ink)}
+.ladder li span{font-size:13.5px;opacity:.85;text-align:right}
+.ladder li a{color:inherit;font-weight:700;text-decoration:none}
+
+/* Tablas */
+.scroll{overflow-x:auto;max-width:100%}
+table.data{border-collapse:collapse;font-size:15px;min-width:100%}
+table.data th,table.data td{border-bottom:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+table.data th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.yes{color:var(--ok);font-weight:700}
+.no{color:var(--bad);font-weight:700}
+
+/* Tabla de Cayley */
+table.cayley{border-collapse:separate;border-spacing:3px;font-family:var(--f-mono);font-variant-numeric:tabular-nums;margin:0 auto}
+table.cayley th{font-weight:600;color:var(--muted);min-width:34px;height:34px;text-align:center;font-size:14px}
+table.cayley th.op{color:var(--accent)}
+table.cayley th.id{color:var(--hi);text-decoration:underline}
+table.cayley td{padding:0}
+table.cayley td>button,table.cayley td>span{display:grid;place-items:center;width:100%;min-width:36px;height:36px;border:0;border-radius:6px;font:inherit;font-size:15px;background:hsl(var(--h) var(--chip-s) var(--chip-l));color:var(--chip-ink);cursor:pointer}
+table.cayley td>span{cursor:default}
+table.cayley.small td>span{min-width:30px;height:30px;font-size:13px}
+table.cayley td.sel>*{outline:3px solid var(--accent);outline-offset:1px}
+table.cayley td.mark>*{box-shadow:inset 0 0 0 2px var(--hi)}
+
+/* Laboratorios */
+.lab{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.lab h3{margin:0}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.btn{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:7px 14px;cursor:pointer;min-height:38px}
+.btn:hover{border-color:var(--accent)}
+.btn.on,.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:700}
+input.in,select.in{font:inherit;font-family:var(--f-mono);font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 10px;min-width:0;width:100%}
+.inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.hint{font-size:14px;color:var(--muted)}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.checks li{display:flex;gap:10px;align-items:baseline;font-size:15.5px}
+.pill{flex:none;font-family:var(--f-mono);font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px}
+.pill.y{background:var(--ok-soft);color:var(--ok)}
+.pill.n{background:var(--bad-soft);color:var(--bad)}
+.verdict{border-radius:10px;padding:10px 14px;font-weight:700;background:var(--accent-soft)}
+.verdict.good{background:var(--ok-soft);color:var(--ok)}
+.verdict.bad{background:var(--bad-soft);color:var(--bad)}
+.verdict.warn{background:var(--hi-soft);color:var(--hi)}
+.out{font-family:var(--f-mono);font-size:15px;overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+
+/* Chips de elementos */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--f-mono);font-size:14px;padding:4px 10px;border-radius:999px;background:hsl(var(--h) var(--chip-s) var(--chip-l));color:var(--chip-ink);border:0}
+button.chip{cursor:pointer;min-height:34px}
+button.chip.on{outline:3px solid var(--accent);outline-offset:1px}
+.coset{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.coset .lbl{font-family:var(--f-mono);font-size:13px;color:var(--muted);min-width:64px}
+
+/* Triángulos de S3 */
+.tris{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tris figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
+.tris figcaption{font-size:12.5px;color:var(--muted);text-align:center}
+.tris svg{width:100%;max-width:130px;height:auto}
+.perm{display:inline-grid;grid-template-columns:repeat(3,1.4em);font-family:var(--f-mono);text-align:center;border-left:2px solid var(--ink);border-right:2px solid var(--ink);border-radius:6px;padding:0 4px;line-height:1.35;vertical-align:middle}
+
+/* Reloj de Lagrange */
+.clock{width:100%;max-width:330px;height:auto;margin:0 auto;display:block}
+.clock .pt{cursor:pointer}
+.clock text{font-family:var(--f-mono);font-size:13px;font-weight:600;fill:var(--chip-ink);pointer-events:none}
+
+/* Bits */
+.bits{display:flex;flex-wrap:wrap;gap:4px;font-family:var(--f-mono)}
+.bit{width:34px;height:40px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:17px;font-weight:600;cursor:pointer}
+.bit.par{background:var(--hi-soft);color:var(--hi);border-color:var(--hi)}
+.bit.err{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.bit.gap{margin-left:8px}
+
+/* Preguntas */
+.quiz{border-left:3px solid var(--hi);padding-left:14px;display:flex;flex-direction:column;gap:16px}
+.q{display:flex;flex-direction:column;gap:8px}
+.q-t{font-weight:700}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{font:inherit;font-size:15px;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer}
+.opt.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);font-weight:700}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.fb{font-size:15px}
+.fb.good{color:var(--ok)}
+.fb.bad{color:var(--bad)}
+
+/* Aplicación */
+.app{background:var(--hi-soft);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.app .tag{color:var(--hi)}
+.app ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+
+footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+</style>
+
+<header class="top">
+  <div class="wrap" style="position:relative">
+    <div class="brand"><span>Unidad 3 · Estructuras algebraicas</span><span id="where">Inicio</span></div>
+    <nav class="nav" id="nav" aria-label="Temas">
+      <a href="#inicio">Inicio</a>
+      <a href="#s31"><b>3-1</b>Sistemas</a>
+      <a href="#s32"><b>3-2</b>Semigrupos</a>
+      <a href="#s33"><b>3-3</b>Gramáticas</a>
+      <a href="#s35"><b>3-5</b>Grupos</a>
+      <a href="#lagrange"><b>3-5</b>Subgrupos y Lagrange</a>
+      <a href="#anillos"><b>3-5</b>Anillos y campos</a>
+      <a href="#s36"><b>3-6</b>Residuos</a>
+      <a href="#s37"><b>3-7</b>Códigos</a>
+    </nav>
+    <div class="progress" id="progress"></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ INICIO ============ -->
+<section class="hero" id="inicio" data-name="Inicio">
+  <p class="eyebrow">Matemáticas discretas · Unidad 3</p>
+  <h1>Estructuras algebraicas</h1>
+  <p class="lead">Un conjunto más una operación más unas reglas. Con eso describimos desde la suma de enteros hasta las cadenas de un compilador, la aritmética de un procesador y los códigos que corrigen errores.</p>
+  <div class="block">
+    <p class="tag">Cada estructura agrega una propiedad</p>
+    <div class="ladder">
+      <ol>
+        <li style="--h:220"><a href="#s31">Sistema algebraico</a><span>conjunto + operación cerrada</span></li>
+        <li style="--h:190"><a href="#s32">Semigrupo</a><span>+ asociativa</span></li>
+        <li style="--h:160"><a href="#s32">Monoide</a><span>+ identidad</span></li>
+        <li style="--h:130"><a href="#s35">Grupo</a><span>+ inversos</span></li>
+        <li style="--h:100"><a href="#s35">Grupo abeliano</a><span>+ conmutativa</span></li>
+      </ol>
+      <ol>
+        <li style="--h:30"><a href="#anillos">Anillo</a><span>dos operaciones + distributiva</span></li>
+        <li style="--h:10"><a href="#anillos">Dominio entero</a><span>sin divisores de cero</span></li>
+        <li style="--h:340"><a href="#anillos">Campo</a><span>todo a ≠ 0 tiene inverso</span></li>
+      </ol>
+    </div>
+  </div>
+  <p class="hint">Cada tema tiene <strong>concepto</strong>, <strong>ejemplo</strong>, un laboratorio para <strong>probarlo</strong>, su <strong>aplicación</strong> y una pregunta rápida. Todo funciona en el celular.</p>
+</section>
+
+<!-- ============ 3-1 ============ -->
+<section class="topic" id="s31" data-name="3-1 Sistemas">
+  <div class="head">
+    <p class="eyebrow">3-1</p>
+    <h2>Sistemas algebraicos</h2>
+    <p class="lead">Lo importante no son los elementos sino las propiedades de las operaciones. Si dos sistemas cumplen las mismas propiedades, lo que probamos para uno vale para el otro.</p>
+  </div>
+
+  <div class="block">
+    <p class="tag">Concepto</p>
+    <p>Una <strong>operación binaria</strong> <span class="m">*</span> en un conjunto <span class="m">S</span> asigna a cada par <span class="m">(a, b)</span> un único elemento <span class="m">a * b</span> que también está en <span class="m">S</span> (cerradura). Un <strong>sistema algebraico</strong> <span class="m">(S, *)</span> es el conjunto con una o más operaciones.</p>
+    <dl class="props">
+      <dt>Asociativa</dt><dd><span class="m">(a * b) * c = a * (b * c)</span></dd>
+      <dt>Conmutativa</dt><dd><span class="m">a * b = b * a</span></dd>
+      <dt>Identidad</dt><dd>existe <span class="m">e</span> con <span class="m">e * a = a * e = a</span></dd>
+      <dt>Inverso</dt><dd>para cada <span class="m">a</span> existe <span class="m">a′</span> con <span class="m">a * a′ = a′ * a = e</span></dd>
+      <dt>Distributiva</dt><dd><span class="m">a · (b + c) = a·b + a·c</span> (con dos operaciones)</dd>
+      <dt>Cancelación</dt><dd><span class="m">a·b = a·c</span> y <span class="m">a ≠ 0</span> ⇒ <span class="m">b = c</span></dd>
+    </dl>
+  </div>
+
+  <div class="block">
+    <p class="tag">Ejemplos</p>
+    <ul class="plain">
+      <li><span class="m">(ℤ, +, ·)</span>: la suma es asociativa y conmutativa, su identidad es 0 y el inverso de <span class="m">a</span> es <span class="m">−a</span>. El producto es asociativo y conmutativo con identidad 1, y se distribuye sobre la suma.</li>
+      <li><span class="m">(P(A), ∪, ∩)</span>, conjunto potencia: ∪ y ∩ son asociativas y conmutativas. La identidad de ∪ es <span class="m">∅</span> y la de ∩ es <span class="m">A</span>.</li>
+      <li><span class="m">(ℤ, −)</span> <strong>no</strong> es asociativa: <span class="m">(5 − 3) − 1 = 1</span>, pero <span class="m">5 − (3 − 1) = 3</span>.</li>
+    </ul>
+  </div>
+
+  <div class="lab" id="tablelab">
+    <p class="tag">Pruébalo · Laboratorio de tablas</p>
+    <h3>¿Qué propiedades cumple esta operación?</h3>
+    <div class="seg" id="presets"></div>
+    <div class="scroll"><table class="cayley" id="labtable"></table></div>
+    <p class="hint">Toca una casilla para cambiar su resultado y observa cómo cambian las propiedades.</p>
+    <ul class="checks" id="labchecks"></ul>
+    <div class="verdict" id="labverdict"></div>
+  </div>
+
+  <div class="block">
+    <p class="tag">Homomorfismo e isomorfismo</p>
+    <p>Sean <span class="m">(S, *)</span> y <span class="m">(T, *′)</span>. Una función <span class="m">f : S → T</span> es un <strong>homomorfismo</strong> si respeta la operación:</p>
+    <p class="eq">f(a * b) = f(a) *′ f(b)</p>
+    <p>Si además <span class="m">f</span> es biyectiva, es un <strong>isomorfismo</strong> y escribimos <span class="m">S ≅ T</span>: son el mismo sistema con otros nombres.</p>
+    <ul class="plain">
+      <li><span class="m">g : (ℤ, +) → (ℤ₃, +₃)</span>, <span class="m">g(n) = n mod 3</span>, es homomorfismo.</li>
+      <li><span class="m">f : (ℝ, +) → (ℝ⁺, ·)</span>, <span class="m">f(x) = 2ˣ</span>, es isomorfismo: <span class="m">2^(a+b) = 2ᵃ · 2ᵇ</span>.</li>
+    </ul>
+  </div>
+
+  <div class="lab">
+    <p class="tag">Pruébalo</p>
+    <h3>¿g(a + b) = g(a) +₃ g(b)?</h3>
+    <div class="inputs">
+      <label class="f" for="hA">a<input class="in" id="hA" type="number" value="14" inputmode="numeric"></label>
+      <label class="f" for="hB">b<input class="in" id="hB" type="number" value="-5" inputmode="numeric"></label>
+    </div>
+    <div class="out" id="homOut"></div>
+  </div>
+
+  <div class="block">
+    <p class="tag">Congruencia, cociente y producto</p>
+    <dl class="props">
+      <dt>Relación de congruencia</dt><dd>Una relación de equivalencia <span class="m">R</span> en <span class="m">(S, *)</span> tal que si <span class="m">a R a′</span> y <span class="m">b R b′</span> entonces <span class="m">(a * b) R (a′ * b′)</span>.</dd>
+      <dt>Álgebra cociente</dt><dd>Las clases <span class="m">[a]</span> forman <span class="m">S/R</span>, con la operación <span class="m">[a] ⊛ [b] = [a * b]</span>. En <span class="m">(ℤ, +)</span> con congruencia módulo <span class="m">n</span> se obtiene <span class="m">ℤ/R = ℤₙ</span>.</dd>
+      <dt>Producto directo</dt><dd><span class="m">S × T</span> con <span class="m">(s₁, t₁)(s₂, t₂) = (s₁ * s₂, t₁ *′ t₂)</span>. Por ejemplo, <span class="m">ℤ₂ × ℤ₃</span>.</dd>
+      <dt>Subálgebra</dt><dd>Un subconjunto cerrado bajo las operaciones del sistema.</dd>
+    </dl>
+  </div>
+
+  <div class="app">
+    <p class="tag">Aplicación</p>
+    <ul>
+      <li>Los enteros de 32 bits de un procesador forman <span class="m">ℤ₂³²</span>: la suma es módulo 2³². Por eso <span class="m">2 147 483 647 + 1</span> "da la vuelta" a <span class="m">−2 147 483 648</span> (desbordamiento).</li>
+      <li>Los tipos de datos abstractos (pilas, colas, conjuntos) se especifican como sistemas algebraicos: valores, operaciones y las leyes que cumplen.</li>
+    </ul>
+  </div>
+  <div class="quiz" data-quiz="s31"></div>
+</section>
+
+<!-- ============ 3-2 ============ -->
+<section class="topic" id="s32" data-name="3-2 Semigrupos">
+  <div class="head">
+    <p class="eyebrow">3-2</p>
+    <h2>Semigrupos y monoides</h2>
+    <p class="lead">Las estructuras más simples con propiedades útiles: basta con que la operación sea asociativa.</p>
+  </div>
+
+  <div class="block">
+    <p class="tag">Concepto</p>
+    <dl class="props">
+      <dt>Semigrupo</dt><dd><span class="m">(S, *)</span> donde <span class="m">*</span> es asociativa.</dd>
+      <dt>Monoide</dt><dd>Semigrupo con elemento identidad <span class="m">e</span>.</dd>
+      <dt>Conmutativo</dt><dd>Si además <span class="m">a * b = b * a</span>.</dd>
+      <dt>Potencias</dt><dd><span class="m">aⁿ = a * a * … * a</span> y se cumple <span class="m">aᵐ * aⁿ = aᵐ⁺ⁿ</span>.</dd>
+    </dl>
+  </div>
+
+  <div class="block">
+    <p class="tag">Ejemplos</p>
+    <div class="scroll">
+      <table class="data">
+        <thead><tr><th>Sistema</th><th>¿Semigrupo?</th><th>¿Monoide?</th></tr></thead>
+        <tbody>
+          <tr><td class="m">(ℤ⁺, +)</td><td class="yes">sí</td><td class="no">no, 0 ∉ ℤ⁺</td></tr>
+          <tr><td class="m">(ℕ, +)</td><td class="yes">sí</td><td class="yes">sí, e = 0</td></tr>
+          <tr><td class="m">(ℤ, ·)</td><td class="yes">sí</td><td class="yes">sí, e = 1</td></tr>
+          <tr><td class="m">(P(S), ∪)</td><td class="yes">sí</td><td class="yes">sí, e = ∅</td></tr>
+          <tr><td class="m">(P(S), ∩)</td><td class="yes">sí</td><td class="yes">sí, e = S</td></tr>
+          <tr><td>Cadenas <span class="m">(A*, ·)</span></td><td class="yes">sí</td><td class="yes">sí, e = Λ (cadena vacía)</td></tr>
+          <tr><td>Funciones <span class="m">X → X</span> con <span class="m">∘</span></td><td class="yes">sí</td><td class="yes">sí, e = función identidad</td></tr>
+          <tr><td class="m">(ℤ, −)</td><td class="no">no</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Semigrupo libre <span class="m">A*</span></strong>: todas las cadenas finitas sobre un alfabeto <span class="m">A</span>, con la concatenación. Es asociativa, pero <strong>no</strong> conmutativa.</p>
+  </div>
+
+  <div class="lab">
+    <p class="tag">Pruébalo · Concatenación</p>
+    <h3>El monoide de las cadenas</h3>
+    <div class="inputs">
+      <label class="f" for="sx">x<input class="in" id="sx" value="ab" autocomplete="off" autocapitalize="off"></label>
+      <label class="f" for="sy">y<input class="in" id="sy" value="ccb" autocomplete="off" autocapitalize="off"></label>
+    </div>
+    <ul class="checks" id="strOut"></ul>
+  </div>
+
+  <div class="block">
+    <p class="tag">Subestructuras y homomorfismos</p>
+    <dl class="props">
+      <dt>Subsemigrupo / submonoide</dt><dd>Un subconjunto <span class="m">T ⊆ S</span> cerrado bajo <span class="m">*</span> (que además contiene a <span class="m">e</span> si es submonoide). Ejemplos: los pares en <span class="m">(ℕ, +)</span>; las cadenas de longitud par en <span class="m">A*</span>.</dd>
+      <dt>Homomorfismo</dt><dd><span class="m">f(a * b) = f(a) *′ f(b)</span>. Entre monoides, además <span class="m">f(e) = e′</span>. La composición de homomorfismos es homomorfismo.</dd>
+      <dt>Ejemplo</dt><dd>La longitud <span class="m">ℓ : (A*, ·) → (ℕ, +)</span>: <span class="m">ℓ(xy) = ℓ(x) + ℓ(y)</span> y <span class="m">ℓ(Λ) = 0</span>.</dd>
+      <dt>Teorema fundamental</dt><dd>Si <span class="m">f : S → T</span> es homomorfismo sobre y <span class="m">a R b ⇔ f(a) = f(b)</span>, entonces <span class="m">S/R ≅ T</span>.</dd>
+      <dt>Producto</dt><dd>Si <span class="m">S</span> y <span class="m">T</span> son semigrupos (monoides), <span class="m">S × T</span> también lo es.</dd>
+    </dl>
+  </div>
+
+  <div class="lab" data-zn="+">
+    <p class="tag">Pruébalo · ℤₙ</p>
+    <h3>ℤₙ es monoide con +ₙ y con ×ₙ</h3>
+  </div>
+
+  <div class="app">
+    <p class="tag">Aplicación</p>
+    <ul>
+      <li><strong>Cómputo en paralelo (reduce/fold, MapReduce):</strong> para sumar millones de datos repartidos en varias máquinas, cada una suma su parte y luego se combinan. Funciona porque <span class="m">(ℕ, +)</span> es monoide: la asociatividad permite agrupar en cualquier orden y la identidad 0 es el valor inicial.</li>
+      <li>Procesadores de texto y lenguajes de programación trabajan con el monoide de cadenas. Las transiciones de una máquina de estados también forman un monoide.</li>
+    </ul>
+  </div>
+  <div class="quiz" data-quiz="s32"></div>
+</section>
+
+<!-- ============ 3-3 ============ -->
+<section class="topic" id="s33" data-name="3-3 Gramáticas">
+  <div class="head">
+    <p class="eyebrow">3-3</p>
+    <h2>Gramáticas y lenguajes</h2>
+    <p class="lead">Un lenguaje es un subconjunto de <span class="m">A*</span>. Una gramática es un conjunto finito de reglas que genera un lenguaje que puede ser infinito.</p>
+  </div>
+
+  <div class="block">
+    <p class="tag">Concepto</p>
+    <p>Una <strong>gramática de estructura de frase</strong> es <span class="m">G = (V, S, v₀, ↦)</span>:</p>
+    <dl class="props">
+      <dt>V</dt><dd>vocabulario: todos los símbolos</dd>
+      <dt>S ⊆ V</dt><dd>símbolos terminales (los que aparecen en las cadenas finales). <span class="m">N = V − S</span> son los no terminales.</dd>
+      <dt>v₀</dt><dd>símbolo inicial (no terminal)</dd>
+      <dt>↦</dt><dd>producciones <span class="m">w ↦ w′</span>: reemplazar <span class="m">w</span> por <span class="m">w′</span></dd>
+      <dt>L(G)</dt><dd>lenguaje: las cadenas de solo terminales que se pueden <strong>derivar</strong> desde <span class="m">v₀</span></dd>
+    </dl>
+    <p><strong>Clasificación de Chomsky:</strong> tipo 0 (sin restricción), tipo 1 (sensible al contexto), tipo 2 (libre de contexto: el lado izquierdo es un solo no terminal) y tipo 3 (regular: <span class="m">w ↦ a</span> o <span class="m">w ↦ a w′</span>).</p>
+    <p><strong>Notación BNF</strong>, usada para definir lenguajes de programación:</p>
+    <p class="eq">&lt;identificador&gt; ::= &lt;letra&gt; | &lt;identificador&gt;&lt;letra&gt; | &lt;identificador&gt;&lt;dígito&gt;</p>
+  </div>
+
+  <div class="block">
+    <p class="tag">Ejemplo</p>
+    <p><span class="m">V = {v₀, a, b}</span>, <span class="m">S = {a, b}</span>, producciones <span class="m">v₀ ↦ a v₀ b</span> y <span class="m">v₀ ↦ ab</span>. Entonces <span class="m w">L(G) = { aⁿbⁿ : n ≥ 1 } = {ab, aabb, aaabbb, …}</span>.</p>
+  </div>
+
+  <div class="lab">
+    <p class="tag">Pruébalo · Derivación</p>
+    <h3>Deriva una cadena paso a paso</h3>
+    <div class="row">
+      <button class="btn" id="g1">v₀ ↦ a v₀ b</button>
+      <button class="btn" id="g2">v₀ ↦ ab</button>
+      <button class="btn" id="g0">Reiniciar</button>
+    </div>
+    <div class="out" id="gOut"></div>
+    <div class="verdict" id="gVerdict"></div>
+  </div>
+
+  <div class="lab">
+    <p class="tag">Pruébalo · BNF</p>
+    <h3>¿Es un identificador válido?</h3>
+    <label class="f" for="idIn">Escribe un nombre de variable<input class="in" id="idIn" value="suma2" autocomplete="off" autocapitalize="off"></label>
+    <div class="verdict" id="idOut"></div>
+  </div>
+
+  <div class="app">
+    <p class="tag">Aplicación</p>
+    <ul>
+      <li><strong>Compiladores:</strong> el analizador sintáctico (parser) verifica que tu programa se pueda derivar con la gramática del lenguaje. Si no, marca "error de sintaxis".</li>
+      <li>Las expresiones regulares (gramáticas tipo 3) validan correos y contraseñas y sirven para buscar texto.</li>
+    </ul>
+  </div>
+  <div class="quiz" data-quiz="s33"></div>
+</section>
+
+<!-- ============ 3-5 GRUPOS ============ -->
+<section class="topic" id="s35" data-name="3-5 Grupos">
+  <div class="head">
+    <p class="eyebrow">3-5</p>
+    <h2>Grupos</h2>
+    <p class="lead">Un monoide donde todo elemento se puede "deshacer". Es la estructura algebraica más importante.</p>
+  </div>
+
+  <div class="block">
+    <p class="tag">Concepto</p>
+    <p><span class="m">(G, *)</span> es un <strong>grupo</strong> si:</p>
+    <dl class="props">
+      <dt>1. Asociativa</dt><dd><span class="m">(a * b) * c = a * (b * c)</span></dd>
+      <dt>2. Identidad</dt><dd>existe <span class="m">e</span> con <span class="m">a * e = e * a = a</span></dd>
+      <dt>3. Inversos</dt><dd>cada <span class="m">a</span> tiene <span class="m">a⁻¹</span> con <span class="m">a * a⁻¹ = a⁻¹ * a = e</span></dd>
+    </dl>
+    <p>Es <strong>abeliano</strong> si además es conmutativo. El <strong>orden</strong> <span class="m">|G|</span> es su número de elementos.</p>
+  </div>
+
+  <div class="block">
+    <p class="tag">Propiedades</p>
+    <ul class="plain">
+      <li>La identidad es única y cada elemento tiene un único inverso.</li>
+      <li><span class="m">(a⁻¹)⁻¹ = a</span> y <span class="m">(a * b)⁻¹ = b⁻¹ * a⁻¹</span>.</li>
+      <li>Cancelación: <span class="m">a * b = a * c ⇒ b = c</span>.</li>
+      <li><span class="m">a * x = b</span> tiene solución única: <span class="m">x = a⁻¹ * b</span>.</li>
+      <li>En la tabla de un grupo finito, <strong>cada elemento aparece exactamente una vez en cada renglón y en cada columna</strong>.</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <p class="tag">Ejemplos</p>
+    <ul class="plain">
+      <li>Son grupos: <span class="m">(ℤ, +)</span>, <span class="m">(ℚ − {0}, ·)</span>, <span class="m">(ℝ⁺, ·)</span>, <span class="m">(ℤₙ, +ₙ)</span>.</li>
+      <li>No son grupos: <span class="m">(ℤ, ·)</span>, porque 2 no tiene inverso, y <span class="m">(ℕ, +)</span>.</li>
+      <li>Con 1, 2 o 3 elementos solo hay un grupo (salvo isomorfismo). Con 4 hay dos: <span class="m">ℤ₄</span> y el grupo de Klein. Compáralos en el <a href="#tablelab">laboratorio de tablas</a>.</li>
+      <li><strong>Grupo cíclico:</strong> <span class="m">G = ⟨a⟩ = {aⁿ}</span>, generado por un solo elemento. <span class="m">ℤₙ</span> es cíclico (generado por 1) y todo grupo cíclico es abeliano.</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <p class="tag">Grupos de permutaciones</p>
+    <p>Una <strong>permutación</strong> de <span class="m">A</span> es una biyección <span class="m">A → A</span>. Con la composición forman el <strong>grupo simétrico <span class="m">Sₙ</span></strong>, de orden <span class="m">n!</span>, que no es abeliano para <span class="m">n ≥ 3</span>. Se escriben en dos renglones: arriba cada elemento y abajo su imagen.</p>
+    <p><span class="m">S₃</span> son las 6 simetrías de un triángulo equilátero: 3 rotaciones (<span class="m">ρ₀, ρ₁, ρ₂</span>) y 3 reflexiones (<span class="m">μ₁, μ₂, μ₃</span>). Las 8 simetrías del cuadrado forman el <strong>grupo diédrico <span class="m">D₄</span></strong>.</p>
+  </div>
+
+  <div class="lab">
+    <p class="tag">Pruébalo · S₃</p>
+    <h3>Compón dos simetrías del triángulo</h3>
+    <div class="block" style="gap:6px"><span class="hint">Primero aplica <strong>p</strong>:</span><div class="seg" id="s3p"></div></div>
+    <div class="block" style="gap:6px"><span class="hint">Luego aplica <strong>q</strong>:</span><div class="seg" id="s3q"></div></div>
+    <div class="tris" id="s3tris"></div>
+    <div class="out" id="s3out"></div>
+    <details>
+      <summary class="hint" style="cursor:pointer">Ver la tabla completa de S₃ (renglón = primero, columna = luego)</summary>
+      <div class="scroll" style="margin-top:10px"><table class="cayley small" id="s3table"></table></div>
+    </details>
+  </div>
+
+  <div class="app">
+    <p class="tag">Aplicación</p>
+    <ul>
+      <li>Los movimientos del <strong>cubo de Rubik</strong> forman un grupo de permutaciones con 43 252 003 274 489 856 000 elementos. Los algoritmos para resolverlo usan teoría de grupos.</li>
+      <li><strong>Gráficos por computadora y videojuegos:</strong> rotar y reflejar figuras es componer elementos de un grupo de simetrías.</li>
+      <li>En química y cristalografía las moléculas y cristales se clasifican por su grupo de simetrías.</li>
+    </ul>
+  </div>
+  <div class="quiz" data-quiz="s35"></div>
+</section>
+
+<!-- ============ SUBGRUPOS / LAGRANGE ============ -->
+<section class="topic" id="lagrange" data-name="3-5 Lagrange">
+  <div class="head">
+    <p class="eyebrow">3-5 · continuación</p>
+    <h2>Subgrupos, clases laterales y Lagrange</h2>
+    <p class="lead">Dentro de un grupo hay grupos más pequeños. El teorema de Lagrange dice qué tamaños pueden tener.</p>
+  </div>
+
+  <div class="block">
+    <p class="tag">Concepto</p>
+    <dl class="props">
+      <dt>Subgrupo</dt><dd><span class="m">H ⊆ G</span> que contiene a <span class="m">e</span>, es cerrado bajo <span class="m">*</span> y contiene los inversos de sus elementos. Los subgrupos de <span class="m">ℤ₆</span> son <span class="m">{0}</span>, <span class="m">{0, 3}</span>, <span class="m">{0, 2, 4}</span> y <span class="m">ℤ₆</span>.</dd>
+      <dt>Orden de a</dt><dd>El menor <span class="m">k &gt; 0</span> con <span class="m">aᵏ = e</span>. Es el tamaño de <span class="m">⟨a⟩</span>.</dd>
+      <dt>Clase lateral</dt><dd><span class="m">aH = {a * h : h ∈ H}</span> (izquierda) y <span class="m">Ha</span> (derecha). Las clases laterales parten a <span class="m">G</span> en bloques del mismo tamaño <span class="m">|H|</span>.</dd>
+    </dl>
+    <p class="eq">Teorema de Lagrange: |H| divide a |G|, y |G| = |H| · [G : H]</p>
+    <p><span class="m">[G : H]</span> es el número de clases laterales. <strong>Consecuencias:</strong> el orden de cada elemento divide a <span class="m">|G|</span>; <span class="m">a^|G| = e</span>; todo grupo de orden primo es cíclico.</p>
+  </div>
+
+  <div class="lab">
+    <p class="tag">Pruébalo · ℤₙ como reloj</p>
+    <h3>Toca un número para generar su subgrupo</h3>
+    <div class="row">
+      <label class="f" for="lgN" style="flex-direction:row;align-items:center;gap:8px">n =
+        <select class="in" id="lgN" style="width:auto"></select>
+      </label>
+    </div>
+    <svg class="clock" id="clock" viewBox="0 0 240 240" role="group" aria-label="Elementos de Z n en círculo"></svg>
+    <div id="cosets" class="block" style="gap:8px"></div>
+    <div class="verdict" id="lgVerdict"></div>
+    <p class="hint" id="lgGens"></p>
+  </div>
+
+  <div class="block">
+    <p class="tag">Homomorfismos de grupos</p>
+    <dl class="props">
+      <dt>Homomorfismo</dt><dd><span class="m">f(a * b) = f(a) *′ f(b)</span>. Siempre cumple <span class="m">f(e) = e′</span> y <span class="m">f(a⁻¹) = f(a)⁻¹</span>.</dd>
+      <dt>Núcleo</dt><dd><span class="m">ker f = {a ∈ G : f(a) = e′}</span>. Es un subgrupo normal.</dd>
+      <dt>Ejemplo 1</dt><dd><span class="m">f : ℤ → ℤₙ</span>, <span class="m">f(k) = k mod n</span>. Su núcleo son los múltiplos de <span class="m">n</span>.</dd>
+      <dt>Ejemplo 2</dt><dd>El signo <span class="m">S₃ → ({1, −1}, ·)</span> manda las rotaciones a 1 y las reflexiones a −1. Su núcleo es <span class="m">{ρ₀, ρ₁, ρ₂}</span>.</dd>
+      <dt>Teorema de Cayley</dt><dd>Todo grupo finito de orden <span class="m">n</span> es isomorfo a un grupo de permutaciones de <span class="m">n</span> elementos.</dd>
+    </dl>
+  </div>
+
+  <div class="block">
+    <p class="tag">Subgrupos normales y grupo cociente</p>
+    <dl class="props">
+      <dt>Subgrupo normal</dt><dd><span class="m">N</span> con <span class="m">aN = Na</span> para todo <span class="m">a</span>. En un grupo abeliano todo subgrupo es normal. En <span class="m">S₃</span>, <span class="m">{ρ₀, ρ₁, ρ₂}</span> es normal y <span class="m">{ρ₀, μ₁}</span> no lo es.</dd>
+      <dt>Grupo cociente</dt><dd><span class="m">G/N</span>: las clases laterales con <span class="m">(aN)(bN) = (ab)N</span>. Ejemplo: <span class="m">ℤ₆/{0,3} = {{0,3}, {1,4}, {2,5}} ≅ ℤ₃</span>.</dd>
+      <dt>Teorema fundamental</dt><dd>Si <span class="m">f : G → G′</span> es homomorfismo sobre, entonces <span class="m">G / ker f ≅ G′</span>.</dd>
+      <dt>Producto directo</dt><dd><span class="m">G₁ × G₂</span>, operando componente a componente. <span class="m">ℤ₂ × ℤ₃ ≅ ℤ₆</span>, pero <span class="m">ℤ₂ × ℤ₂ ≇ ℤ₄</span> (es el grupo de Klein). En general, <span class="m">ℤₘ × ℤₙ ≅ ℤₘₙ ⇔ mcd(m, n) = 1</span>.</dd>
+    </dl>
+  </div>
+
+  <div class="app">
+    <p class="tag">Aplicación</p>
+    <ul>
+      <li><strong>Criptografía (Diffie–Hellman, curvas elípticas):</strong> se usan grupos de orden primo. Por Lagrange, sus únicos subgrupos son el trivial y el grupo completo, así que cualquier elemento distinto de <span class="m">e</span> genera todo el grupo.</li>
+      <li>Lagrange da una prueba rápida: un subconjunto de 5 elementos de un grupo de 12 nunca puede ser subgrupo, porque 5 no divide a 12.</li>
+    </ul>
+  </div>
+  <div class="quiz" data-quiz="lagrange"></div>
+</section>
+
+<!-- ============ ANILLOS ============ -->
+<section class="topic" id="anillos" data-name="3-5 Anillos">
+  <div class="head">
+    <p class="eyebrow">3-5 · sistemas con dos operaciones</p>
+    <h2>Anillos, dominios enteros y campos</h2>
+    <p class="lead">Cuando tenemos suma y multiplicación a la vez, como en los enteros.</p>
+  </div>
+
+  <div class="block">
+    <p class="tag">Concepto</p>
+    <p><span class="m">(R, +, ·)</span> es un <strong>anillo</strong> si:</p>
+    <dl class="props">
+      <dt>1.</dt><dd><span class="m">(R, +)</span> es un grupo abeliano</dd>
+      <dt>2.</dt><dd><span class="m">·</span> es asociativa</dd>
+      <dt>3.</dt><dd>distributivas: <span class="m">a(b + c) = ab + ac</span> y <span class="m">(a + b)c = ac + bc</span></dd>
+    </dl>
+    <dl class="props">
+      <dt>Divisores de cero</dt><dd><span class="m">a ≠ 0</span>, <span class="m">b ≠ 0</span> con <span class="m">ab = 0</span>.</dd>
+      <dt>Dominio entero</dt><dd>Anillo conmutativo, con identidad 1 y sin divisores de cero.</dd>
+      <dt>Campo</dt><dd>Anillo conmutativo con identidad donde todo <span class="m">a ≠ 0</span> tiene inverso multiplicativo.</dd>
+      <dt>Homomorfismo</dt><dd><span class="m">f(a + b) = f(a) + f(b)</span> y <span class="m">f(ab) = f(a)f(b)</span>. Ejemplo: <span class="m">ℤ → ℤₙ</span>.</dd>
+    </dl>
+  </div>
+
+  <div class="block">
+    <p class="tag">Ejemplos</p>
+    <ul class="plain">
+      <li><span class="m">ℤ</span> es dominio entero pero <strong>no</strong> campo (2 no tiene inverso). <span class="m">ℚ</span>, <span class="m">ℝ</span> y <span class="m">ℂ</span> son campos.</li>
+      <li><span class="m">ℤₙ</span> es anillo conmutativo con identidad. <span class="m">ℤₚ</span> es campo <strong>si y solo si p es primo</strong>.</li>
+      <li>En <span class="m">ℤ₆</span>: <span class="m">2 · 3 = 0</span>, así que 2 y 3 son divisores de cero.</li>
+      <li>Las matrices 2×2 forman un anillo no conmutativo. <span class="m">(P(A), ⊕, ∩)</span> es anillo, con ⊕ = diferencia simétrica.</li>
+    </ul>
+  </div>
+
+  <div class="lab" data-zn="×">
+    <p class="tag">Pruébalo · ¿ℤₙ es campo?</p>
+    <h3>Busca las unidades y los divisores de cero</h3>
+  </div>
+
+  <div class="app">
+    <p class="tag">Aplicación</p>
+    <ul>
+      <li><strong>AES</strong>, el cifrado de WhatsApp, bancos y Wi-Fi, opera en un campo finito de 256 elementos, <span class="m">GF(2⁸)</span>.</li>
+      <li><strong>Códigos Reed–Solomon</strong> (códigos QR, CD, DVD) usan campos finitos para reconstruir datos dañados.</li>
+    </ul>
+  </div>
+  <div class="quiz" data-quiz="anillos"></div>
+</section>
+
+<!-- ============ 3-6 ============ -->
+<section class="topic" id="s36" data-name="3-6 Residuos">
+  <div class="head">
+    <p class="eyebrow">3-6</p>
+    <h2>Aritmética de residuos en computadoras</h2>
+    <p class="lead">Sumar en binario obliga a propagar el acarreo dígito por dígito, lo cual es lento con números grandes. Con residuos cada parte se calcula por separado y en paralelo.</p>
+  </div>
+
+  <div class="block">
+    <p class="tag">Concepto</p>
+    <p>Elegimos módulos <span class="m">m₁, …, mₖ</span> <strong>primos relativos dos a dos</strong> y <span class="m">m = m₁ · m₂ · … · mₖ</span>. Cada <span class="m">x ∈ ℤₘ</span> se representa por sus residuos:</p>
+    <p class="eq">x ↦ (x mod m₁, x mod m₂, …, x mod mₖ)</p>
+    <p>Esto es un isomorfismo de anillos <span class="m">ℤₘ ≅ ℤₘ₁ × … × ℤₘₖ</span>: la suma y el producto se hacen <strong>componente por componente, sin acarreos entre componentes</strong>.</p>
+    <dl class="props">
+      <dt>Teorema chino del residuo</dt><dd>El sistema <span class="m">x ≡ aᵢ (mod mᵢ)</span> tiene solución única en <span class="m">ℤₘ</span>: <span class="m">x = Σ aᵢ · Mᵢ · yᵢ mod m</span>, con <span class="m">Mᵢ = m / mᵢ</span> y <span class="m">yᵢ = Mᵢ⁻¹ mod mᵢ</span>.</dd>
+      <dt>Inverso mod m</dt><dd><span class="m">a</span> tiene inverso módulo <span class="m">m</span> ⇔ <span class="m">mcd(a, m) = 1</span>. Ejemplo: <span class="m">3 · 7 = 21 ≡ 1 (mod 10)</span>, así que <span class="m">3⁻¹ = 7</span>.</dd>
+      <dt>Teorema de Fermat</dt><dd>Si <span class="m">p</span> es primo y <span class="m">p ∤ a</span>: <span class="m">aᵖ⁻¹ ≡ 1 (mod p)</span>. Entonces <span class="m">a⁻¹ ≡ aᵖ⁻² (mod p)</span>. Ejemplo: <span class="m">2⁴ = 16 ≡ 1 (mod 5)</span>.</dd>
+      <dt>Teorema de Euler</dt><dd><span class="m">φ(n)</span> = cuántos de <span class="m">1, …, n</span> son primos relativos con <span class="m">n</span>. Si <span class="m">mcd(a, n) = 1</span>: <span class="m">a^φ(n) ≡ 1 (mod n)</span>. Ejemplo: <span class="m">φ(10) = 4</span> ({1, 3, 7, 9}) y <span class="m">3⁴ = 81 ≡ 1 (mod 10)</span>.</dd>
+    </dl>
+  </div>
+
+  <div class="block">
+    <p class="tag">Ejemplo</p>
+    <p>Con <span class="m">m = 30 = 2 · 3 · 5</span>: <span class="m">17 ↦ (1, 2, 2)</span> y <span class="m">8 ↦ (0, 2, 3)</span>.</p>
+    <ul class="plain">
+      <li>Suma: <span class="m w">(1+0 mod 2, 2+2 mod 3, 2+3 mod 5) = (1, 1, 0)</span>, que corresponde a 25 = 17 + 8. ✓</li>
+      <li>Producto: <span class="m w">(1·0 mod 2, 2·2 mod 3, 2·3 mod 5) = (0, 1, 1)</span>, que corresponde a 16 = 136 mod 30. ✓</li>
+    </ul>
+  </div>
+
+  <div class="lab">
+    <p class="tag">Pruébalo · Calculadora residual</p>
+    <h3>Opera por componentes y reconstruye con el TCR</h3>
+    <div class="inputs">
+      <label class="f" for="rM">Módulos<select class="in" id="rM">
+        <option value="2,3,5">2, 3, 5 (m = 30)</option>
+        <option value="3,5,7" selected>3, 5, 7 (m = 105)</option>
+        <option value="5,7,9">5, 7, 9 (m = 315)</option>
+        <option value="7,11,13">7, 11, 13 (m = 1001)</option>
+      </select></label>
+      <label class="f" for="rX">x<input class="in" id="rX" type="number" value="23" min="0" inputmode="numeric"></label>
+      <label class="f" for="rY">y<input class="in" id="rY" type="number" value="41" min="0" inputmode="numeric"></label>
+    </div>
+    <div class="scroll"><table class="data" id="rTable" style="font-family:var(--f-mono)"></table></div>
+    <div class="out" id="rCRT"></div>
+    <div class="verdict good" id="rVerdict"></div>
+  </div>
+
+  <div class="lab">
+    <p class="tag">Pruébalo · Fermat y Euler</p>
+    <h3>Comprueba que a^φ(n) ≡ 1 (mod n)</h3>
+    <div class="inputs">
+      <label class="f" for="eA">a<input class="in" id="eA" type="number" value="3" min="1" max="9999" inputmode="numeric"></label>
+      <label class="f" for="eN">n<input class="in" id="eN" type="number" value="10" min="2" max="9999" inputmode="numeric"></label>
+    </div>
+    <div class="out" id="eOut"></div>
+  </div>
+
+  <div class="app">
+    <p class="tag">Aplicación</p>
+    <ul>
+      <li><strong>RSA</strong>, el cifrado de HTTPS y las firmas digitales, se basa en Euler: se eligen <span class="m">e, d</span> con <span class="m">e · d ≡ 1 (mod φ(n))</span>. Al descifrar se usa el teorema chino del residuo para ir unas 4 veces más rápido.</li>
+      <li>Los procesadores de señales (audio, video, filtros digitales) usan sistemas numéricos residuales porque suman y multiplican sin propagar acarreos.</li>
+    </ul>
+  </div>
+  <div class="quiz" data-quiz="s36"></div>
+</section>
+
+<!-- ============ 3-7 ============ -->
+<section class="topic" id="s37" data-name="3-7 Códigos">
+  <div class="head">
+    <p class="eyebrow">3-7</p>
+    <h2>Códigos de grupo</h2>
+    <p class="lead">Al transmitir bits, el ruido puede cambiar un 0 por un 1. Agregando bits extra con cuidado podemos detectar y hasta corregir esos errores.</p>
+  </div>
+
+  <div class="block">
+    <p class="tag">Concepto</p>
+    <p class="eq">mensaje → codificador → canal (ruido) → decodificador → receptor</p>
+    <dl class="props">
+      <dt>Palabras</dt><dd><span class="m">B = {0, 1}</span>. <span class="m">Bᵐ</span> son las palabras de <span class="m">m</span> bits; con <span class="m">⊕</span> (suma mod 2 bit a bit) forman un grupo.</dd>
+      <dt>Codificación</dt><dd><span class="m">e : Bᵐ → Bⁿ</span>, con <span class="m">n &gt; m</span>, uno a uno. Las <span class="m">e(x)</span> son las palabras código.</dd>
+      <dt>Peso</dt><dd><span class="m">|x|</span> = número de unos de <span class="m">x</span>.</dd>
+      <dt>Distancia de Hamming</dt><dd><span class="m">δ(x, y) = |x ⊕ y|</span> = número de posiciones en que difieren. Ejemplo: <span class="m">δ(10110, 11100) = |01010| = 2</span>.</dd>
+      <dt>Detecta / corrige</dt><dd>Un código <strong>detecta</strong> k errores ⇔ su distancia mínima es ≥ <span class="m">k + 1</span>, y <strong>corrige</strong> k errores ⇔ es ≥ <span class="m">2k + 1</span>.</dd>
+      <dt>Código de grupo</dt><dd>Si las palabras código forman un subgrupo de <span class="m">(Bⁿ, ⊕)</span>, la distancia mínima es el peso mínimo de las palabras código ≠ 0. Así se calcula mucho más rápido.</dd>
+    </dl>
+  </div>
+
+  <div class="block">
+    <p class="tag">Ejemplos</p>
+    <ul class="plain">
+      <li><strong>Paridad (m, m+1):</strong> se agrega un bit para que el número de unos sea par. La distancia mínima es 2, así que detecta 1 error pero no lo corrige.</li>
+      <li><strong>Repetición triple (m, 3m):</strong> se envía el mensaje 3 veces. La distancia mínima es 3, así que corrige 1 error por voto de mayoría.</li>
+    </ul>
+  </div>
+
+  <div class="lab">
+    <p class="tag">Pruébalo · Canal con ruido</p>
+    <h3>Envía un mensaje y mete errores</h3>
+    <div class="seg" id="cCode">
+      <button class="btn on" data-c="par">Paridad (4, 5)</button>
+      <button class="btn" data-c="rep">Repetición triple (4, 12)</button>
+    </div>
+    <div class="block" style="gap:6px"><span class="hint">1. Mensaje (toca para cambiar bits):</span><div class="bits" id="cMsg"></div></div>
+    <div class="block" style="gap:6px"><span class="hint">2. Palabra enviada:</span><div class="bits" id="cSent"></div></div>
+    <div class="block" style="gap:6px"><span class="hint">3. Palabra recibida (toca para simular ruido):</span><div class="bits" id="cRecv"></div></div>
+    <div class="out" id="cInfo"></div>
+    <div class="verdict" id="cVerdict"></div>
+  </div>
+
+  <div class="app">
+    <p class="tag">Aplicación</p>
+    <ul>
+      <li>La <strong>memoria RAM ECC</strong> de los servidores usa códigos de Hamming que corrigen 1 bit erróneo automáticamente.</li>
+      <li>Los <strong>códigos QR</strong> se siguen leyendo aunque estén rayados o tengan un logo encima.</li>
+      <li>Las sondas espaciales, el Wi-Fi, el 4G/5G y los discos duros transmiten y guardan datos con códigos correctores.</li>
+    </ul>
+  </div>
+  <div class="quiz" data-quiz="s37"></div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">Unidad 3 · Estructuras algebraicas · Matemáticas discretas. Basado en el capítulo 3 de <em>Estructuras de matemáticas discretas para la computación</em> (Kolman y Busby).</div>
+</footer>
+
+<script>
+(function(){
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const mod = (a, n) => ((a % n) + n) % n;
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; };
+const isPrime = n => { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const hueFor = (i, n) => Math.round((i * 360 / Math.max(n, 1) + 215) % 360);
+const pill = ok => `<span class="pill ${ok ? 'y' : 'n'}">${ok ? 'SÍ' : 'NO'}</span>`;
+
+/* ---------- Navegación ---------- */
+const sections = $$('main section');
+const links = $$('#nav a');
+const where = $('#where');
+function setActive(id){
+  links.forEach(a => {
+    const on = a.getAttribute('href') === '#' + id;
+    a.classList.toggle('on', on);
+    if (on) { try { a.scrollIntoView({block:'nearest', inline:'center'}); } catch(e){} }
+  });
+  const s = document.getElementById(id);
+  if (s) where.textContent = s.dataset.name || '';
+}
+if ('IntersectionObserver' in window){
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) setActive(e.target.id); }), {rootMargin:'-35% 0px -60% 0px'});
+  sections.forEach(s => io.observe(s));
+}
+const bar = $('#progress');
+addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - innerHeight;
+  bar.style.width = (h > 0 ? Math.min(100, scrollY / h * 100) : 0) + '%';
+}, {passive:true});
+
+/* ---------- 3-1 Laboratorio de tablas ---------- */
+const PRESETS = {
+  z4:    {name:'ℤ₄ con +₄',        E:['0','1','2','3'],     f:(i,j)=>(i+j)%4},
+  klein: {name:'Klein',            E:['e','a','b','c'],     f:(i,j)=>i^j},
+  z5x:   {name:'ℤ₅ con ×₅',        E:['0','1','2','3','4'], f:(i,j)=>(i*j)%5},
+  max:   {name:'máx en {0,1,2}',   E:['0','1','2'],         f:(i,j)=>Math.max(i,j)},
+  resta: {name:'resta mod 3',      E:['0','1','2'],         f:(i,j)=>mod(i-j,3)},
+};
+const lab = {key:'z4', E:[], T:[], edited:false};
+const presetBox = $('#presets');
+presetBox.innerHTML = Object.entries(PRESETS).map(([k,p]) => `<button class="btn" data-k="${k}">${p.name}</button>`).join('');
+presetBox.addEventListener('click', e => { const b = e.target.closest('button'); if (b) loadPreset(b.dataset.k); });
+function loadPreset(k){
+  const p = PRESETS[k]; lab.key = k; lab.E = p.E;
+  lab.T = p.E.map((_,i) => p.E.map((_,j) => p.f(i,j))); lab.edited = false; renderLab();
+}
+function analyze(T){
+  const n = T.length; let com = null, aso = null, e = -1;
+  outer1: for (let i=0;i<n;i++) for (let j=i+1;j<n;j++) if (T[i][j] !== T[j][i]) { com=[i,j]; break outer1; }
+  outer2: for (let i=0;i<n;i++) for (let j=0;j<n;j++) for (let k=0;k<n;k++) if (T[T[i][j]][k] !== T[i][T[j][k]]) { aso=[i,j,k]; break outer2; }
+  for (let c=0;c<n;c++){ let ok = true; for (let a=0;a<n;a++) if (T[c][a]!==a || T[a][c]!==a) { ok=false; break; } if (ok){ e=c; break; } }
+  const inv = T.map((_,a) => { if (e<0) return -1; for (let b=0;b<n;b++) if (T[a][b]===e && T[b][a]===e) return b; return -1; });
+  let latin = true;
+  for (let i=0;i<n && latin;i++){ const r = new Set(T[i]), c = new Set(T.map(row=>row[i])); if (r.size<n || c.size<n) latin=false; }
+  return {com, aso, e, inv, latin};
+}
+function renderLab(){
+  const {E, T} = lab, n = E.length, A = analyze(T);
+  $$('#presets .btn').forEach(b => b.classList.toggle('on', b.dataset.k === lab.key && !lab.edited));
+  let h = `<tr><th class="op">*</th>${E.map((x,i)=>`<th class="${i===A.e?'id':''}">${x}</th>`).join('')}</tr>`;
+  for (let i=0;i<n;i++){
+    h += `<tr><th class="${i===A.e?'id':''}">${E[i]}</th>`;
+    for (let j=0;j<n;j++) h += `<td><button style="--h:${hueFor(T[i][j],n)}" data-i="${i}" data-j="${j}" aria-label="${E[i]} * ${E[j]} = ${E[T[i][j]]}">${E[T[i][j]]}</button></td>`;
+    h += '</tr>';
+  }
+  $('#labtable').innerHTML = h;
+  const v = x => E[x];
+  const items = [];
+  items.push(`<li>${pill(true)}<span><strong>Cerradura:</strong> todos los resultados están en {${E.join(', ')}}.</span></li>`);
+  items.push(A.aso ? `<li>${pill(false)}<span><strong>Asociativa:</strong> (${v(A.aso[0])}*${v(A.aso[1])})*${v(A.aso[2])} = ${v(T[T[A.aso[0]][A.aso[1]]][A.aso[2]])}, pero ${v(A.aso[0])}*(${v(A.aso[1])}*${v(A.aso[2])}) = ${v(T[A.aso[0]][T[A.aso[1]][A.aso[2]]])}</span></li>`
+                   : `<li>${pill(true)}<span><strong>Asociativa:</strong> se cumple para las ${n**3} ternas.</span></li>`);
+  items.push(A.com ? `<li>${pill(false)}<span><strong>Conmutativa:</strong> ${v(A.com[0])}*${v(A.com[1])} = ${v(T[A.com[0]][A.com[1]])}, pero ${v(A.com[1])}*${v(A.com[0])} = ${v(T[A.com[1]][A.com[0]])}</span></li>`
+                   : `<li>${pill(true)}<span><strong>Conmutativa:</strong> la tabla es simétrica respecto a la diagonal.</span></li>`);
+  items.push(A.e>=0 ? `<li>${pill(true)}<span><strong>Identidad:</strong> e = ${v(A.e)} (su renglón y su columna repiten los encabezados).</span></li>`
+                    : `<li>${pill(false)}<span><strong>Identidad:</strong> ningún elemento deja a todos sin cambio.</span></li>`);
+  if (A.e>=0){
+    const missing = A.inv.map((b,a)=>b<0?v(a):null).filter(Boolean);
+    items.push(missing.length ? `<li>${pill(false)}<span><strong>Inversos:</strong> no tienen inverso: ${missing.join(', ')}</span></li>`
+      : `<li>${pill(true)}<span><strong>Inversos:</strong> ${A.inv.map((b,a)=>`${v(a)}⁻¹ = ${v(b)}`).join(' · ')}</span></li>`);
+  }
+  $('#labchecks').innerHTML = items.join('');
+  const allInv = A.e>=0 && A.inv.every(b=>b>=0);
+  let txt, cls = '';
+  if (A.aso) { txt = 'Es un sistema algebraico, pero NO es semigrupo (falla la asociatividad).'; cls='bad'; }
+  else if (A.e<0) txt = 'Es un semigrupo (asociativo, sin identidad).';
+  else if (!allInv) txt = 'Es un monoide: asociativo y con identidad, pero no todos tienen inverso.';
+  else { txt = A.com ? 'Es un grupo abeliano. Cada elemento aparece una vez por renglón y columna.' : 'Es un grupo (no abeliano).'; cls='good'; }
+  const box = $('#labverdict'); box.className = 'verdict ' + cls; box.textContent = (lab.edited ? 'Tabla modificada. ' : '') + txt;
+}
+$('#labtable').addEventListener('click', e => {
+  const b = e.target.closest('button[data-i]'); if (!b) return;
+  const i = +b.dataset.i, j = +b.dataset.j; lab.T[i][j] = (lab.T[i][j] + 1) % lab.E.length; lab.edited = true; renderLab();
+});
+loadPreset('z4');
+
+/* ---------- 3-1 Homomorfismo ---------- */
+function renderHom(){
+  const a = parseInt($('#hA').value,10) || 0, b = parseInt($('#hB').value,10) || 0;
+  const l = mod(a+b,3), r = (mod(a,3)+mod(b,3))%3;
+  $('#homOut').textContent =
+`g(a + b) = g(${a + b}) = ${a + b} mod 3 = ${l}
+g(a) +₃ g(b) = ${mod(a,3)} +₃ ${mod(b,3)} = ${r}
+${l === r ? '✓ Son iguales: g respeta la operación.' : '✗'}`;
+}
+['hA','hB'].forEach(id => $('#'+id).addEventListener('input', renderHom)); renderHom();
+
+/* ---------- 3-2 Cadenas ---------- */
+function renderStr(){
+  const x = $('#sx').value, y = $('#sy').value;
+  const L = s => Array.from(s).length;
+  const show = s => s === '' ? 'Λ' : esc(s);
+  $('#strOut').innerHTML = [
+    `<li><span class="pill y">x·y</span><span class="m">${show(x+y)}</span></li>`,
+    `<li><span class="pill ${x+y===y+x?'y':'n'}">y·x</span><span><span class="m">${show(y+x)}</span> ${x+y===y+x ? '(coincide en este caso)' : '— distinto: la concatenación no es conmutativa'}</span></li>`,
+    `<li><span class="pill y">ℓ</span><span>ℓ(x·y) = ${L(x+y)} = ${L(x)} + ${L(y)} = ℓ(x) + ℓ(y): la longitud es un homomorfismo a (ℕ, +)</span></li>`,
+    `<li><span class="pill y">e</span><span>x·Λ = Λ·x = x. Borra x para ver la cadena vacía.</span></li>`
+  ].join('');
+}
+['sx','sy'].forEach(id => $('#'+id).addEventListener('input', renderStr)); renderStr();
+
+/* ---------- ℤn (dos instancias) ---------- */
+$$('[data-zn]').forEach((box, idx) => {
+  const st = {n:6, op: box.dataset.zn};
+  const ctr = document.createElement('div'); ctr.className = 'row';
+  ctr.innerHTML = `<label class="f" for="znN${idx}" style="flex-direction:row;align-items:center;gap:8px">n =
+      <select class="in" id="znN${idx}" style="width:auto">${Array.from({length:11},(_,k)=>k+2).map(n=>`<option ${n===6?'selected':''}>${n}</option>`).join('')}</select></label>
+    <div class="seg"><button class="btn" data-op="+">+ₙ</button><button class="btn" data-op="×">×ₙ</button></div>`;
+  const tw = document.createElement('div'); tw.className = 'scroll';
+  const tbl = document.createElement('table'); tbl.className = 'cayley small'; tw.appendChild(tbl);
+  const info = document.createElement('ul'); info.className = 'checks';
+  const ver = document.createElement('div'); ver.className = 'verdict';
+  box.append(ctr, tw, info, ver);
+  ctr.querySelector('select').addEventListener('change', e => { st.n = +e.target.value; render(); });
+  ctr.addEventListener('click', e => { const b = e.target.closest('[data-op]'); if (b){ st.op = b.dataset.op; render(); } });
+  function render(){
+    const n = st.n, add = st.op === '+';
+    $$('[data-op]', ctr).forEach(b => b.classList.toggle('on', b.dataset.op === st.op));
+    const f = (a,b) => add ? (a+b)%n : (a*b)%n, idE = add ? 0 : 1;
+    const units = [], zd = [];
+    for (let a=0;a<n;a++){
+      let u=false, z=false;
+      for (let b=0;b<n;b++){ if (f(a,b)===idE && f(b,a)===idE) u=true; if (!add && a && b && (a*b)%n===0) z=true; }
+      if (u) units.push(a); if (z) zd.push(a);
+    }
+    let h = `<tr><th class="op">${add?'+':'×'}<sub>${n}</sub></th>${Array.from({length:n},(_,j)=>`<th class="${j===idE?'id':''}">${j}</th>`).join('')}</tr>`;
+    for (let i=0;i<n;i++){
+      h += `<tr><th class="${i===idE?'id':''}">${i}</th>`;
+      for (let j=0;j<n;j++){ const r=f(i,j); const mark = (r===idE) || (!add && r===0 && i && j); h += `<td class="${mark?'mark':''}"><span style="--h:${hueFor(r,n)}">${r}</span></td>`; }
+      h += '</tr>';
+    }
+    tbl.innerHTML = h;
+    if (add){
+      info.innerHTML = `<li>${pill(true)}<span>Identidad: 0. El inverso de a es n − a, por ejemplo ${1}⁻¹ = ${n-1}.</span></li>
+        <li>${pill(true)}<span>Las casillas marcadas muestran dónde da 0: hay una en cada renglón.</span></li>`;
+      ver.className = 'verdict good'; ver.textContent = `(ℤ${sub(n)}, +${sub(n)}) es un grupo abeliano (y por tanto monoide).`;
+    } else {
+      const prime = isPrime(n);
+      info.innerHTML = `<li>${pill(true)}<span>Identidad: 1. Es monoide.</span></li>
+        <li>${pill(units.length===n-1)}<span><strong>Unidades</strong> (tienen inverso): ${units.join(', ')}</span></li>
+        <li>${pill(zd.length===0)}<span><strong>Divisores de cero:</strong> ${zd.length? zd.join(', ') + ' (casillas marcadas con 0)' : 'ninguno'}</span></li>`;
+      ver.className = 'verdict ' + (prime ? 'good' : 'warn');
+      ver.textContent = prime ? `n = ${n} es primo: ℤ${sub(n)} es un CAMPO (todo a ≠ 0 tiene inverso).`
+                              : `n = ${n} no es primo: ℤ${sub(n)} es anillo, pero NO es campo. Además, 0 no tiene inverso, así que (ℤ${sub(n)}, ×) no es grupo.`;
+    }
+  }
+  render();
+});
+function sub(n){ return String(n).split('').map(d=>'₀₁₂₃₄₅₆₇₈₉'[+d]).join(''); }
+
+/* ---------- 3-3 Gramática ---------- */
+let gStr = 'v', gHist = ['v'];
+const gShow = s => s.split('').map(c => c==='v' ? '<strong style="color:var(--accent)">v₀</strong>' : c).join('');
+function renderG(){
+  const has = gStr.includes('v');
+  $('#g1').disabled = !has || gStr.length > 30; $('#g2').disabled = !has;
+  $('#gOut').innerHTML = gHist.map((s,i)=> (i? '⇒ ' : '   ') + gShow(s)).join('<br>');
+  const v = $('#gVerdict');
+  if (has){ v.className='verdict'; v.textContent='Aún hay un no terminal (v₀): sigue aplicando producciones.'; }
+  else { const n = gStr.length/2; v.className='verdict good'; v.textContent=`"${gStr}" ∈ L(G): es aⁿbⁿ con n = ${n}, derivada en ${gHist.length-1} pasos.`; }
+}
+$('#g1').addEventListener('click', ()=>{ gStr = gStr.replace('v','avb'); gHist.push(gStr); renderG(); });
+$('#g2').addEventListener('click', ()=>{ gStr = gStr.replace('v','ab'); gHist.push(gStr); renderG(); });
+$('#g0').addEventListener('click', ()=>{ gStr='v'; gHist=['v']; renderG(); });
+renderG();
+function renderId(){
+  const s = $('#idIn').value, o = $('#idOut');
+  const letter = c => /^[A-Za-zÁÉÍÓÚáéíóúÑñ]$/.test(c), digit = c => /^[0-9]$/.test(c);
+  const chars = Array.from(s);
+  if (!chars.length){ o.className='verdict bad'; o.textContent='Vacío: un identificador necesita al menos una <letra>.'; return; }
+  if (!letter(chars[0])){ o.className='verdict bad'; o.textContent=`No es válido: debe empezar con <letra> y empieza con "${chars[0]}".`; return; }
+  const bad = chars.findIndex(c => !letter(c) && !digit(c));
+  if (bad >= 0){ o.className='verdict bad'; o.textContent=`No es válido: "${chars[bad]}" no es <letra> ni <dígito>.`; return; }
+  o.className='verdict good'; o.textContent=`Válido: <letra> seguida de ${chars.length-1} símbolo(s) <letra> o <dígito>.`;
+}
+$('#idIn').addEventListener('input', renderId); renderId();
+
+/* ---------- 3-5 S3 ---------- */
+const S3 = [
+  {n:'ρ₀', p:[0,1,2], d:'identidad'},
+  {n:'ρ₁', p:[1,2,0], d:'rotación 120°'},
+  {n:'ρ₂', p:[2,0,1], d:'rotación 240°'},
+  {n:'μ₁', p:[0,2,1], d:'reflexión, eje por el vértice de arriba'},
+  {n:'μ₂', p:[2,1,0], d:'reflexión, eje por el vértice inferior derecho'},
+  {n:'μ₃', p:[1,0,2], d:'reflexión, eje por el vértice inferior izquierdo'},
+];
+const then = (p,q) => p.map(x => q[x]);           // primero p, luego q
+const idxOf = p => S3.findIndex(s => s.p.join() === p.join());
+const apply = (lab, p) => { const r = [0,0,0]; lab.forEach((v,i)=>{ r[p[i]] = v; }); return r; };
+const POS = [[70,20],[120,106],[20,106]];
+const two = p => `<span class="perm"><span>1</span><span>2</span><span>3</span><span>${p[0]+1}</span><span>${p[1]+1}</span><span>${p[2]+1}</span></span>`;
+function tri(labels, cap){
+  const pts = POS.map(q=>q.join(',')).join(' ');
+  return `<figure><svg viewBox="0 0 140 126" aria-label="${cap}"><polygon points="${pts}" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>`+
+    labels.map((v,i)=>`<circle cx="${POS[i][0]}" cy="${POS[i][1]}" r="14" fill="${v===1?'var(--hi)':'var(--surface)'}" stroke="var(--ink)" stroke-width="1.5"/><text x="${POS[i][0]}" y="${POS[i][1]+5}" text-anchor="middle" font-family="var(--f-mono)" font-size="14" font-weight="600" fill="${v===1?'var(--bg)':'var(--ink)'}">${v}</text>`).join('')+
+    `</svg><figcaption>${cap}</figcaption></figure>`;
+}
+const s3 = {p:1, q:3};
+['s3p','s3q'].forEach(id => {
+  const box = $('#'+id);
+  box.innerHTML = S3.map((s,i)=>`<button class="btn" data-i="${i}" title="${s.d}">${s.n}</button>`).join('');
+  box.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; s3[id==='s3p'?'p':'q'] = +b.dataset.i; renderS3(); });
+});
+function renderS3(){
+  $$('#s3p .btn').forEach(b=>b.classList.toggle('on', +b.dataset.i===s3.p));
+  $$('#s3q .btn').forEach(b=>b.classList.toggle('on', +b.dataset.i===s3.q));
+  const P = S3[s3.p], Q = S3[s3.q];
+  const L0 = [1,2,3], L1 = apply(L0, P.p), L2 = apply(L1, Q.p);
+  const r = idxOf(then(P.p, Q.p)), r2 = idxOf(then(Q.p, P.p));
+  $('#s3tris').innerHTML = tri(L0,'inicio') + tri(L1,'después de '+P.n) + tri(L2,'después de '+Q.n);
+  $('#s3out').innerHTML =
+    `${P.n} = ${two(P.p)} <span class="hint">${P.d}</span><br>`+
+    `${Q.n} = ${two(Q.p)} <span class="hint">${Q.d}</span><br><br>`+
+    `<strong>${P.n} y luego ${Q.n} = ${S3[r].n}</strong> = ${two(S3[r].p)} <span class="hint">${S3[r].d}</span><br>`+
+    `${Q.n} y luego ${P.n} = ${S3[r2].n} ${r===r2 ? '(mismo resultado)' : '<span style="color:var(--bad)">≠ ' + S3[r].n + ': S₃ no es abeliano</span>'}`;
+  let h = `<tr><th class="op">∘</th>${S3.map(s=>`<th>${s.n}</th>`).join('')}</tr>`;
+  S3.forEach((a,i)=>{ h += `<tr><th>${a.n}</th>` + S3.map((b,j)=>{ const k = idxOf(then(a.p,b.p)); return `<td class="${i===s3.p&&j===s3.q?'sel':''}"><span style="--h:${hueFor(k,6)}">${S3[k].n}</span></td>`; }).join('') + '</tr>'; });
+  $('#s3table').innerHTML = h;
+}
+renderS3();
+
+/* ---------- Lagrange ---------- */
+const lg = {n:12, a:4};
+$('#lgN').innerHTML = [4,5,6,7,8,9,10,12,15,16,18,20].map(n=>`<option ${n===12?'selected':''}>${n}</option>`).join('');
+$('#lgN').addEventListener('change', e => { lg.n = +e.target.value; lg.a = lg.a % lg.n; renderLg(); });
+$('#clock').addEventListener('click', e => { const g = e.target.closest('[data-x]'); if (g){ lg.a = +g.dataset.x; renderLg(); } });
+$('#clock').addEventListener('keydown', e => { const g = e.target.closest('[data-x]'); if (g && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); lg.a = +g.dataset.x; renderLg(); } });
+function renderLg(){
+  const {n, a} = lg, g = gcd(a, n) || n, ord = n / g, k = g;   // H = <a> = múltiplos de g
+  const H = Array.from({length:ord},(_,i)=>i*g);
+  let svg = `<circle cx="120" cy="120" r="95" fill="none" stroke="var(--line)" stroke-width="2"/>`;
+  // conectar los elementos de H
+  const P = x => { const t = -Math.PI/2 + 2*Math.PI*x/n; return [120+95*Math.cos(t), 120+95*Math.sin(t)]; };
+  if (H.length > 1) svg += `<polygon points="${H.map(x=>P(x).map(v=>v.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4 3"/>`;
+  for (let x=0;x<n;x++){
+    const [cx,cy] = P(x), c = x % k, inH = c === 0;
+    svg += `<g class="pt" data-x="${x}" tabindex="0" role="button" aria-label="elemento ${x}"><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${x===a?16:13}" style="fill:hsl(${hueFor(c,k)} var(--chip-s) var(--chip-l))" stroke="${x===a?'var(--accent)':'var(--line)'}" stroke-width="${x===a?3:1}"/><text x="${cx.toFixed(1)}" y="${(cy+4.5).toFixed(1)}" text-anchor="middle">${x}</text></g>`;
+  }
+  svg += `<text x="120" y="114" text-anchor="middle" style="fill:var(--muted);font-size:12px">H = ⟨${a}⟩</text><text x="120" y="132" text-anchor="middle" style="fill:var(--ink);font-size:13px">|H| = ${ord}</text>`;
+  $('#clock').innerHTML = svg;
+  let rows = '';
+  for (let c=0;c<k;c++){
+    const cos = H.map(h => (h + c) % n).sort((x,y)=>x-y);
+    rows += `<div class="coset"><span class="lbl">${c===0?'H':c+' + H'}</span><div class="chips">${cos.map(x=>`<span class="chip" style="--h:${hueFor(c,k)}">${x}</span>`).join('')}</div></div>`;
+    if (c === 7 && k > 9){ rows += `<p class="hint">… y ${k-8} clases más, cada una con ${ord} elemento(s).</p>`; break; }
+  }
+  $('#cosets').innerHTML = `<p class="tag">Clases laterales de H en ℤ${sub(n)}</p>` + rows;
+  $('#lgVerdict').className = 'verdict good';
+  $('#lgVerdict').textContent = `|G| = ${n} = |H| · [G : H] = ${ord} · ${k}. El orden de ${a} es ${ord}, que divide a ${n}.`;
+  const gens = Array.from({length:n},(_,x)=>x).filter(x=>gcd(x,n)===1);
+  $('#lgGens').textContent = `Generadores de ℤ${sub(n)} (los x con mcd(x, ${n}) = 1): ${gens.join(', ')}. ${isPrime(n) ? 'Como ' + n + ' es primo, todo elemento ≠ 0 genera el grupo.' : ''}`;
+}
+renderLg();
+
+/* ---------- 3-6 Residuos ---------- */
+function egcd(a,b){ if (b===0) return [a,1,0]; const [g,x,y] = egcd(b, a%b); return [g, y, x - Math.floor(a/b)*y]; }
+function inv(a,m){ const [g,x] = egcd(mod(a,m), m); return g!==1 ? null : mod(x,m); }
+function renderR(){
+  const ms = $('#rM').value.split(',').map(Number), m = ms.reduce((a,b)=>a*b,1);
+  let x = mod(parseInt($('#rX').value,10)||0, m), y = mod(parseInt($('#rY').value,10)||0, m);
+  const rx = ms.map(mi=>x%mi), ry = ms.map(mi=>y%mi), rs = ms.map((mi,i)=>(rx[i]+ry[i])%mi), rp = ms.map((mi,i)=>(rx[i]*ry[i])%mi);
+  $('#rTable').innerHTML = `<thead><tr><th>mᵢ</th><th>x = ${x}</th><th>y = ${y}</th><th>x + y</th><th>x · y</th></tr></thead><tbody>` +
+    ms.map((mi,i)=>`<tr><td>${mi}</td><td>${rx[i]}</td><td>${ry[i]}</td><td>${rs[i]}</td><td>${rp[i]}</td></tr>`).join('') + '</tbody>';
+  const crt = r => { let s = 0; const lines = ms.map((mi,i)=>{ const Mi = m/mi, yi = inv(Mi%mi, mi), t = r[i]*Mi*yi; s += t; return `  a${sub(i+1)}=${r[i]}  M${sub(i+1)}=${Mi}  y${sub(i+1)}=${Mi%mi}⁻¹ mod ${mi}=${yi}  →  ${r[i]}·${Mi}·${yi} = ${t}`; }); return {lines, val: s % m, s}; };
+  const P = crt(rp), S = crt(rs);
+  $('#rCRT').textContent = `Reconstruir x·y desde (${rp.join(', ')}) con el TCR (m = ${m}):\n${P.lines.join('\n')}\n  suma = ${P.s}  →  ${P.s} mod ${m} = ${P.val}\n\nx + y desde (${rs.join(', ')}) →  ${S.val}`;
+  $('#rVerdict').textContent = `Comprobación directa: (${x}·${y}) mod ${m} = ${(x*y)%m} ✓ y (${x}+${y}) mod ${m} = ${(x+y)%m} ✓`;
+}
+['rM','rX','rY'].forEach(id=>$('#'+id).addEventListener('input', renderR)); renderR();
+
+function powmod(a,e,n){ let r=1n, b=BigInt(a)%BigInt(n), E=BigInt(e), N=BigInt(n); while(E>0n){ if(E&1n) r=r*b%N; b=b*b%N; E>>=1n; } return Number(r); }
+function renderE(){
+  let a = parseInt($('#eA').value,10), n = parseInt($('#eN').value,10);
+  const o = $('#eOut');
+  if (!(n>=2 && n<=9999) || !(a>=1 && a<=9999)){ o.textContent = 'Usa 1 ≤ a ≤ 9999 y 2 ≤ n ≤ 9999.'; return; }
+  const co = []; for (let k=1;k<=n;k++) if (gcd(k,n)===1) co.push(k);
+  const phi = co.length, g = gcd(a,n);
+  let t = `mcd(${a}, ${n}) = ${g}\nφ(${n}) = ${phi}` + (n<=40 ? `   {${co.join(', ')}}` : '') + '\n';
+  if (g !== 1){ t += `\n✗ ${a} y ${n} no son primos relativos: no aplica Euler y ${a} no tiene inverso mod ${n}.\n  Ejemplo: ${a}^${phi} mod ${n} = ${powmod(a,phi,n)}`; }
+  else {
+    const iv = powmod(a, phi-1, n);
+    t += `\n${a}^${phi} mod ${n} = ${powmod(a,phi,n)}  ✓ (Euler)`;
+    if (isPrime(n)) t += `\n${n} es primo: φ(${n}) = ${n}−1, así que esto es el teorema de Fermat.`;
+    t += `\n\nInverso: ${a}⁻¹ ≡ ${a}^${phi-1} ≡ ${iv} (mod ${n})\nComprobación: ${a} · ${iv} mod ${n} = ${(a*iv)%n}`;
+  }
+  o.textContent = t;
+}
+['eA','eN'].forEach(id=>$('#'+id).addEventListener('input', renderE)); renderE();
+
+/* ---------- 3-7 Códigos ---------- */
+const cs = {code:'par', msg:[1,0,1,1], flips:new Set()};
+const encode = () => cs.code==='par' ? [...cs.msg, cs.msg.reduce((s,b)=>s+b,0)%2] : [...cs.msg, ...cs.msg, ...cs.msg];
+function renderC(){
+  $$('#cCode .btn').forEach(b=>b.classList.toggle('on', b.dataset.c===cs.code));
+  const sent = encode(), recv = sent.map((b,i)=>cs.flips.has(i)?1-b:b);
+  $('#cMsg').innerHTML = cs.msg.map((b,i)=>`<button class="bit" data-i="${i}" aria-label="bit ${i+1}">${b}</button>`).join('');
+  const gapAt = i => cs.code==='rep' && i>0 && i%4===0;
+  $('#cSent').innerHTML = sent.map((b,i)=>`<span class="bit ${cs.code==='par'&&i===4?'par':''} ${gapAt(i)?'gap':''}" style="display:grid;place-items:center">${b}</span>`).join('');
+  $('#cRecv').innerHTML = recv.map((b,i)=>`<button class="bit ${cs.flips.has(i)?'err':''} ${gapAt(i)?'gap':''}" data-i="${i}" aria-label="bit recibido ${i+1}">${b}</button>`).join('');
+  const d = cs.flips.size, w = recv.reduce((s,b)=>s+b,0);
+  let info = `δ(enviada, recibida) = ${d} error(es)   ·   distancia mínima del código = ${cs.code==='par'?2:3}`;
+  const v = $('#cVerdict');
+  if (cs.code==='par'){
+    info += `\nPeso de la recibida = ${w} → ${w%2 ? 'impar' : 'par'}`;
+    if (w%2){ v.className='verdict warn'; v.textContent='Error DETECTADO: la paridad es impar. No sabemos qué bit cambió, así que hay que pedir que se reenvíe.'; }
+    else if (d===0){ v.className='verdict good'; v.textContent=`Sin errores. Mensaje: ${recv.slice(0,4).join('')}`; }
+    else { v.className='verdict bad'; v.textContent=`¡${d} errores pasaron sin detectarse! Con distancia 2 solo se garantiza detectar 1 error.`; }
+  } else {
+    const dec = [0,1,2,3].map(j => (recv[j]+recv[j+4]+recv[j+8]) >= 2 ? 1 : 0);
+    const ok = dec.join('') === cs.msg.join('');
+    info += `\nVoto por mayoría en cada posición → ${dec.join('')}`;
+    if (d===0){ v.className='verdict good'; v.textContent=`Sin errores. Mensaje: ${dec.join('')}`; }
+    else if (ok){ v.className='verdict good'; v.textContent=`Error(es) CORREGIDO(S): el receptor recupera ${dec.join('')}.`; }
+    else { v.className='verdict bad'; v.textContent=`Decodificación incorrecta (${dec.join('')}): hubo 2 errores en la misma posición. Este código solo garantiza corregir 1.`; }
+  }
+  $('#cInfo').textContent = info;
+}
+$('#cCode').addEventListener('click', e=>{ const b=e.target.closest('[data-c]'); if(b){ cs.code=b.dataset.c; cs.flips.clear(); renderC(); } });
+$('#cMsg').addEventListener('click', e=>{ const b=e.target.closest('[data-i]'); if(b){ cs.msg[+b.dataset.i]^=1; cs.flips.clear(); renderC(); } });
+$('#cRecv').addEventListener('click', e=>{ const b=e.target.closest('[data-i]'); if(b){ const i=+b.dataset.i; cs.flips.has(i)?cs.flips.delete(i):cs.flips.add(i); renderC(); } });
+renderC();
+
+/* ---------- Preguntas ---------- */
+const QUIZ = {
+  s31:[
+    {q:'¿Cuál de estas operaciones en ℤ NO es asociativa?', o:['Suma','Multiplicación','Resta','Máximo'], a:2, x:'(5 − 3) − 1 = 1, pero 5 − (3 − 1) = 3.'},
+    {q:'¿Cuál es el elemento identidad de (P(A), ∪)?', o:['A','∅','{0}','No tiene'], a:1, x:'X ∪ ∅ = X para todo X.'},
+  ],
+  s32:[
+    {q:'(ℤ⁺, +) es…', o:['Semigrupo pero no monoide','Monoide','Grupo','Ni siquiera semigrupo'], a:0, x:'La suma es asociativa, pero 0 no está en ℤ⁺, así que no hay identidad.'},
+    {q:'En el monoide de cadenas (A*, ·), la identidad es…', o:['La letra a','La cadena vacía Λ','El alfabeto A','No existe'], a:1, x:'x·Λ = Λ·x = x.'},
+  ],
+  s33:[
+    {q:'Con v₀ ↦ a v₀ b | ab, ¿qué cadena está en L(G)?', o:['abab','aab','aabb','ba'], a:2, x:'v₀ ⇒ a v₀ b ⇒ aabb.'},
+  ],
+  s35:[
+    {q:'En la tabla de un grupo finito, cada elemento aparece…', o:['Solo en la diagonal','Exactamente una vez por renglón y columna','Al menos dos veces','Solo en el primer renglón'], a:1, x:'Es consecuencia de que a * x = b tiene solución única.'},
+    {q:'¿Cuántos elementos tiene S₄?', o:['8','12','16','24'], a:3, x:'|Sₙ| = n!, y 4! = 24.'},
+  ],
+  lagrange:[
+    {q:'Un grupo de orden 15 puede tener un subgrupo de orden…', o:['4','5','6','8'], a:1, x:'Por Lagrange el orden del subgrupo divide a 15: solo 1, 3, 5 o 15.'},
+    {q:'¿Cuáles son los generadores de ℤ₈?', o:['2, 4, 6','0 y 4','1, 3, 5, 7','Solo 1'], a:2, x:'Son los x con mcd(x, 8) = 1. Pruébalo en el reloj con n = 8.'},
+  ],
+  anillos:[
+    {q:'¿Cuál de estos es un campo?', o:['ℤ','ℤ₆','ℤ₈','ℤ₇'], a:3, x:'ℤₚ es campo si y solo si p es primo.'},
+    {q:'En ℤ₆ se cumple 2 · 3 = 0. Entonces 2 y 3 son…', o:['Unidades','Divisores de cero','Identidades','Inversos'], a:1, x:'Son elementos ≠ 0 cuyo producto es 0, por eso ℤ₆ no es dominio entero.'},
+  ],
+  s36:[
+    {q:'Por el teorema de Fermat, 3⁶ mod 7 =', o:['0','1','3','6'], a:1, x:'7 es primo y no divide a 3: 3⁷⁻¹ ≡ 1 (mod 7).'},
+    {q:'Para la aritmética residual, los módulos m₁, …, mₖ deben ser…', o:['Todos pares','Consecutivos','Primos relativos dos a dos','Potencias de 2'], a:2, x:'Así ℤₘ ≅ ℤₘ₁ × … × ℤₘₖ y el teorema chino del residuo garantiza que la representación es única.'},
+  ],
+  s37:[
+    {q:'Un código con distancia mínima 3 puede…', o:['Detectar 3 errores','Corregir 2 errores','Corregir 1 error','No detecta errores'], a:2, x:'Corrige k errores si la distancia es ≥ 2k + 1: con 3 corrige k = 1 (y detecta 2).'},
+  ],
+};
+$$('[data-quiz]').forEach(box => {
+  const qs = QUIZ[box.dataset.quiz] || [];
+  box.innerHTML = '<p class="tag">Pregunta rápida</p>' + qs.map((it,qi)=>`<div class="q"><p class="q-t">${it.q}</p><div class="opts">${it.o.map((o,oi)=>`<button class="opt" data-q="${qi}" data-o="${oi}">${o}</button>`).join('')}</div><p class="fb" hidden></p></div>`).join('');
+  box.addEventListener('click', e => {
+    const b = e.target.closest('.opt'); if (!b) return;
+    const it = qs[+b.dataset.q], wrap = b.closest('.q'), good = +b.dataset.o === it.a;
+    $$('.opt', wrap).forEach((x,i) => { x.classList.toggle('right', i===it.a); x.classList.toggle('wrong', x===b && !good); });
+    const fb = $('.fb', wrap); fb.hidden = false; fb.className = 'fb ' + (good ? 'good' : 'bad');
+    fb.textContent = (good ? '¡Correcto! ' : 'Casi. ') + it.x;
+  });
+});
+})();
+</script>
+</body></html>
