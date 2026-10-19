@@ -55,7 +55,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline
 .sliders input{width:100%;accent-color:var(--accent);margin:2px 0 0}
 
 .plot{position:relative;min-height:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
-.plot canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.plot canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y;cursor:crosshair}
 .legend{position:absolute;left:6px;right:6px;top:6px;display:flex;flex-wrap:wrap;gap:4px;pointer-events:none}
 .tog{pointer-events:auto;display:flex;align-items:center;gap:6px;font:inherit;font-family:var(--f-mono);font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:2px 8px;cursor:pointer}
 .tog.off{opacity:.4;text-decoration:line-through}
@@ -343,6 +343,7 @@ let drag = false;
 cv.addEventListener('pointerdown', e=>{ drag = true; cv.setPointerCapture(e.pointerId); pick(e); });
 cv.addEventListener('pointermove', e=>{ if (drag) pick(e); });
 cv.addEventListener('pointerup', ()=>{ drag = false; });
+cv.addEventListener('pointercancel', ()=>{ drag = false; });
 if ('ResizeObserver' in window) new ResizeObserver(draw).observe($('#plot')); else addEventListener('resize', draw);
 try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw); } catch(e){}
 new MutationObserver(draw).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
