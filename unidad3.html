@@ -644,6 +644,26 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
     </dl>
   </div>
 
+  <div class="block">
+    <p class="tag">Descomposición de grupos</p>
+    <p>El producto directo sirve para <strong>armar todos los grupos abelianos finitos</strong> a partir de grupos cíclicos, como los números se arman con primos.</p>
+    <dl class="props">
+      <dt>Teorema 3-5-10</dt><dd>Si <span class="m">G</span> es cíclico de orden <span class="m w">n = p₁^k₁ · p₂^k₂ ··· pₘ^kₘ</span> (los <span class="m">pᵢ</span> primos distintos), entonces <span class="m w">G ≅ ℤ_{p₁^k₁} × ℤ_{p₂^k₂} × ··· × ℤ_{pₘ^kₘ}</span>. Ejemplo: <span class="m">12 = 2²·3</span>, así que <span class="m">ℤ₁₂ ≅ ℤ₄ × ℤ₃</span>.</dd>
+      <dt>Teorema 3-5-11</dt><dd><strong>Todo grupo abeliano finito</strong> es isomorfo a un producto directo de grupos cíclicos cuyos órdenes son potencias de primos.</dd>
+      <dt>Ejemplo</dt><dd>Los grupos abelianos de orden <span class="m">8 = 2³</span> son exactamente tres: <span class="m">ℤ₈</span>, <span class="m">ℤ₄ × ℤ₂</span> y <span class="m">ℤ₂ × ℤ₂ × ℤ₂</span>. Uno por cada forma de partir el exponente 3: <span class="m">3</span>, <span class="m">2+1</span>, <span class="m">1+1+1</span>.</dd>
+    </dl>
+  </div>
+
+  <div class="lab">
+    <p class="tag">Pruébalo · Grupos abelianos de orden n</p>
+    <h3>¿Cuántos grupos abelianos hay de cada tamaño?</h3>
+    <div class="inputs">
+      <label class="f" for="abN">n (orden del grupo)<input class="in" id="abN" type="number" value="12" min="2" max="500" inputmode="numeric"></label>
+    </div>
+    <div class="out" id="abOut"></div>
+    <div class="verdict" id="abVer"></div>
+  </div>
+
   <div class="app">
     <p class="tag">Aplicación</p>
     <ul>
@@ -749,6 +769,33 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
     <div class="scroll"><table class="data" id="rTable" style="font-family:var(--f-mono)"></table></div>
     <div class="out" id="rCRT"></div>
     <div class="verdict good" id="rVerdict"></div>
+  </div>
+
+  <div class="block">
+    <p class="tag">Conversión a base mixta</p>
+    <p>El teorema chino del residuo reconstruye <span class="m">x</span>, pero usa números grandes (<span class="m">Mᵢ</span>). El libro da otra forma que solo usa operaciones módulo cada <span class="m">mᵢ</span>: escribir <span class="m">x</span> en <strong>base mixta</strong>.</p>
+    <p class="eq">x = a₁ + a₂·m₁ + a₃·m₁m₂ + ··· + aₖ·m₁m₂···mₖ₋₁,   0 ≤ aᵢ &lt; mᵢ</p>
+    <dl class="props">
+      <dt>Cómo se calculan los aᵢ</dt><dd><span class="m">a₁ = r₁</span>. Para cada paso se resta lo ya conocido y se multiplica por el inverso del módulo anterior, siempre módulo <span class="m">mᵢ</span>:<br><span class="m w">a₂ = (r₂ − a₁)·m₁⁻¹ mod m₂</span><br><span class="m w">a₃ = ((r₃ − a₁)·m₁⁻¹ − a₂)·m₂⁻¹ mod m₃</span>, y así sucesivamente.</dd>
+      <dt>Ejemplo</dt><dd>Módulos <span class="m">3, 5, 7</span> y <span class="m">x ↦ (1, 2, 3)</span>. Entonces <span class="m">a₁ = 1</span>; <span class="m w">a₂ = (2−1)·3⁻¹ mod 5 = 1·2 = 2</span>; <span class="m w">a₃ = ((3−1)·3⁻¹ − 2)·5⁻¹ mod 7 = (2·5 − 2)·3 mod 7 = 3</span>. Así <span class="m w">x = 1 + 2·3 + 3·15 = 52</span> ✓.</dd>
+      <dt>¿Para qué sirve?</dt><dd>En residuos no se ve qué número es mayor: <span class="m">(1,2,3)</span> no dice nada a simple vista. En base mixta sí, porque se comparan los dígitos de <span class="m">aₖ</span> hacia <span class="m">a₁</span>, como en decimal. Sirve para comparar magnitudes, detectar signo y desbordamiento.</dd>
+    </dl>
+  </div>
+
+  <div class="lab">
+    <p class="tag">Pruébalo · Base mixta</p>
+    <h3>De residuos a dígitos en base mixta</h3>
+    <div class="inputs">
+      <label class="f" for="mM">Módulos<select class="in" id="mM">
+        <option value="2,3,5">2, 3, 5 (m = 30)</option>
+        <option value="3,5,7" selected>3, 5, 7 (m = 105)</option>
+        <option value="5,7,9">5, 7, 9 (m = 315)</option>
+        <option value="7,11,13">7, 11, 13 (m = 1001)</option>
+      </select></label>
+      <label class="f" for="mX">x<input class="in" id="mX" type="number" value="52" min="0" inputmode="numeric"></label>
+    </div>
+    <div class="out" id="mOut"></div>
+    <div class="verdict good" id="mVer"></div>
   </div>
 
   <div class="lab">
@@ -1196,6 +1243,7 @@ const QUIZ = {
   lagrange:[
     {q:'Un grupo de orden 15 puede tener un subgrupo de orden…', o:['4','5','6','8'], a:1, x:'Por Lagrange el orden del subgrupo divide a 15: solo 1, 3, 5 o 15.'},
     {q:'¿Cuáles son los generadores de ℤ₈?', o:['2, 4, 6','0 y 4','1, 3, 5, 7','Solo 1'], a:2, x:'Son los x con mcd(x, 8) = 1. Pruébalo en el reloj con n = 8.'},
+    {q:'¿Cuántos grupos abelianos de orden 8 hay (salvo isomorfismo)?', o:['1','2','3','8'], a:2, x:'ℤ₈, ℤ₄ × ℤ₂ y ℤ₂ × ℤ₂ × ℤ₂: uno por cada partición de 3 (3, 2+1, 1+1+1).'},
   ],
   anillos:[
     {q:'¿Cuál de estos es un campo?', o:['ℤ','ℤ₆','ℤ₈','ℤ₇'], a:3, x:'ℤₚ es campo si y solo si p es primo.'},
@@ -1204,6 +1252,7 @@ const QUIZ = {
   s36:[
     {q:'Por el teorema de Fermat, 3⁶ mod 7 =', o:['0','1','3','6'], a:1, x:'7 es primo y no divide a 3: 3⁷⁻¹ ≡ 1 (mod 7).'},
     {q:'Para la aritmética residual, los módulos m₁, …, mₖ deben ser…', o:['Todos pares','Consecutivos','Primos relativos dos a dos','Potencias de 2'], a:2, x:'Así ℤₘ ≅ ℤₘ₁ × … × ℤₘₖ y el teorema chino del residuo garantiza que la representación es única.'},
+    {q:'Con módulos 3, 5, 7, ¿qué número tiene dígitos en base mixta (a₁, a₂, a₃) = (2, 0, 1)?', o:['3','15','17','23'], a:2, x:'x = a₁ + a₂·3 + a₃·3·5 = 2 + 0 + 15 = 17.'},
   ],
   s37:[
     {q:'Un código con distancia mínima 3 puede…', o:['Detectar 3 errores','Corregir 2 errores','Corregir 1 error','No detecta errores'], a:2, x:'Corrige k errores si la distancia es ≥ 2k + 1: con 3 corrige k = 1 (y detecta 2).'},
@@ -1535,5 +1584,56 @@ function play(){cancelAnimationFrame(raf);cur=-2;if(reduce){render(FIN+1);return
 render(FIN+1); // completo en reposo
 if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){play();io.disconnect();}},{threshold:.3});io.observe(svg);}
 document.getElementById('onionReplay').addEventListener('click',play);
+})();
+</script>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const SUB='₀₁₂₃₄₅₆₇₈₉', sub=n=>String(n).split('').map(d=>SUB[+d]).join('');
+const mod=(a,n)=>((a%n)+n)%n;
+function egcd(a,b){ if(b===0) return [a,1,0]; const [g,x,y]=egcd(b,a%b); return [g,y,x-Math.floor(a/b)*y]; }
+const inv=(a,m)=>{ const [g,x]=egcd(mod(a,m),m); return g!==1?null:mod(x,m); };
+
+/* Grupos abelianos de orden n */
+function factor(n){ const f=[]; for(let p=2;p*p<=n;p++){ let k=0; while(n%p===0){n/=p;k++;} if(k) f.push([p,k]); } if(n>1) f.push([n,1]); return f; }
+function parts(k,max=k){ if(k===0) return [[]]; const r=[]; for(let i=Math.min(k,max);i>=1;i--) parts(k-i,i).forEach(q=>r.push([i,...q])); return r; }
+function renderAb(){
+  const n=parseInt($('abN').value,10), out=$('abOut'), v=$('abVer');
+  if(!(n>=2 && n<=500)){ out.textContent='Usa 2 ≤ n ≤ 500.'; v.textContent=''; v.className='verdict'; return; }
+  const f=factor(n);
+  const opts=f.map(([p,k])=>parts(k).map(pt=>pt.map(e=>Math.pow(p,e))));
+  let combos=[[]]; opts.forEach(o=>{ const nx=[]; combos.forEach(c=>o.forEach(x=>nx.push([...c,...x]))); combos=nx; });
+  const z=a=>a.map(q=>'ℤ'+sub(q)).join(' × ');
+  const fact=f.map(([p,k])=>k>1?`${p}^${k}`:`${p}`).join(' · ');
+  const cyc=z(f.map(([p,k])=>Math.pow(p,k)));
+  let t=`n = ${n} = ${fact}\n\nCíclico (Teorema 3-5-10):  ℤ${sub(n)} ≅ ${cyc}\n\nTodos los grupos abelianos de orden ${n} (Teorema 3-5-11):\n`;
+  const shown=combos.slice(0,40);
+  t+=shown.map((c,i)=>`  ${i+1}. ${z(c)}`).join('\n');
+  if(combos.length>40) t+=`\n  … y ${combos.length-40} más`;
+  out.textContent=t;
+  v.className='verdict good';
+  v.textContent = combos.length===1 ? `Solo hay 1 grupo abeliano de orden ${n}: el cíclico ℤ${sub(n)} (ningún primo se repite).` : `Hay ${combos.length} grupos abelianos distintos de orden ${n}. Uno por cada forma de partir los exponentes.`;
+}
+$('abN').addEventListener('input',renderAb); renderAb();
+
+/* Conversión a base mixta */
+function renderMix(){
+  const ms=$('mM').value.split(',').map(Number), m=ms.reduce((a,b)=>a*b,1);
+  const x=mod(parseInt($('mX').value,10)||0,m), r=ms.map(mi=>x%mi);
+  const a=[]; const lines=[`x = ${x}  ↦  residuos (${r.join(', ')})`, ``, `a${sub(1)} = r${sub(1)} = ${r[0]}`];
+  a.push(r[0]);
+  for(let i=1;i<ms.length;i++){
+    let v=r[i], txt=`r${sub(i+1)}=${r[i]}`;
+    for(let j=0;j<i;j++){ const c=inv(ms[j],ms[i]); v=mod((v-a[j])*c,ms[i]); txt=`(${txt} − a${sub(j+1)}=${a[j]})·${ms[j]}⁻¹[=${c}]`; }
+    a.push(v); lines.push(`a${sub(i+1)} = ${txt} mod ${ms[i]} = ${v}`);
+  }
+  let acc=1; const terms=a.map((ai,i)=>{ const w=acc; acc*=ms[i]; return {ai,w}; });
+  const total=terms.reduce((s,q)=>s+q.ai*q.w,0);
+  lines.push('', `x = ${terms.map(q=>`${q.ai}·${q.w}`).join(' + ')} = ${total}`);
+  $('mOut').textContent=lines.join('\n');
+  $('mVer').textContent = `Dígitos en base mixta (a₁, …, a${sub(ms.length)}) = (${a.join(', ')}). Reconstruye ${total} ${total===x?'✓':'✗'}`;
+}
+['mM','mX'].forEach(id=>$(id).addEventListener('input',renderMix)); renderMix();
 })();
 </script>
