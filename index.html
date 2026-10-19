@@ -248,6 +248,30 @@ button.chip.on{outline:3px solid var(--accent);outline-offset:1px}
 #entrada .verdict{border-radius:10px;padding:7px 10px;font-weight:700;font-size:14px;display:flex;flex-direction:column;gap:3px;background:var(--neu-soft)}
 #entrada .verdict .note{font-weight:400;color:var(--ink);font-size:13px}
 #entrada .verdict .note b{font-weight:700}
+
+/* ===== Modo presentación: una diapositiva a la vez, sin desplazamiento de página ===== */
+html.slides, html.slides body{height:100%;overflow:hidden}
+html.slides main.wrap{position:fixed;left:0;right:0;top:var(--hdr,96px);bottom:var(--bar,64px);max-width:none;margin:0;padding:0;overflow:hidden}
+html.slides main.wrap > section{display:none!important}
+html.slides main.wrap > section.cur{display:flex!important;flex-direction:column;justify-content:safe center;gap:22px;height:100%;overflow-y:auto;overscroll-behavior:contain;
+  max-width:760px;margin:0 auto;border-top:0;padding-block:14px 18px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+html.slides main.wrap > section.cur > .off{display:none!important}
+html.slides main.wrap > section.cur.topic{gap:14px}
+html.slides main.wrap > section.cur .block{gap:9px}
+html.slides main.wrap > section.cur .lab{gap:11px;padding:14px}
+html.slides main.wrap > section.cur .props dt,html.slides main.wrap > section.cur .props dd{padding:6px 0}
+html.slides main.wrap > section.cur.compact .head{gap:2px}
+html.slides main.wrap > section.cur.compact .head .lead{display:none}
+html.slides main.wrap > section.cur.compact .head h2{font-size:20px}
+html.slides #entrada.cur{height:100%;min-height:0;padding-block:8px 8px}
+html.slides footer{display:none}
+.deck-bar{display:none}
+html.slides .deck-bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;align-items:center;gap:10px;background:var(--bg-glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--line);
+  padding-top:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.deck-bar .deck-btn{font:inherit;font-size:16px;font-weight:700;min-height:46px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.deck-bar .deck-btn.next{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);margin-left:auto}
+.deck-bar .deck-btn:disabled{opacity:.35;cursor:default}
+.deck-bar .deck-info{min-width:0;flex:1;text-align:center;font-family:var(--f-mono);font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
 </style>
 
@@ -874,6 +898,11 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
 
 </main>
 
+<nav class="deck-bar" id="deckBar" aria-label="Diapositivas">
+  <button class="deck-btn prev" id="deckPrev">← Atrás</button>
+  <span class="deck-info" id="deckInfo"></span>
+  <button class="deck-btn next" id="deckNext">Sigue →</button>
+</nav>
 <footer>
   <div class="wrap">Unidad 3 · Estructuras algebraicas · Matemáticas discretas. Basado en el capítulo 3 de <em>Estructuras de matemáticas discretas para la computación</em> (Kolman y Busby).</div>
 </footer>
@@ -1636,6 +1665,87 @@ function renderMix(){
   $('mVer').textContent = `Dígitos en base mixta (a₁, …, a${sub(ms.length)}) = (${a.join(', ')}). Reconstruye ${total} ${total===x?'✓':'✗'}`;
 }
 ['mM','mX'].forEach(id=>$(id).addEventListener('input',renderMix)); renderMix();
+})();
+</script>
+
+<script>
+(function(){
+const root=document.documentElement; root.classList.add('slides');
+const header=document.querySelector('header.top'), bar=document.getElementById('deckBar');
+const setVars=()=>{ root.style.setProperty('--hdr',header.offsetHeight+'px'); root.style.setProperty('--bar',bar.offsetHeight+'px'); };
+setVars(); addEventListener('resize',setVars); if('ResizeObserver' in window){ new ResizeObserver(setVars).observe(header); new ResizeObserver(setVars).observe(bar); }
+
+// Armar las diapositivas
+const sections=[...document.querySelectorAll('main.wrap > section')];
+const slides=[];
+sections.forEach(sec=>{
+  const kids=[...sec.children];
+  if(sec.classList.contains('topic')){
+    const head=sec.querySelector(':scope > .head');
+    slides.push({sec,show:[head],compact:false});
+    kids.filter(k=>k!==head).forEach(k=>slides.push({sec,show:[head,k],compact:true}));
+  } else if(sec.id==='inicio'){
+    const onion=kids.find(k=>k.querySelector && k.querySelector('#onionWrap'));
+    const rest=kids.filter(k=>k!==onion);
+    slides.push({sec,show:rest,compact:false});
+    if(onion) slides.push({sec,show:[onion],compact:false});
+  } else {
+    slides.push({sec,show:kids,compact:false});
+  }
+});
+
+const prev=document.getElementById('deckPrev'), next=document.getElementById('deckNext'), info=document.getElementById('deckInfo');
+const links=[...document.querySelectorAll('#nav a')], where=document.getElementById('where'), progress=document.getElementById('progress');
+let cur=0;
+function go(i){
+  i=Math.max(0,Math.min(slides.length-1,i)); cur=i; const sl=slides[i];
+  sections.forEach(sec=>{ sec.classList.toggle('cur',sec===sl.sec); });
+  [...sl.sec.children].forEach(k=>k.classList.toggle('off',!sl.show.includes(k)));
+  sl.sec.classList.toggle('compact',sl.compact);
+  sl.sec.scrollTop=0;
+  prev.disabled = i===0; next.disabled = i===slides.length-1;
+  next.textContent = i===slides.length-1 ? 'Fin' : 'Sigue →';
+  const name=sl.sec.dataset.name||''; info.textContent=`${i+1} / ${slides.length} · ${name}`;
+  if(where) where.textContent=name;
+  links.forEach(a=>{ const on=a.getAttribute('href')==='#'+sl.sec.id; a.classList.toggle('on',on); if(on){ try{a.scrollIntoView({block:'nearest',inline:'center'});}catch(e){} } });
+  if(progress) progress.style.width=((i+1)/slides.length*100)+'%';
+  dispatchEvent(new Event('resize'));
+  fit();
+}
+// Ajuste automático: si la diapositiva no cabe, se reduce lo justo para que quepa
+function fit(){
+  const sl=slides[cur], sec=sl.sec; if(sec.id==='entrada') return;
+  const kids=sl.show; kids.forEach(k=>k.style.zoom='');
+  for(let t=0;t<3;t++){
+    const need=sec.scrollHeight, have=sec.clientHeight;
+    if(need<=have+1) break;
+    const z0=parseFloat(kids[0].style.zoom||'1');
+    const z=Math.max(.58, z0*have/need*.985);
+    kids.forEach(k=>k.style.zoom=z);
+    if(z<=.58) break;
+  }
+}
+let fitT; addEventListener('resize',()=>{ clearTimeout(fitT); fitT=setTimeout(fit,120); });
+prev.addEventListener('click',()=>go(cur-1));
+next.addEventListener('click',()=>go(cur+1));
+// Barra de temas: saltar a la primera diapositiva del tema
+document.getElementById('nav').addEventListener('click',e=>{
+  const a=e.target.closest('a'); if(!a) return; e.preventDefault();
+  const id=a.getAttribute('href').slice(1), i=slides.findIndex(s=>s.sec.id===id); if(i>=0) go(i);
+},true);
+// Enlaces internos (#s31, #tablelab…) dentro del contenido
+document.querySelector('main.wrap').addEventListener('click',e=>{
+  const a=e.target.closest('a[href^="#"]'); if(!a) return; e.preventDefault();
+  const t=document.querySelector(a.getAttribute('href')); if(!t) return;
+  const i=slides.findIndex(s=>s.sec===t || s.show.some(k=>k===t || k.contains(t)) && (s.compact || s.sec===t)); if(i>=0) go(i);
+});
+// Teclado (proyector)
+addEventListener('keydown',e=>{
+  if(e.target.closest('input,select,textarea')) return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'){ e.preventDefault(); go(cur+1); }
+  if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); go(cur-1); }
+});
+go(0);
 })();
 </script>
 </body></html>
