@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Estructuras Algebraicas - Guía Completa de Estudio y Exposición</title>
+  <style>
+    @page {
+      size: letter;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+    :root {
+      --primary: #1E3A8A;
+      --primary-light: #EFF6FF;
+      --secondary: #6B21A8;
+      --secondary-light: #FAF5FF;
+      --accent: #0D9488;
+      --dark: #0F172A;
+      --text: #334155;
+      --muted: #64748B;
+      --border: #CBD5E1;
+      --surface: #FFFFFF;
+      --bg: #F8FAFC;
+      --exp1-bg: #E0E7FF;
+      --exp1-ink: #3730A3;
+      --exp2-bg: #FCE7F3;
+      --exp2-ink: #9D174D;
+      --badge-warn-bg: #FEF3C7;
+      --badge-warn-ink: #92400E;
+      --badge-ok-bg: #DCFCE7;
+      --badge-ok-ink: #166534;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background: #FFFFFF;
+      line-height: 1.55;
+      font-size: 10.5pt;
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* Encabezados y portadas */
+    .cover {
+      page-break-after: always;
+      padding-top: 50px;
+      text-align: center;
+    }
+    .cover-tag {
+      font-size: 11pt;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+    .cover h1 {
+      font-size: 26pt;
+      line-height: 1.15;
+      color: var(--dark);
+      margin: 0 0 16px 0;
+      font-weight: 800;
+    }
+    .cover .subtitle {
+      font-size: 13pt;
+      color: var(--muted);
+      max-width: 650px;
+      margin: 0 auto 30px auto;
+      line-height: 1.4;
+    }
+    .cover-meta {
+      display: inline-block;
+      text-align: left;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 30px;
+      margin: 20px auto 40px auto;
+    }
+    .cover-meta table {
+      border-collapse: collapse;
+      font-size: 10.5pt;
+    }
+    .cover-meta td {
+      padding: 6px 14px;
+    }
+    .cover-meta td.label {
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .cover-meta td.val {
+      color: var(--text);
+    }
+
+    /* Tabla de contenidos e introducción */
+    .page-break { page-break-before: always; }
+    .avoid-break { page-break-inside: avoid; }
+
+    h2 {
+      font-size: 16pt;
+      color: var(--dark);
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 6px;
+      margin-top: 24px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    h3 {
+      font-size: 12.5pt;
+      color: var(--primary);
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+    h4 {
+      font-size: 11pt;
+      color: var(--dark);
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
+    p { margin: 0 0 10px 0; }
+    ul, ol { margin: 0 0 12px 0; padding-left: 22px; }
+    li { margin-bottom: 4px; }
+
+    /* Badges de expositor */
+    .badge-exp {
+      display: inline-block;
+      font-size: 8.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .badge-exp1 {
+      background: var(--exp1-bg);
+      color: var(--exp1-ink);
+      border: 1px solid #C7D2FE;
+    }
+    .badge-exp2 {
+      background: var(--exp2-bg);
+      color: var(--exp2-ink);
+      border: 1px solid #FBCFE8;
+    }
+
+    /* Cajas temáticas */
+    .box {
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin: 12px 0;
+      border-left: 4px solid;
+    }
+    .box-def {
+      background: #F0FDF4;
+      border-color: #22C55E;
+    }
+    .box-def strong { color: #15803D; }
+
+    .box-theo {
+      background: #EFF6FF;
+      border-color: #3B82F6;
+    }
+    .box-theo strong { color: #1D4ED8; }
+
+    .box-app {
+      background: #FAF5FF;
+      border-color: #A855F7;
+    }
+    .box-app strong { color: #7E22CE; }
+
+    .box-warn {
+      background: #FFFBEB;
+      border-color: #F59E0B;
+    }
+    .box-warn strong { color: #B45309; }
+
+    .math {
+      font-family: "Cambria Math", "Times New Roman", STIX, serif;
+      font-style: italic;
+    }
+    .code {
+      font-family: "JetBrains Mono", Consolas, "Courier New", monospace;
+      font-size: 9.5pt;
+      background: #F1F5F9;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #0F172A;
+    }
+
+    /* Tablas elegantes */
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 9.5pt;
+    }
+    table.data-table th, table.data-table td {
+      border: 1px solid var(--border);
+      padding: 7px 10px;
+      text-align: left;
+    }
+    table.data-table th {
+      background: #F8FAFC;
+      color: var(--dark);
+      font-weight: 700;
+    }
+    table.data-table tr:nth-child(even) td {
+      background: #FAFAFA;
+    }
+
+    .demo-bar {
+      background: #F1F5F9;
+      border: 1px dashed #94A3B8;
+      border-radius: 6px;
+      padding: 6px 12px;
+      margin-top: 8px;
+      font-size: 9pt;
+      color: #475569;
+    }
+    .demo-bar b { color: #0F172A; }
+
+    .header-tag {
+      font-size: 9.5pt;
+      font-weight: 600;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= PORTADA ================= -->
+  <div class="cover">
+    <div class="cover-tag">Matemáticas Discretas · Unidad 3</div>
+    <h1>Estructuras Algebraicas y sus Aplicaciones en Computación</h1>
+    <div class="subtitle">Documento Integral de Resumen Teórico, Análisis Formal, Aplicaciones y Guía de Exposición Alternada en Parejas</div>
+
+    <div class="cover-meta">
+      <table>
+        <tr>
+          <td class="label">Asignatura:</td>
+          <td class="val">Matemáticas Discretas</td>
+        </tr>
+        <tr>
+          <td class="label">Tema:</td>
+          <td class="val">Unidad 3: Estructuras Algebraicas (Semigrupos, Grupos, Anillos, Campos, Residuos y Códigos)</td>
+        </tr>
+        <tr>
+          <td class="label">Referencia Base:</td>
+          <td class="val"><em>Discrete Mathematical Structures with Applications to Computer Science</em> (J.P. Tremblay & R. Manohar)</td>
+        </tr>
+        <tr>
+          <td class="label">Expositor 1 (Inicia):</td>
+          <td class="val"><span class="badge-exp badge-exp1">TÚ</span></td>
+        </tr>
+        <tr>
+          <td class="label">Expositor 2 (Secundario):</td>
+          <td class="val"><span class="badge-exp badge-exp2">COMPAÑERO</span></td>
+        </tr>
+        <tr>
+          <td class="label">Modalidad:</td>
+          <td class="val">Exposición oral alternada por temas (Turnos 1 al 9) asistida con Simuladores Web</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="font-size: 9.5pt; color: var(--muted); max-width: 500px; margin: 0 auto;">
+      Este documento sintetiza de forma exhaustiva los conceptos matemáticos, propiedades formales, teoremas fundamentales, ejemplos y aplicaciones reales requeridas para dominar el programa académico.
+    </div>
+  </div>
+
+  <!-- ================= TABLA DE DISTRIBUCIÓN ================= -->
+  <div class="page-break">
+    <h2>1. Estrategia y Reparto de la Exposición</h2>
+    <p>Para lograr una exposición fluida y dinámica, la presentación está dividida en <strong>9 bloques consecutivos</strong>, alternando rigurosamente a los expositores en cada cambio de tema. Cada expositor es responsable de explicar el fundamento teórico, operar la herramienta interactiva en pantalla y cerrar con la aplicación práctica.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width: 8%;">Turno</th>
+          <th style="width: 18%;">Expositor</th>
+          <th style="width: 32%;">Tema / Título</th>
+          <th style="width: 42%;">Acción Interactiva y Aplicación Real</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong></td>
+          <td><span class="badge-exp badge-exp1">Tú</span></td>
+          <td><strong>Apertura, Propiedades y el Mapa «Muñecas Rusas»</strong></td>
+          <td>Manipulación de sliders en Canvas 2D y proyección de la animación de óvalos anidados.</td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td><span class="badge-exp badge-exp2">Compañero</span></td>
+          <td><strong>3-1: Sistemas Algebraicos y Homomorfismos</strong></td>
+          <td>Edición en vivo de tablas de Cayley y demostración del cuadrado conmutativo. <em>App: desbordamiento a 32 bits</em>.</td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td><span class="badge-exp badge-exp1">Tú</span></td>
+          <td><strong>3-2: Semigrupos, Monoides y Cadenas</strong></td>
+          <td>Laboratorio del monoide libre de concatenación de cadenas. <em>App: computación en paralelo MapReduce</em>.</td>
+        </tr>
+        <tr>
+          <td><strong>4</strong></td>
+          <td><span class="badge-exp badge-exp2">Compañero</span></td>
+          <td><strong>3-3: Gramáticas Formales, BNF y Lenguajes</strong></td>
+          <td>Derivación interactiva paso a paso y validación sintáctica BNF. <em>App: parsers de compiladores y regex</em>.</td>
+        </tr>
+        <tr>
+          <td><strong>5</strong></td>
+          <td><span class="badge-exp badge-exp1">Tú</span></td>
+          <td><strong>3-5: Grupos y Simetrías de S₃</strong></td>
+          <td>Composición gráfica de rotaciones y reflexiones del triángulo. <em>App: transformaciones 3D y Cubo de Rubik</em>.</td>
+        </tr>
+        <tr>
+          <td><strong>6</strong></td>
+          <td><span class="badge-exp badge-exp2">Compañero</span></td>
+          <td><strong>3-5: Subgrupos, Cosets y Teorema de Lagrange</strong></td>
+          <td>Reloj cíclico circular de clases laterales y partición de exponentes. <em>App: criptografía de curvas elípticas</em>.</td>
+        </tr>
+        <tr>
+          <td><strong>7</strong></td>
+          <td><span class="badge-exp badge-exp1">Tú</span></td>
+          <td><strong>3-5: Anillos, Dominios Enteros y Campos</strong></td>
+          <td>Detección visual de divisores de cero en ℤ₆ vs inversos en ℤ₇. <em>App: cifrado AES en GF(2⁸)</em>.</td>
+        </tr>
+        <tr>
+          <td><strong>8</strong></td>
+          <td><span class="badge-exp badge-exp2">Compañero</span></td>
+          <td><strong>3-6: Aritmética de Residuos, TCR y Base Mixta</strong></td>
+          <td>Calculadora residual sin propagación de acarreo y reconstrucción con TCR. <em>App: criptografía RSA y DSP</em>.</td>
+        </tr>
+        <tr>
+          <td><strong>9</strong></td>
+          <td><span class="badge-exp badge-exp1">Tú</span></td>
+          <td><strong>3-7: Códigos de Grupo y Corrección de Errores</strong></td>
+          <td>Simulación de ruido en canal con inversión de bits y decodificación. <em>App: memoria RAM ECC y códigos QR</em>.</td>
+        </tr>
+        <tr>
+          <td><strong>Cierre</strong></td>
+          <td><strong>Ambos</strong></td>
+          <td><strong>Conclusión y Sesión de Preguntas</strong></td>
+          <td>Resolución en vivo del banco de preguntas del profesor mediante los simuladores.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Dinámica de Participación: 1 Mini-Juego por Tema (2 a 3 minutos)</h3>
+    <p>Para garantizar una sesión interactiva y dinámica a lo largo de toda la hora, cada tema incorpora un reto gamificado en la aplicación web donde la clase vota, compite y comprueba en vivo los teoremas matemáticos:</p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width: 12%;">Tema</th>
+          <th style="width: 25%;">Mini-Juego</th>
+          <th style="width: 38%;">Mecánica con el Grupo</th>
+          <th style="width: 25%;">Concepto Matemático</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Tema 0</strong></td>
+          <td><strong>¿En qué Óvalo Cae?</strong></td>
+          <td>La clase vota en qué óvalo se detiene un sistema misterioso antes de rebotar.</td>
+          <td>Jerarquía de inclusión axiomática.</td>
+        </tr>
+        <tr>
+          <td><strong>Tema 3-1</strong></td>
+          <td><strong>El Sudoku de Cayley</strong></td>
+          <td>Deducir la casilla '?' aplicando que ningún elemento se repite en fila/columna.</td>
+          <td>Cuadrado Latino y cancelación.</td>
+        </tr>
+        <tr>
+          <td><strong>Tema 3-2</strong></td>
+          <td><strong>¿Conmutan o Chocan?</strong></td>
+          <td>Determinar si dos cadenas arbitrarias conmutan ($xy = yx$) o no en $A^*$.</td>
+          <td>No conmutatividad del monoide libre.</td>
+        </tr>
+        <tr>
+          <td><strong>Tema 3-3</strong></td>
+          <td><strong>¿Compila o Explota?</strong></td>
+          <td>Detectar cuál de 3 identificadores genera un Syntax Error en BNF.</td>
+          <td>Validación sintáctica en compiladores.</td>
+        </tr>
+        <tr>
+          <td><strong>Tema 3-5 A</strong></td>
+          <td><strong>Triángulo Loco de $S_3$</strong></td>
+          <td>Predecir la posición final del vértice 1 tras componer rotación y reflexión.</td>
+          <td>Composición en grupos no abelianos.</td>
+        </tr>
+        <tr>
+          <td><strong>Tema 3-5 B</strong></td>
+          <td><strong>El Impostor de Lagrange</strong></td>
+          <td>Descubrir el subgrupo imposible que no divide al orden total $|G|$.</td>
+          <td>Teorema de Lagrange ($|H|$ divide a $|G|$).</td>
+        </tr>
+        <tr>
+          <td><strong>Tema 3-5 C</strong></td>
+          <td><strong>Caza de Divisores de Cero</strong></td>
+          <td>Hallar $ab \equiv 0$ en $\mathbb{Z}_n$ o detectar si es un Campo (primo).</td>
+          <td>Anillos vs Dominios y Campos.</td>
+        </tr>
+        <tr>
+          <td><strong>Tema 3-6</strong></td>
+          <td><strong>El Oráculo Chino</strong></td>
+          <td>Adivinar el número secreto del profesor ingresando sus residuos mod 3, 5 y 7.</td>
+          <td>Teorema Chino del Resto (TCR).</td>
+        </tr>
+        <tr>
+          <td><strong>Tema 3-7</strong></td>
+          <td><strong>Atrapa al Hacker de Bits</strong></td>
+          <td>Un compañero altera un bit en el canal y la app lo atrapa por paridad.</td>
+          <td>Detección y autocorrección de errores.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ================= TEMA 0 ================= -->
+  <div class="page-break">
+    <h2>
+      <span>Tema 0: Fundamentos y Mapa Conceptual («Muñecas Rusas»)</span>
+      <span class="badge-exp badge-exp1">Turno 1: Tú</span>
+    </h2>
+
+    <h3>1. ¿Qué es una Estructura Algebraica?</h3>
+    <p>Tradicionalmente se piensa en las matemáticas como el estudio de los números (1, 2, 3...). Sin embargo, en computación moderna lo fundamental no son los objetos aislados, sino las <strong>operaciones</strong> y las <strong>reglas de interacción</strong> que cumplen. Una estructura algebraica es la formalización de este principio: consiste en un conjunto no vacío acompañado de una o más operaciones binarias cerradas y un conjunto de axiomas bien definidos.</p>
+
+    <div class="box box-def">
+      <strong>Propiedades Fundamentales de una Operación Binaria (*):</strong>
+      <ul>
+        <li><strong>Cerradura:</strong> Para todo <span class="math">a, b ∈ S</span>, se cumple que <span class="math">a * b ∈ S</span>.</li>
+        <li><strong>Asociatividad:</strong> <span class="math">(a * b) * c = a * (b * c)</span> para todo <span class="math">a, b, c ∈ S</span>. Permite prescindir del uso de paréntesis.</li>
+        <li><strong>Conmutatividad:</strong> <span class="math">a * b = b * a</span> para todo <span class="math">a, b ∈ S</span>. El orden de los operandos no altera el resultado.</li>
+        <li><strong>Existencia de Elemento Neutro (Identidad):</strong> Existe un elemento <span class="math">e ∈ S</span> tal que <span class="math">a * e = e * a = a</span> para todo <span class="math">a ∈ S</span>.</li>
+        <li><strong>Existencia de Inversos:</strong> Para cada <span class="math">a ∈ S</span>, existe un elemento <span class="math">a⁻¹ ∈ S</span> tal que <span class="math">a * a⁻¹ = a⁻¹ * a = e</span>.</li>
+        <li><strong>Distributividad:</strong> Cuando intervienen dos operaciones (<span class="math">*</span> y <span class="math">·</span>): <span class="math">a · (b * c) = (a · b) * (a · c)</span>.</li>
+        <li><strong>Propiedad de Cancelación:</strong> Si <span class="math">a * b = a * c</span> y <span class="math">a ≠ 0</span>, entonces <span class="math">b = c</span>.</li>
+      </ul>
+    </div>
+
+    <h3>2. La Jerarquía de Inclusión («Las Muñecas Rusas»)</h3>
+    <p>A medida que añadimos axiomas adicionales, la estructura se vuelve más rica en propiedades, pero al mismo tiempo menos conjuntos en el universo logran satisfacerla. Esta jerarquía se visualiza como óvalos concéntricos:</p>
+    
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Estructura</th>
+          <th>Regla que se agrega</th>
+          <th>Ejemplo clásico</th>
+          <th>Contraejemplo que queda fuera</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Sistema Algebraico</strong></td>
+          <td>Conjunto no vacío + operación cerrada.</td>
+          <td><span class="math">(ℤ, -)</span></td>
+          <td><span class="math">(ℤ⁺, -)</span> (porque 2 - 5 = -3 ∉ ℤ⁺).</td>
+        </tr>
+        <tr>
+          <td><strong>Semigrupo</strong></td>
+          <td>+ La operación es <strong>asociativa</strong>.</td>
+          <td><span class="math">(ℤ⁺, +)</span></td>
+          <td><span class="math">(ℤ, -)</span> ya que (5-3)-1 = 1 ≠ 5-(3-1) = 3.</td>
+        </tr>
+        <tr>
+          <td><strong>Monoide</strong></td>
+          <td>+ Existe <strong>elemento neutro</strong> (<span class="math">e</span>).</td>
+          <td><span class="math">(ℕ, +)</span> con <span class="math">e = 0</span></td>
+          <td><span class="math">(ℤ⁺, +)</span> carece de neutro (0 ∉ ℤ⁺).</td>
+        </tr>
+        <tr>
+          <td><strong>Grupo</strong></td>
+          <td>+ Cada elemento tiene <strong>inverso</strong>.</td>
+          <td><span class="math">S₃</span> (simetrías)</td>
+          <td><span class="math">(ℕ, +)</span> (los negativos no están en ℕ).</td>
+        </tr>
+        <tr>
+          <td><strong>Grupo Abeliano</strong></td>
+          <td>+ La operación es <strong>conmutativa</strong>.</td>
+          <td><span class="math">(ℤ, +)</span></td>
+          <td><span class="math">S₃</span> no es conmutativo (<span class="math">ρ₁μ₁ ≠ μ₁ρ₁</span>).</td>
+        </tr>
+        <tr>
+          <td><strong>Anillo</strong></td>
+          <td>+ <strong>2ª operación (·)</strong> asociativa y distributiva.</td>
+          <td><span class="math">ℤ₆</span></td>
+          <td><span class="math">(ℤ, +)</span> (posee una sola operación).</td>
+        </tr>
+        <tr>
+          <td><strong>Dominio Entero</strong></td>
+          <td>+ Anillo conmutativo con 1 <strong>sin divisores de cero</strong>.</td>
+          <td><span class="math">ℤ</span></td>
+          <td><span class="math">ℤ₆</span> tiene divisores de cero (<span class="math">2 · 3 ≡ 0</span>).</td>
+        </tr>
+        <tr>
+          <td><strong>Campo (Cuerpo)</strong></td>
+          <td>+ <strong>Inverso multiplicativo</strong> para todo <span class="math">a ≠ 0</span>.</td>
+          <td><span class="math">ℚ, ℝ, ℂ, ℤ₇</span></td>
+          <td><span class="math">ℤ</span> (½ no pertenece a los enteros).</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="demo-bar">
+      <b>Interacción en la Exposición:</b> Proyecta la sección <code>#inicio</code> y presiona el botón <em>▶ Repetir animación</em> para mostrar la contracción de los óvalos conforme aumenta la exigencia axiomática.
+    </div>
+  </div>
+
+  <!-- ================= TEMA 3-1 ================= -->
+  <div class="page-break">
+    <h2>
+      <span>Tema 3-1: Sistemas Algebraicos, Cayley y Homomorfismos</span>
+      <span class="badge-exp badge-exp2">Turno 2: Compañero</span>
+    </h2>
+
+    <h3>1. Conceptos y Tablas de Cayley</h3>
+    <p>Para conjuntos finitos de cardinalidad pequeña, una operación binaria se describe de forma exhaustiva mediante una <strong>tabla de Cayley</strong> (matriz de doble entrada donde los encabezados son los elementos del conjunto y las casillas representan el resultado <span class="math">a * b</span>).</p>
+
+    <div class="box box-theo">
+      <strong>Diagnóstico Visual de Propiedades en una Tabla de Cayley:</strong>
+      <ul>
+        <li><strong>Conmutatividad:</strong> La tabla es perfectamente <em>simétrica</em> respecto a la diagonal principal.</li>
+        <li><strong>Elemento Neutro:</strong> El renglón y la columna correspondientes al elemento neutro <span class="math">e</span> son réplicas exactas de los encabezados.</li>
+        <li><strong>Existencia de Inversos:</strong> En cada renglón y en cada columna debe aparecer el elemento neutro <span class="math">e</span>.</li>
+        <li><strong>Estructura de Grupo Finito (Cuadrado Latino):</strong> Cada elemento del conjunto aparece <em>exactamente una vez</em> en cada fila y en cada columna.</li>
+      </ul>
+    </div>
+
+    <h3>2. Homomorfismos e Isomorfismos: Preservación de Estructura</h3>
+    <p>Sean <span class="math">(S, *)</span> y <span class="math">(T, \star)</span> dos sistemas algebraicos. Una función <span class="math">f: S → T</span> se denomina <strong>homomorfismo</strong> si satisface la condición del <em>cuadrado conmutativo</em>:</p>
+    <div style="text-align:center; font-size: 13pt; margin: 10px 0;" class="math">
+      f(a * b) = f(a) \star f(b) \quad \forall a, b ∈ S
+    </div>
+    <p>Esta fórmula expresa que el resultado es idéntico si primero operamos en el dominio y luego transformamos, o si transformamos los elementos individualmente y luego operamos en el codominio.</p>
+    <ul>
+      <li><strong>Isomorfismo:</strong> Es un homomorfismo que además es una biyección (inyectivo y sobreyectivo). Si existe un isomorfismo entre dos sistemas, se escribe <span class="math">S ≅ T</span>. Teóricamente son el mismo sistema matemático, difiriendo únicamente en los nombres o símbolos de sus elementos.</li>
+    </ul>
+
+    <div class="box box-app">
+      <strong>Aplicación en Ciencias de la Computación:</strong>
+      <ul>
+        <li><strong>Aritmética en Procesadores (Desbordamiento):</strong> En hardware, un entero sin signo de 32 bits no forma los enteros infinitos <span class="math">ℤ</span>, sino el anillo finito <span class="math">ℤ_{2^{32}}</span>. Cuando se sobrepasa el valor <span class="math">2^{32}-1</span>, la operación binaria produce un desbordamiento (*overflow*) volviendo a 0 debido al módulo.</li>
+        <li><strong>Tipos de Datos Abstractos (TDA):</strong> Al implementar un TDA (ej. una pila o un árbol binario), las firmas de los métodos y sus invariantes definen rigurosamente un sistema algebraico.</li>
+      </ul>
+    </div>
+
+    <div class="demo-bar">
+      <b>Interacción en la Exposición:</b> Abre el archivo <code>homomorfismo-pasos.html</code> para proyectar el diagrama del cuadrado conmutativo. Realiza un cálculo paso a paso demostrando la equivalencia de los dos caminos computacionales.
+    </div>
+  </div>
+
+  <!-- ================= TEMA 3-2 ================= -->
+  <div class="page-break">
+    <h2>
+      <span>Tema 3-2: Semigrupos, Monoides y Cadenas</span>
+      <span class="badge-exp badge-exp1">Turno 3: Tú</span>
+    </h2>
+
+    <h3>1. Definiciones Formales y Propiedades</h3>
+    <p>Un <strong>semigrupo</strong> es un sistema algebraico <span class="math">(S, *)</span> donde la operación binaria es asociativa. Si además posee un elemento neutro <span class="math">e ∈ S</span> tal que <span class="math">e * a = a * e = a</span>, la estructura se denomina <strong>monoide</strong>.</p>
+
+    <div class="box box-def">
+      <strong>El Monoide Libre de Cadenas <span class="math">(A*, ·)</span>:</strong>
+      <p>Dado un conjunto finito de símbolos llamado <strong>alfabeto</strong> <span class="math">A</span>, se denota por <span class="math">A*</span> al conjunto de todas las secuencias finitas de símbolos (cadenas). Al definir la operación binaria como la <strong>concatenación</strong> (<span class="math">·</span>), se tiene que:</p>
+      <ul>
+        <li>Es asociativa: <span class="math">(xy)z = x(yz)</span>.</li>
+        <li>Posee elemento neutro: La cadena vacía <span class="math">Λ</span> (o <span class="math">ε</span>), pues <span class="math">x · Λ = Λ · x = x</span>.</li>
+        <li><strong>No es conmutativa:</strong> Por ejemplo, con <span class="math">x = "ab"</span> y <span class="math">y = "cd"</span>, <span class="math">xy = "abcd" ≠ "cdab" = yx</span>.</li>
+      </ul>
+      <p>Por lo tanto, <span class="math">(A*, ·, Λ)</span> es un monoide libre no conmutativo.</p>
+    </div>
+
+    <h3>2. Homomorfismo de Longitud</h3>
+    <p>Consideremos la función longitud <span class="math">ℓ: A* → ℕ</span>, donde <span class="math">ℓ(w)</span> cuenta el número de caracteres de la cadena <span class="math">w</span>. Se demuestra que <span class="math">ℓ</span> es un homomorfismo entre el monoide de cadenas <span class="math">(A*, ·)</span> y el monoide de enteros no negativos <span class="math">(ℕ, +)</span>, ya que:</p>
+    <div style="text-align:center; font-size: 11pt; margin: 8px 0;" class="math">
+      ℓ(w₁ · w₂) = ℓ(w₁) + ℓ(w₂) \quad \text{y} \quad ℓ(Λ) = 0
+    </div>
+
+    <div class="box box-app">
+      <strong>Aplicación en Cómputo Distribuido (Paradigma MapReduce / Fold):</strong>
+      <p>Al procesar terabytes de datos distribuidos en clusters de servidores (ej. Hadoop, Apache Spark), se requiere sumar o agregar resultados de forma masiva. Esto es posible garantizando que la operación sea un <strong>monoide</strong>:</p>
+      <ul>
+        <li>La <strong>asociatividad</strong> permite particionar los datos arbitrariamente entre nodos independientes: <span class="math">(N₁ + N₂) + (N₃ + N₄) = ((N₁ + N₂) + N₃) + N₄</span> sin riesgo de alterar el resultado final.</li>
+        <li>El <strong>elemento neutro</strong> define el valor de inicialización seguro de los acumuladores en cada procesador.</li>
+      </ul>
+    </div>
+
+    <div class="demo-bar">
+      <b>Interacción en la Exposición:</b> En la sección <code>#s32</code> de la aplicación web, introduce cadenas en los campos interactivos <span class="code">x</span> y <span class="code">y</span> para comprobar la asociatividad y la evaluación de longitud.
+    </div>
+  </div>
+
+  <!-- ================= TEMA 3-3 ================= -->
+  <div class="page-break">
+    <h2>
+      <span>Tema 3-3: Gramáticas Formales, BNF y Compiladores</span>
+      <span class="badge-exp badge-exp2">Turno 4: Compañero</span>
+    </h2>
+
+    <h3>1. Gramáticas de Estructura de Frase</h3>
+    <p>Un <strong>lenguaje formal</strong> es simplemente un subconjunto del monoide libre: <span class="math">L ⊆ A*</span>. Dado que un lenguaje puede contener un número infinito de oraciones válidas, se utiliza una <strong>gramática formal</strong> para generarlo mediante un número finito de reglas de producción.</p>
+
+    <div class="box box-def">
+      <strong>Definición Formal de Gramática:</strong>
+      <p>Una gramática es una cuádrupla <span class="math">G = (V, S, v₀, ↦)</span> donde:</p>
+      <ul>
+        <li><span class="math">V</span>: Vocabulario total de símbolos.</li>
+        <li><span class="math">S ⊆ V</span>: Conjunto de símbolos <strong>terminales</strong> (caracteres que forman las cadenas del lenguaje). El conjunto <span class="math">N = V - S</span> corresponde a los <strong>no terminales</strong> (variables sintácticas intermedias).</li>
+        <li><span class="math">v₀ ∈ N</span>: Símbolo inicial distintivo (axioma).</li>
+        <li><span class="math">↦</span>: Conjunto finito de <strong>producciones</strong> de la forma <span class="math">α ↦ β</span>, que dictan cómo reemplazar cadenas.</li>
+      </ul>
+    </div>
+
+    <h3>2. La Jerarquía de Chomsky y la Notación BNF</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Nombre del Lenguaje</th>
+          <th>Forma de las Producciones</th>
+          <th>Máquina Autómata que lo Reconoce</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Tipo 0</strong></td>
+          <td>Sin restricciones</td>
+          <td>Cualquier producción <span class="math">α ↦ β</span> con <span class="math">α ≠ Λ</span>.</td>
+          <td>Máquina de Turing</td>
+        </tr>
+        <tr>
+          <td><strong>Tipo 1</strong></td>
+          <td>Sensible al contexto</td>
+          <td><span class="math">αAβ ↦ αγβ</span> (la longitud nunca disminuye).</td>
+          <td>Autómata linealmente acotado</td>
+        </tr>
+        <tr>
+          <td><strong>Tipo 2</strong></td>
+          <td>Libre de contexto</td>
+          <td><span class="math">A ↦ γ</span> (lado izquierdo es un único no terminal).</td>
+          <td>Autómata de pila (Pushdown Automaton)</td>
+        </tr>
+        <tr>
+          <td><strong>Tipo 3</strong></td>
+          <td>Regular</td>
+          <td><span class="math">A ↦ a</span> o <span class="math">A ↦ aB</span> (lineales a la derecha).</td>
+          <td>Autómata finito (DFA / NFA)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="box box-app">
+      <strong>Notación BNF (Backus-Naur Form) y Compiladores:</strong>
+      <p>La notación BNF es el estándar formal de la industria para definir la sintaxis de lenguajes de programación (C, Python, Rust, SQL):</p>
+      <div style="font-family:monospace; font-size:9pt; background:#F8FAFC; padding:6px; border:1px solid #CBD5E1;">
+        &lt;identificador&gt; ::= &lt;letra&gt; | &lt;identificador&gt;&lt;letra&gt; | &lt;identificador&gt;&lt;dígito&gt;
+      </div>
+      <p>El <strong>analizador sintáctico (*parser*)</strong> de un compilador construye el árbol de sintaxis abstracta (*AST*) derivando el código fuente contra las reglas de la gramática. Si la derivación falla, se produce un <em>error de compilación</em>.</p>
+    </div>
+
+    <div class="demo-bar">
+      <b>Interacción en la Exposición:</b> En la sección <code>#s33</code>, realiza una derivación en vivo pulsando los botones de producción para obtener la cadena <span class="code">aabb</span> y prueba la caja de validación BNF con nombres de variables.
+    </div>
+  </div>
+
+  <!-- ================= TEMA 3-5 GRUPOS ================= -->
+  <div class="page-break">
+    <h2>
+      <span>Tema 3-5: Grupos y Simetrías de S₃</span>
+      <span class="badge-exp badge-exp1">Turno 5: Tú</span>
+    </h2>
+
+    <h3>1. Definición Formal de Grupo</h3>
+    <p>Un <strong>grupo</strong> es la estructura fundamental de la simetría matemática. Consiste en un monoide donde <em>todo elemento es reversible</em> mediante un inverso único.</p>
+
+    <div class="box box-theo">
+      <strong>Axiomas de Grupo <span class="math">(G, *)</span>:</strong>
+      <ol>
+        <li><strong>Asociatividad:</strong> <span class="math">(a * b) * c = a * (b * c)</span> para todo <span class="math">a, b, c ∈ G</span>.</li>
+        <li><strong>Elemento Neutro:</strong> Existe <span class="math">e ∈ G</span> tal que <span class="math">a * e = e * a = a</span>.</li>
+        <li><strong>Elemento Inverso:</strong> Para todo <span class="math">a ∈ G</span>, existe un único <span class="math">a⁻¹ ∈ G</span> tal que <span class="math">a * a⁻¹ = a⁻¹ * a = e</span>.</li>
+      </ol>
+      <p><strong>Propiedades Clave:</strong></p>
+      <ul>
+        <li>El inverso de un producto se invierte: <span class="math">(a * b)⁻¹ = b⁻¹ * a⁻¹</span>.</li>
+        <li>Cancelación estricta: <span class="math">a * b = a * c \implies b = c</span>.</li>
+        <li>La ecuación <span class="math">a * x = b</span> posee una solución única en el grupo: <span class="math">x = a⁻¹ * b</span>.</li>
+      </ul>
+    </div>
+
+    <h3>2. Grupos de Permutaciones y el Grupo Simétrico <span class="math">S₃</span></h3>
+    <p>Una <strong>permutación</strong> sobre un conjunto finito <span class="math">A</span> es una función biyectiva <span class="math">p: A → A</span>. El conjunto de todas las permutaciones bajo la operación de composición de funciones forma el <strong>grupo simétrico <span class="math">S_n</span></strong>, cuyo orden es <span class="math">|S_n| = n!</span>.</p>
+    <p>El grupo <span class="math">S₃</span> posee <span class="math">3! = 6</span> elementos y describe todas las simetrías geométricas de un triángulo equilátero:</p>
+    <ul>
+      <li><strong>3 Rotaciones:</strong> <span class="math">ρ₀</span> (0° o identidad), <span class="math">ρ₁</span> (120° en sentido antihorario), <span class="math">ρ₂</span> (240°).</li>
+      <li><strong>3 Reflexiones:</strong> <span class="math">μ₁, μ₂, μ₃</span> respecto a los ejes que pasan por cada uno de los vértices.</li>
+      <li><span class="math">S₃</span> es el <strong>grupo no abeliano más pequeño que existe</strong>: <span class="math">ρ₁ \circ μ₁ \neq μ₁ \circ ρ₁</span>.</li>
+    </ul>
+
+    <div class="box box-app">
+      <strong>Aplicaciones en Computación:</strong>
+      <ul>
+        <li><strong>Gráficos por Computadora y Motores de Videojuegos:</strong> Todas las rotaciones, reflexiones y transformaciones espaciales en 3D se representan algebraicamente mediante grupos ortogonales y cuaterniones.</li>
+        <li><strong>Algoritmos para el Cubo de Rubik:</strong> Las maniobras para resolver el cubo forman un grupo de permutaciones gigantesco de orden <span class="math">4.32 \times 10^{19}</span>. Cada algoritmo no es más que una secuencia de elementos inversos que restauran el estado identidad.</li>
+      </ul>
+    </div>
+
+    <div class="demo-bar">
+      <b>Interacción en la Exposición:</b> Proyecta la sección <code>#s35</code>, selecciona una rotación y luego una reflexión en el simulador de triángulos equiláteros para mostrar visualmente cómo cambian de posición los vértices 1, 2 y 3.
+    </div>
+  </div>
+
+  <!-- ================= TEMA 3-5 LAGRANGE ================= -->
+  <div class="page-break">
+    <h2>
+      <span>Tema 3-5: Subgrupos, Clases Laterales y Lagrange</span>
+      <span class="badge-exp badge-exp2">Turno 6: Compañero</span>
+    </h2>
+
+    <h3>1. Subgrupos y Clases Laterales (*Cosets*)</h3>
+    <p>Un subconjunto no vacío <span class="math">H ⊆ G</span> es un <strong>subgrupo</strong> si por sí mismo constituye un grupo bajo la misma operación heredada de <span class="math">G</span>. Criterio compacto: <span class="math">a, b ∈ H \implies a * b⁻¹ ∈ H</span>.</p>
+    
+    <div class="box box-def">
+      <strong>Clases Laterales (Partición del Grupo):</strong>
+      <p>Fijado un subgrupo <span class="math">H</span> y un elemento <span class="math">a ∈ G</span>, la clase lateral izquierda es:</p>
+      <div style="text-align:center; font-size:11pt; margin:6px 0;" class="math">
+        aH = \{ a * h : h ∈ H \}
+      </div>
+      <p><strong>Propiedad geométrica esencial:</strong> Las clases laterales forman una <strong>partición exacta</strong> de <span class="math">G</span>. Dos clases laterales o son idénticas o son completamente disjuntas, y todas poseen exactamente el mismo número de elementos: <span class="math">|aH| = |H|</span>.</p>
+    </div>
+
+    <h3>2. El Teorema de Lagrange</h3>
+    <div class="box box-theo">
+      <strong>Enunciado del Teorema de Lagrange:</strong>
+      <p>Si <span class="math">G</span> es un grupo finito y <span class="math">H</span> es un subgrupo de <span class="math">G</span>, entonces el orden de <span class="math">H</span> divide exactamente al orden de <span class="math">G</span>:</p>
+      <div style="text-align:center; font-size:12pt; margin:8px 0;" class="math">
+        |G| = |H| \cdot [G : H]
+      </div>
+      <p>donde <span class="math">[G : H]</span> es el <strong>índice de <span class="math">H</span> en <span class="math">G</span></strong> (número total de clases laterales distintas).</p>
+      <p><strong>Corolarios Cruciales:</strong></p>
+      <ul>
+        <li>El orden de cualquier elemento <span class="math">a</span> (el menor entero <span class="math">k</span> con <span class="math">a^k = e</span>) divide a <span class="math">|G|</span>.</li>
+        <li>Para todo <span class="math">a ∈ G</span>, se cumple indefectiblemente que <span class="math">a^{|G|} = e</span>.</li>
+        <li><strong>Todo grupo de orden primo <span class="math">p</span> es necesariamente cíclico y abeliano</strong>, y carece de subgrupos propios no triviales.</li>
+      </ul>
+    </div>
+
+    <h3>3. Descomposición Fundamental de Grupos Abelianos Finitos</h3>
+    <p>El <strong>Teorema 3-5-11</strong> establece que todo grupo abeliano finito es isomorfo a un producto directo de grupos cíclicos cuyos órdenes son potencias de números primos. Por ejemplo, para el orden 8 (<span class="math">2^3</span>), existen únicamente 3 grupos abelianos no isomorfos posibles, correspondientes a las particiones enteras de 3:</p>
+    <div style="text-align:center; font-size:10pt; margin:6px 0;" class="math">
+      ℤ₈ \quad (\text{partición } 3), \quad ℤ₄ \times ℤ₂ \quad (\text{partición } 2+1), \quad ℤ₂ \times ℤ₂ \times ℤ₂ \quad (\text{partición } 1+1+1)
+    </div>
+
+    <div class="box box-app">
+      <strong>Aplicación en Criptografía de Curva Elíptica y Diffie-Hellman:</strong>
+      <p>Los protocolos de intercambio de claves eligen grupos cíclicos de orden primo gigantesco <span class="math">p</span>. Al no tener divisores por Lagrange, no existen subgrupos intermedios en los cuales un atacante pueda resolver el problema del logaritmo discreto de forma simplificada.</p>
+    </div>
+
+    <div class="demo-bar">
+      <b>Interacción en la Exposición:</b> En la sección <code>#lagrange</code>, interactúa con el <strong>Reloj de Lagrange</strong> seleccionando <span class="code">n = 12</span> y pulsa el elemento 4 para mostrar en círculo cómo se genera el subgrupo {0, 4, 8} y sus clases laterales sin traslape.
+    </div>
+  </div>
+
+  <!-- ================= TEMA 3-5 ANILLOS ================= -->
+  <div class="page-break">
+    <h2>
+      <span>Tema 3-5: Anillos, Dominios Enteros y Campos</span>
+      <span class="badge-exp badge-exp1">Turno 7: Tú</span>
+    </h2>
+
+    <h3>1. Anillos: Sistemas con Dos Operaciones Conectadas</h3>
+    <p>Hasta este punto hemos estudiado sistemas con una sola operación. Un <strong>anillo</strong> es una estructura con dos operaciones binarias, usualmente llamadas suma (<span class="math">+</span>) y multiplicación (<span class="math">·</span>), interconectadas por la ley distributiva.</p>
+
+    <div class="box box-def">
+      <strong>Definición Formal de Anillo <span class="math">(R, +, ·)</span>:</strong>
+      <ol>
+        <li><span class="math">(R, +)</span> es un <strong>grupo abeliano</strong> (cerrado, asociativo, con neutro aditivo <span class="math">0</span> e inversos <span class="math">-a</span>).</li>
+        <li><span class="math">(R, ·)</span> es un <strong>semigrupo</strong> (cerrado y asociativo).</li>
+        <li>El producto es <strong>distributivo</strong> respecto a la suma: <span class="math">a(b + c) = ab + ac</span> y <span class="math">(a + b)c = ac + bc</span>.</li>
+      </ol>
+    </div>
+
+    <h3>2. La Patología de los Divisores de Cero y la Clasificación</h3>
+    <p>En el álgebra elemental estamos acostumbrados a que si <span class="math">a · b = 0</span>, entonces necesariamente <span class="math">a = 0</span> o <span class="math">b = 0</span>. Sin embargo, en anillos generales esto no siempre ocurre.</p>
+
+    <div class="box box-warn">
+      <strong>Divisores de Cero:</strong>
+      <p>Dos elementos no nulos <span class="math">a \neq 0</span> y <span class="math">b \neq 0</span> son divisores de cero si <span class="math">a · b = 0</span>.</p>
+      <p><strong>Ejemplo en <span class="math">ℤ₆</span>:</strong> <span class="math">2 \neq 0</span> y <span class="math">3 \neq 0</span>, pero <span class="math">2 · 3 = 6 \equiv 0 \pmod 6</span>. Por ende, 2 y 3 son divisores de cero y anulan la propiedad de cancelación.</p>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Estructura</th>
+          <th>Axiomas que cumple</th>
+          <th>Ejemplo Típico</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Anillo Conmutativo con Unidad</strong></td>
+          <td>Anillo donde el producto es conmutativo y existe identidad multiplicativa <span class="math">1</span>.</td>
+          <td><span class="math">ℤ₆, ℤ₁₂</span></td>
+        </tr>
+        <tr>
+          <td><strong>Dominio Entero</strong></td>
+          <td>Anillo conmutativo con 1 <strong>sin divisores de cero</strong>. Permite la cancelación de factores no nulos.</td>
+          <td><span class="math">ℤ</span></td>
+        </tr>
+        <tr>
+          <td><strong>Campo (Cuerpo)</strong></td>
+          <td>Dominio entero donde <strong>todo elemento <span class="math">a \neq 0</span> tiene inverso multiplicativo <span class="math">a⁻¹</span></strong> (se puede dividir).</td>
+          <td><span class="math">ℚ, ℝ, ℂ</span> y los campos finitos <span class="math">ℤ_p</span> (<span class="math">p</span> primo).</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="box box-app">
+      <strong>Aplicación Crucial en Ciberseguridad (Cifrado AES):</strong>
+      <p>El estándar internacional de cifrado <strong>AES</strong> (*Advanced Encryption Standard*), empleado para proteger WhatsApp, transacciones bancarias y discos duros, no trabaja con enteros comunes, sino con el <strong>campo de Galois <span class="math">GF(2^8)</span></strong> (un campo finito de exactamente 256 elementos polinomiales). La operación de sustitución S-Box de AES calcula exactamente el <em>inverso multiplicativo</em> dentro de este campo para otorgar resistencia criptográfica no lineal.</p>
+    </div>
+
+    <div class="demo-bar">
+      <b>Interacción en la Exposición:</b> En la sección <code>#anillos</code>, usa el probador interactivo para comparar <span class="code">ℤ₆</span> (donde la app marca los divisores de cero) frente a <span class="code">ℤ₇</span> (donde la app confirma que es un Campo al encontrar inverso para todos).
+    </div>
+  </div>
+
+  <!-- ================= TEMA 3-6 RESIDUOS ================= -->
+  <div class="page-break">
+    <h2>
+      <span>Tema 3-6: Aritmética de Residuos, TCR y Base Mixta</span>
+      <span class="badge-exp badge-exp2">Turno 8: Compañero</span>
+    </h2>
+
+    <h3>1. El Problema del Acarreo en Hardware y la Aritmética Residual (RNS)</h3>
+    <p>En las CPUs tradicionales basadas en aritmética binaria posicional, al sumar dos enteros grandes (ej. 1024 bits), el bit menos significativo genera un acarreo que debe propagarse secuencialmente hasta el bit más significativo (*carry ripple*), limitando la velocidad del reloj. La <strong>aritmética de residuos</strong> (*Residue Number System - RNS*) resuelve esto mediante el álgebra abstracta.</p>
+
+    <div class="box box-theo">
+      <strong>Isomorfismo Fundamental de Anillos:</strong>
+      <p>Elegimos módulos enteros <span class="math">m₁, m₂, \dots, m_k</span> que sean <strong>primos relativos dos a dos</strong> (<span class="math">\gcd(m_i, m_j) = 1</span>) y definimos su producto <span class="math">M = \prod m_i</span>. Existe un isomorfismo de anillos:</p>
+      <div style="text-align:center; font-size:12pt; margin:6px 0;" class="math">
+        ℤ_M \cong ℤ_{m₁} \times ℤ_{m₂} \times \dots \times ℤ_{m_k}
+      </div>
+      <p>Cada número <span class="math">x ∈ ℤ_M</span> se representa de forma única por su tupla de residuos: <span class="math">x \mapsto (x \bmod m_1, \dots, x \bmod m_k)</span>.</p>
+      <p><strong>Ventaja Computacional:</strong> La suma y la multiplicación se ejecutan <strong>componente a componente en paralelo y sin propagación de acarreo entre módulos</strong>:</p>
+      <div style="text-align:center; font-size:10pt; margin:4px 0;" class="math">
+        (r₁ + s₁ \bmod m₁, \dots, r_k + s_k \bmod m_k) \quad \text{y} \quad (r₁ \cdot s₁ \bmod m₁, \dots, r_k \cdot s_k \bmod m_k)
+      </div>
+    </div>
+
+    <h3>2. Reconstrucción: Teorema Chino del Resto y Base Mixta</h3>
+    <p>Para recuperar el valor decimal <span class="math">x</span> a partir de su tupla residual se disponen de dos métodos:</p>
+    <ul>
+      <li><strong>Teorema Chino del Resto (TCR):</strong> <span class="math">x = \left( \sum_{i=1}^k a_i M_i y_i \right) \bmod M</span>, donde <span class="math">M_i = M / m_i</span> y <span class="math">y_i = M_i⁻¹ \bmod m_i</span>. Es matemáticamente elegante pero involucra multiplicar números grandes en la reconstrucción final.</li>
+      <li><strong>Conversión a Base Mixta:</strong> Escribe <span class="math">x = a₁ + a₂m₁ + a₃m₁m₂ + \dots</span>. Permite reconstruir operando únicamente con números pequeños y resuelve la mayor limitación de la representación residual: <em>permite comparar magnitudes y determinar de inmediato qué número es mayor simplemente comparando los dígitos más significativos</em>.</li>
+    </ul>
+
+    <h3>3. Teoremas de Fermat y Euler</h3>
+    <div class="box box-def">
+      <ul>
+        <li><strong>Pequeño Teorema de Fermat:</strong> Si <span class="math">p</span> es primo y <span class="math">p \nmid a</span>, entonces <span class="math">a^{p-1} \equiv 1 \pmod p</span>. Por lo tanto, el inverso multiplicativo se calcula directamente como <span class="math">a⁻¹ \equiv a^{p-2} \pmod p</span>.</li>
+        <li><strong>Teorema de Euler:</strong> Si <span class="math">\gcd(a, n) = 1</span>, entonces <span class="math">a^{\phi(n)} \equiv 1 \pmod n</span>, donde <span class="math">\phi(n)</span> es la función totiente de Euler (cantidad de enteros menores coprimos con <span class="math">n</span>).</li>
+      </ul>
+    </div>
+
+    <div class="box box-app">
+      <strong>Aplicación en Criptografía RSA y Procesamiento de Señales (DSP):</strong>
+      <p>El algoritmo de firma y cifrado <strong>RSA</strong> se basa íntegramente en el Teorema de Euler. Al descifrar mensajes, el receptor aplica el Teorema Chino del Resto para calcular operaciones modulares cuatro veces más rápido. Asimismo, los microprocesadores DSP para radar, audio y telecomunicaciones usan unidades RNS sin acarreo.</p>
+    </div>
+
+    <div class="demo-bar">
+      <b>Interacción en la Exposición:</b> En la sección <code>#s36</code>, utiliza la <strong>Calculadora residual</strong> con los módulos <span class="code">3, 5, 7</span>, escribe dos operandos y muestra la tabla de cálculo componente por componente y la reconstrucción final con el TCR.
+    </div>
+  </div>
+
+  <!-- ================= TEMA 3-7 CODIGOS ================= -->
+  <div class="page-break">
+    <h2>
+      <span>Tema 3-7: Códigos de Grupo y Corrección de Errores</span>
+      <span class="badge-exp badge-exp1">Turno 9: Tú</span>
+    </h2>
+
+    <h3>1. El Modelo de Transmisión con Ruido</h3>
+    <p>Al enviar información a través de cualquier medio físico (cables de cobre, fibra óptica, ondas de radio Wi-Fi o almacenamiento magnético), el ruido eléctrico o interferencias electromagnéticas pueden alterar los voltajes, convirtiendo un bit 0 en un 1 o viceversa. El objetivo de los <strong>códigos de grupo</strong> es introducir redundancia estructurada para detectar y corregir estas alteraciones.</p>
+
+    <div class="box box-def">
+      <strong>Métricas Fundamentales de la Teoría de Códigos:</strong>
+      <p>Consideremos el grupo binario <span class="math">(B^n, \oplus)</span>, donde <span class="math">B = \{0, 1\}</span> y <span class="math">\oplus</span> es la suma módulo 2 bit a bit (operador XOR):</p>
+      <ul>
+        <li><strong>Peso de una palabra (<span class="math">|x|</span>):</strong> Número de unos presentes en la palabra binaria <span class="math">x</span>.</li>
+        <li><strong>Distancia de Hamming (<span class="math">\delta(x, y)</span>):</strong> Número de posiciones en las cuales difieren dos cadenas <span class="math">x</span> e <span class="math">y</span>. Propiedad algebraica notable: <span class="math">\delta(x, y) = |x \oplus y|</span>.</li>
+        <li><strong>Distancia Mínima de un Código (<span class="math">d_{min}</span>):</strong> El menor valor de <span class="math">\delta(x, y)</span> entre dos palabras código válidas cualesquiera.</li>
+      </ul>
+    </div>
+
+    <h3>2. Teorema Fundamental de Detección y Corrección</h3>
+    <div class="box box-theo">
+      <strong>Capacidad de Detección y Corrección:</strong>
+      <ul>
+        <li>Un código puede <strong>detectar hasta <span class="math">k</span> errores</strong> si y solo si su distancia mínima satisface: <span class="math">d_{min} \ge k + 1</span>.</li>
+        <li>Un código puede <strong>corregir hasta <span class="math">k</span> errores</strong> si y solo si su distancia mínima satisface: <span class="math">d_{min} \ge 2k + 1</span>.</li>
+      </ul>
+      <p><strong>¿Por qué se llaman Códigos de Grupo?</strong></p>
+      <p>Si el conjunto de palabras código válidas forma un <strong>subgrupo</strong> de <span class="math">(B^n, \oplus)</span>, entonces para hallar la distancia mínima no es necesario comparar todos los pares posibles de palabras (lo que requeriría una complejidad cuadrática <span class="math">O(2^{2m})</span>): ¡basta con hallar el <strong>peso mínimo de las palabras código distintas de cero</strong>! Esto reduce drásticamente el costo computacional.</p>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Esquema de Codificación</th>
+          <th>Función de Codificación</th>
+          <th>Distancia Mínima</th>
+          <th>Capacidad Real</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Bit de Paridad Simple</strong></td>
+          <td><span class="math">e: B^m \to B^{m+1}</span> (añade 1 bit para número par de unos).</td>
+          <td><span class="math">d_{min} = 2</span></td>
+          <td>Detecta 1 error (<span class="math">2 \ge 1+1</span>). No puede corregir (<span class="math">2 < 2(1)+1</span>).</td>
+        </tr>
+        <tr>
+          <td><strong>Repetición Triple</strong></td>
+          <td><span class="math">e(x) = xxx</span> (transmite el mensaje triplicado).</td>
+          <td><span class="math">d_{min} = 3</span></td>
+          <td>Detecta hasta 2 errores y <strong>corrige 1 error por voto de mayoría</strong>.</td>
+        </tr>
+        <tr>
+          <td><strong>Código de Hamming (7, 4)</strong></td>
+          <td>Generado por matriz generadora <span class="math">G</span> y chequeo de paridad <span class="math">H</span>.</td>
+          <td><span class="math">d_{min} = 3</span></td>
+          <td>Corrige 1 bit erróneo en bloques de 4 bits transmitiendo solo 7 bits.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="box box-app">
+      <strong>Aplicaciones en el Mundo Real:</strong>
+      <ul>
+        <li><strong>Memoria RAM ECC (Error-Correcting Code):</strong> Los servidores y centros de datos que ejecutan transacciones financieras o sistemas críticos utilizan memoria RAM ECC para corregir automáticamente alteraciones de bits causadas por rayos cósmicos.</li>
+        <li><strong>Códigos QR y Discos Ópticos:</strong> Emplean códigos avanzados derivados (Reed-Solomon) que permiten reconstruir hasta el 30% de los datos destruidos si el código QR está rayado o tapado por un logo.</li>
+      </ul>
+    </div>
+
+    <div class="demo-bar">
+      <b>Interacción en la Exposición:</b> En la sección <code>#s37</code>, usa el simulador de canal con ruido: transmite un mensaje en paridad (4, 5), invierte un bit recibido para mostrar cómo se detecta el error en rojo, y luego prueba la repetición triple para ver la corrección automática.
+    </div>
+  </div>
+
+  <!-- ================= CIERRE Y PREGUNTAS ================= -->
+  <div class="page-break">
+    <h2>
+      <span>Conclusiones y Banco de Preguntas Típicas del Profesor</span>
+      <span class="badge-exp badge-exp1">Ambos Expositores</span>
+    </h2>
+
+    <h3>Resumen de Cierre de la Exposición</h3>
+    <p>A lo largo de esta unidad se demostró que las estructuras algebraicas no son fórmulas abstractas desconectadas de la realidad, sino el <strong>fundamento formal de la ciencia de la computación</strong>:</p>
+    <ul>
+      <li>Los <strong>monoides</strong> modelan cadenas de texto, expresiones sintácticas y paralelismo de datos.</li>
+      <li>Los <strong>grupos</strong> gobiernan la simetría, la criptografía moderna y la robótica/gráficos 3D.</li>
+      <li>Los <strong>campos y anillos</strong> permiten la existencia del cifrado simétrico (AES) y la detección/corrección de fallas en redes de telecomunicaciones.</li>
+      <li>La <strong>aritmética modular</strong> impulsa la computación cuántica, firmas digitales y hardware sin retrasos por acarreo.</li>
+    </ul>
+
+    <h3>Preguntas Probables del Profesor y Cómo Responderlas:</h3>
+
+    <div class="box box-def">
+      <strong>Pregunta 1: «¿Por qué (ℤ, -) no es un grupo?»</strong>
+      <p><em>Respuesta:</em> Falla en el requisito más básico: <strong>la resta no es asociativa</strong>. Por ejemplo: <span class="math">(5 - 3) - 1 = 2 - 1 = 1</span>, mientras que <span class="math">5 - (3 - 1) = 5 - 2 = 3</span>. Al no ser asociativa, no llega ni siquiera a ser semigrupo, por lo que queda fuera de la jerarquía de grupos.</p>
+    </div>
+
+    <div class="box box-def">
+      <strong>Pregunta 2: «¿Puede un grupo de 15 elementos tener un subgrupo de 4 elementos?»</strong>
+      <p><em>Respuesta:</em> <strong>No, categóricamente imposible por el Teorema de Lagrange</strong>. El orden de cualquier subgrupo debe dividir de manera exacta al orden del grupo total. Como 4 no divide a 15 (pues <span class="math">15/4 = 3.75</span>), ningún subconjunto de 4 elementos puede cumplir la cerradura e inversos para ser subgrupo.</p>
+    </div>
+
+    <div class="box box-def">
+      <strong>Pregunta 3: «¿Cuál es la diferencia exacta entre un Anillo, un Dominio Entero y un Campo?»</strong>
+      <p><em>Respuesta:</em></p>
+      <ul>
+        <li>Un <strong>Anillo</strong> tiene suma (grupo abeliano) y multiplicación distributiva, pero la multiplicación puede tener divisores de cero (ej. <span class="math">2 · 3 = 0</span> en <span class="math">ℤ₆</span>).</li>
+        <li>Un <strong>Dominio Entero</strong> elimina esa patología: no admite divisores de cero (si <span class="math">ab=0 \implies a=0</span> o <span class="math">b=0</span>), permitiendo cancelar factores, pero sus elementos no necesariamente tienen inverso multiplicativo (ej. <span class="math">ℤ</span>).</li>
+        <li>Un <strong>Campo</strong> va al nivel máximo: además de ser dominio entero, <em>absolutamente todo elemento no nulo tiene inverso multiplicativo</em>, por lo que es posible dividir formalmente (ej. <span class="math">ℚ, ℝ</span> o <span class="math">ℤ_p</span> con <span class="math">p</span> primo).</li>
+      </ul>
+    </div>
+
+    <div class="box box-def">
+      <strong>Pregunta 4: «¿Por qué en los códigos de grupo la distancia mínima es igual al peso mínimo?»</strong>
+      <p><em>Respuesta:</em> Porque si el código es un subgrupo de <span class="math">(B^n, \oplus)</span>, la diferencia simétrica entre dos palabras código <span class="math">x \oplus y</span> es también una palabra código del subgrupo (cerradura bajo inverso y suma). Por ende, <span class="math">\delta(x, y) = |x \oplus y| = |c|</span> donde <span class="math">c \in C</span>. Así, minimizar distancias entre pares equivale exactamente a buscar la palabra código no nula con menor cantidad de unos.</p>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -266,12 +266,61 @@ html.slides main.wrap > section.cur.compact .head h2{font-size:20px}
 html.slides #entrada.cur{height:100%;min-height:0;padding-block:8px 8px}
 html.slides footer{display:none}
 .deck-bar{display:none}
-html.slides .deck-bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;align-items:center;gap:10px;background:var(--bg-glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--line);
-  padding-top:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.deck-bar .deck-btn{font:inherit;font-size:16px;font-weight:700;min-height:46px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+html.slides .deck-bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;align-items:center;gap:8px;background:var(--bg-glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--line);
+  padding-top:7px;padding-bottom:calc(7px + env(safe-area-inset-bottom,0px));padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
+.deck-bar .deck-btn{font:inherit;font-size:15px;font-weight:700;min-height:42px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
 .deck-bar .deck-btn.next{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);margin-left:auto}
 .deck-bar .deck-btn:disabled{opacity:.35;cursor:default}
-.deck-bar .deck-info{min-width:0;flex:1;text-align:center;font-family:var(--f-mono);font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deck-bar .deck-info{min-width:0;text-align:center;font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Badges de Expositor y Temporizador */
+.deck-speaker{font-family:var(--f-mono);font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;letter-spacing:.02em;display:flex;align-items:center;gap:5px}
+.badge-exp1{background:#E0E7FF;color:#3730A3;border:1px solid #C7D2FE}
+.badge-exp2{background:#FCE7F3;color:#9D174D;border:1px solid #FBCFE8}
+.badge-exp-both{background:#DCFCE7;color:#166534;border:1px solid #BBF7D0}
+:root[data-theme="dark"] .badge-exp1, @media(prefers-color-scheme:dark){ :root:not([data-theme="light"]) .badge-exp1{background:#1E293B;color:#93A7FF;border-color:#334155} }
+:root[data-theme="dark"] .badge-exp2, @media(prefers-color-scheme:dark){ :root:not([data-theme="light"]) .badge-exp2{background:#2E1065;color:#F472B6;border-color:#4C1D95} }
+
+.deck-timer{display:flex;align-items:center;gap:4px;font-family:var(--f-mono);font-size:12px;font-weight:600;padding:3px 8px;border-radius:8px;background:var(--surface);border:1px solid var(--line)}
+.deck-timer .timer-btn{background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;padding:1px 4px;font-weight:bold}
+.deck-timer .timer-max{color:var(--muted);font-size:10.5px}
+.deck-btn-tool{font:inherit;font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;white-space:nowrap}
+.deck-btn-tool:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Drawer Teleprompter / Apuntador de Notas */
+.prompter-card{position:fixed;right:16px;bottom:72px;width:min(440px,calc(100vw - 32px));max-height:calc(100vh - 100px);overflow-y:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 36px rgba(0,0,0,0.22);z-index:100;padding:18px;display:none;flex-direction:column;gap:10px}
+.prompter-card.open{display:flex}
+.prompter-card h4{margin:0;font-family:var(--f-display);font-size:18px;color:var(--ink)}
+.prompter-card .badge-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.prompter-card .box-p{border-radius:8px;padding:9px 11px;font-size:13px;line-height:1.45}
+.prompter-card .box-say{background:var(--accent-soft);border-left:3px solid var(--accent);color:var(--ink)}
+.prompter-card .box-act{background:var(--hi-soft);border-left:3px solid var(--hi);color:var(--ink)}
+.prompter-card .box-trans{background:var(--ok-soft);border-left:3px solid var(--ok);color:var(--ink)}
+.prompter-card .lbl{font-size:10.5px;font-family:var(--f-mono);font-weight:700;text-transform:uppercase;margin-bottom:3px;display:block;opacity:.85}
+.prompter-close{position:absolute;top:12px;right:12px;background:none;border:none;font-size:18px;color:var(--muted);cursor:pointer;line-height:1}
+
+/* Modal Cuadrado Conmutativo */
+.square-modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:95;display:none;align-items:center;justify-content:center;padding:14px;backdrop-filter:blur(4px)}
+.square-modal-wrap.open{display:flex}
+.square-modal{background:var(--surface);border:1px solid var(--line);border-radius:16px;width:100%;max-width:920px;height:86vh;max-height:820px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 18px 48px rgba(0,0,0,0.35)}
+.square-modal-head{padding:10px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:var(--bg)}
+.square-modal-head h3{margin:0;font-size:16px;font-family:var(--f-display)}
+.square-modal iframe{flex:1;border:0;width:100%;height:100%}
+/* Mini-juegos Interactivos para la Exposición */
+.game-box{border:2px solid var(--accent);background:var(--surface);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;position:relative;box-shadow:0 4px 18px rgba(0,0,0,0.06);margin-block:12px}
+.game-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.game-badge{background:var(--accent);color:var(--accent-ink);font-family:var(--f-mono);font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.03em}
+.game-time{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-weight:600}
+.game-score{font-family:var(--f-mono);font-size:12.5px;font-weight:700;color:var(--hi);background:var(--hi-soft);padding:3px 9px;border-radius:6px}
+.game-prompt{font-size:15.5px;font-weight:600;color:var(--ink);line-height:1.45;margin:0}
+.game-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.game-btn{font:inherit;font-family:var(--f-mono);font-size:13.5px;font-weight:600;padding:8px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);cursor:pointer;transition:all .15s;text-align:center}
+.game-btn:hover{border-color:var(--accent);background:var(--accent-soft)}
+.game-feedback{border-radius:8px;padding:10px 14px;font-weight:700;font-size:13.5px;display:none;animation:chIn .25s ease-out;line-height:1.4}
+.game-feedback.good{display:block;background:var(--ok-soft);color:var(--ok)}
+.game-feedback.bad{display:block;background:var(--bad-soft);color:var(--bad)}
+.game-feedback.info{display:block;background:var(--accent-soft);color:var(--accent)}
+.game-foot{display:flex;justify-content:space-between;align-items:center;margin-top:2px;gap:8px;flex-wrap:wrap}
 footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
 </style>
 
@@ -330,6 +379,25 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
     </div>
   </div>
   <p class="hint">Cada tema tiene <strong>concepto</strong>, <strong>ejemplo</strong>, un laboratorio para <strong>probarlo</strong>, su <strong>aplicación</strong> y una pregunta rápida. Todo funciona en el celular.</p>
+
+  <!-- Mini-juego 0 -->
+  <div class="lab game-box" id="game0">
+    <div class="game-head">
+      <span class="game-badge">🎮 Mini-Juego · 2-3 min</span>
+      <span class="game-time">Tema 0 · ¿En qué Óvalo Cae?</span>
+      <span class="game-score" id="g0Score">Puntos: 0</span>
+    </div>
+    <p class="game-prompt">¿Hasta qué estructura algebraica llega este sistema antes de rebotar?</p>
+    <div class="game-target" id="g0Target" style="font-family:var(--f-mono);font-size:22px;font-weight:700;text-align:center;padding:12px;background:var(--accent-soft);border-radius:10px;color:var(--accent)">
+      (ℤ, -)
+    </div>
+    <div class="game-opts" id="g0Opts"></div>
+    <div class="game-feedback" id="g0Feedback"></div>
+    <div class="game-foot">
+      <span class="hint">Voten en grupo y elijan la categoría más alta que cumple</span>
+      <button class="btn" id="g0Next">🎲 Siguiente Sistema</button>
+    </div>
+  </div>
 </section>
 
 <!-- ============ 3-1 ============ -->
@@ -391,6 +459,9 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
       <label class="f" for="hB">b<input class="in" id="hB" type="number" value="-5" inputmode="numeric"></label>
     </div>
     <div class="out" id="homOut"></div>
+    <div style="margin-top:12px">
+      <button type="button" class="btn primary" id="btnOpenSquare" style="width:100%;font-size:14px;padding:8px 14px">🔲 Abrir Cuadrado Conmutativo Interactivo (Simulador de Homomorfismos)</button>
+    </div>
   </div>
 
   <div class="block">
@@ -410,6 +481,23 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
       <li>Los tipos de datos abstractos (pilas, colas, conjuntos) se especifican como sistemas algebraicos: valores, operaciones y las leyes que cumplen.</li>
     </ul>
   </div>
+  <!-- Mini-juego 1 -->
+  <div class="lab game-box" id="game1">
+    <div class="game-head">
+      <span class="game-badge">🎮 Mini-Juego · 2-3 min</span>
+      <span class="game-time">Tema 3-1 · El Sudoku de Cayley</span>
+      <span class="game-score" id="g1Score">Puntos: 0</span>
+    </div>
+    <p class="game-prompt">En la tabla de un grupo ningún elemento se repite en fila ni columna (Cuadrado Latino). ¿Qué elemento va en la casilla <strong style="color:var(--hi)">?</strong></p>
+    <div class="scroll" style="display:flex;justify-content:center"><table class="cayley" id="g1Table"></table></div>
+    <div class="game-opts" id="g1Opts" style="margin-top:6px"></div>
+    <div class="game-feedback" id="g1Feedback"></div>
+    <div class="game-foot">
+      <span class="hint">Pista: Revisa los elementos que ya están en esa fila y columna</span>
+      <button class="btn" id="g1Next">🎲 Otra Tabla</button>
+    </div>
+  </div>
+
   <div class="quiz" data-quiz="s31"></div>
 </section>
 
@@ -484,6 +572,29 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
       <li>Procesadores de texto y lenguajes de programación trabajan con el monoide de cadenas. Las transiciones de una máquina de estados también forman un monoide.</li>
     </ul>
   </div>
+  <!-- Mini-juego 2 -->
+  <div class="lab game-box" id="game2">
+    <div class="game-head">
+      <span class="game-badge">🎮 Mini-Juego · 2-3 min</span>
+      <span class="game-time">Tema 3-2 · ¿Conmutan o Chocan?</span>
+      <span class="game-score" id="g2Score">Puntos: 0</span>
+    </div>
+    <p class="game-prompt">En el monoide libre de cadenas (A*, ·), ¿estas dos palabras conmutan (xy = yx) o chocan (xy ≠ yx)?</p>
+    <div style="display:flex;gap:12px;justify-content:center;font-family:var(--f-mono);font-size:18px;font-weight:700">
+      <span class="box" style="padding:6px 14px;border-color:var(--cA)">x = "<span id="g2X">ab</span>"</span>
+      <span class="box" style="padding:6px 14px;border-color:var(--cB)">y = "<span id="g2Y">ba</span>"</span>
+    </div>
+    <div class="game-opts" style="grid-template-columns:1fr 1fr">
+      <button class="game-btn" id="g2Yes">🤝 SÍ Conmutan (xy = yx)</button>
+      <button class="game-btn" id="g2No">💥 NO Conmutan (xy ≠ yx)</button>
+    </div>
+    <div class="game-feedback" id="g2Feedback"></div>
+    <div class="game-foot">
+      <span class="hint">Recuerda: la concatenación en general NO es conmutativa</span>
+      <button class="btn" id="g2Next">🎲 Otro Par</button>
+    </div>
+  </div>
+
   <div class="quiz" data-quiz="s32"></div>
 </section>
 
@@ -541,6 +652,22 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
       <li>Las expresiones regulares (gramáticas tipo 3) validan correos y contraseñas y sirven para buscar texto.</li>
     </ul>
   </div>
+  <!-- Mini-juego 3 -->
+  <div class="lab game-box" id="game3">
+    <div class="game-head">
+      <span class="game-badge">🎮 Mini-Juego · 2-3 min</span>
+      <span class="game-time">Tema 3-3 · ¿Compila o Explota?</span>
+      <span class="game-score" id="g3Score">Puntos: 0</span>
+    </div>
+    <p class="game-prompt">Bajo la regla BNF de identificadores: uno de estos 3 tokens provocará un <strong>Syntax Error</strong> en el compilador. ¿Cuál es?</p>
+    <div class="game-opts" id="g3Opts"></div>
+    <div class="game-feedback" id="g3Feedback"></div>
+    <div class="game-foot">
+      <span class="hint">Regla: debe iniciar con letra y contener solo letras o dígitos</span>
+      <button class="btn" id="g3Next">🎲 Otra Terna</button>
+    </div>
+  </div>
+
   <div class="quiz" data-quiz="s33"></div>
 </section>
 
@@ -611,6 +738,26 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
       <li>En química y cristalografía las moléculas y cristales se clasifican por su grupo de simetrías.</li>
     </ul>
   </div>
+  <!-- Mini-juego 4 -->
+  <div class="lab game-box" id="game4">
+    <div class="game-head">
+      <span class="game-badge">🎮 Mini-Juego · 2-3 min</span>
+      <span class="game-time">Tema 3-5 · Triángulo Loco de S₃</span>
+      <span class="game-score" id="g4Score">Puntos: 0</span>
+    </div>
+    <p class="game-prompt" id="g4Prompt">Aplica la rotación ρ₁ (120°) seguida de la reflexión μ₁ (espejo vertical). ¿Dónde quedará el <strong>Vértice 1</strong>?</p>
+    <div class="game-opts" id="g4Opts">
+      <button class="game-btn" data-v="top">Arriba (Posición 1)</button>
+      <button class="game-btn" data-v="right">Abajo-Derecha (Posición 2)</button>
+      <button class="game-btn" data-v="left">Abajo-Izquierda (Posición 3)</button>
+    </div>
+    <div class="game-feedback" id="g4Feedback"></div>
+    <div class="game-foot">
+      <button class="btn primary" id="g4Anim">▶ Animar y Comprobar</button>
+      <button class="btn" id="g4Next">🎲 Otra Maniobra</button>
+    </div>
+  </div>
+
   <div class="quiz" data-quiz="s35"></div>
 </section>
 
@@ -695,6 +842,22 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
       <li>Lagrange da una prueba rápida: un subconjunto de 5 elementos de un grupo de 12 nunca puede ser subgrupo, porque 5 no divide a 12.</li>
     </ul>
   </div>
+  <!-- Mini-juego 5 -->
+  <div class="lab game-box" id="game5">
+    <div class="game-head">
+      <span class="game-badge">🎮 Mini-Juego · 2-3 min</span>
+      <span class="game-time">Tema 3-5 · El Impostor de Lagrange</span>
+      <span class="game-score" id="g5Score">Puntos: 0</span>
+    </div>
+    <p class="game-prompt">En un grupo de orden <strong style="color:var(--accent)" id="g5Ord">|G| = 24</strong>: tres de estos tamaños de subgrupo son posibles, pero uno es un <strong>IMPOSTOR</strong> que viola a Lagrange (|H| debe dividir a |G|). ¡Expúlsalo!</p>
+    <div class="game-opts" id="g5Opts"></div>
+    <div class="game-feedback" id="g5Feedback"></div>
+    <div class="game-foot">
+      <span class="hint">Regla: |H| divide exactamente a |G|</span>
+      <button class="btn" id="g5Next">🎲 Otro Grupo</button>
+    </div>
+  </div>
+
   <div class="quiz" data-quiz="lagrange"></div>
 </section>
 
@@ -744,6 +907,22 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
       <li><strong>Códigos Reed–Solomon</strong> (códigos QR, CD, DVD) usan campos finitos para reconstruir datos dañados.</li>
     </ul>
   </div>
+  <!-- Mini-juego 6 -->
+  <div class="lab game-box" id="game6">
+    <div class="game-head">
+      <span class="game-badge">🎮 Mini-Juego · 2-3 min</span>
+      <span class="game-time">Tema 3-5 · Caza de Divisores de Cero</span>
+      <span class="game-score" id="g6Score">Puntos: 0</span>
+    </div>
+    <p class="game-prompt" id="g6Prompt">En el anillo ℤ₁₂, ¿qué dos números no nulos al multiplicarse dan 0 (divisores de cero)? ¿O acaso es un Campo?</p>
+    <div class="game-opts" id="g6Opts"></div>
+    <div class="game-feedback" id="g6Feedback"></div>
+    <div class="game-foot">
+      <span class="hint">Recuerda: si el módulo es primo, ¡es un Campo sin divisores!</span>
+      <button class="btn" id="g6Next">🎲 Otro Anillo</button>
+    </div>
+  </div>
+
   <div class="quiz" data-quiz="anillos"></div>
 </section>
 
@@ -839,6 +1018,27 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
       <li>Los procesadores de señales (audio, video, filtros digitales) usan sistemas numéricos residuales porque suman y multiplican sin propagar acarreos.</li>
     </ul>
   </div>
+  <!-- Mini-juego 7 -->
+  <div class="lab game-box" id="game7">
+    <div class="game-head">
+      <span class="game-badge">🎮 Mini-Juego · 2-3 min</span>
+      <span class="game-time">Tema 3-6 · El Oráculo Chino</span>
+      <span class="game-score" id="g7Score">Aciertos: 0</span>
+    </div>
+    <p class="game-prompt">Pide a alguien de la clase que piense un número secreto entre 1 y 105. Escribe sus residuos y el Teorema Chino del Resto lo adivinará.</p>
+    <div class="inputs" style="grid-template-columns:repeat(3,1fr)">
+      <label class="f">mod 3<input class="in" id="g7R3" type="number" min="0" max="2" value="2"></label>
+      <label class="f">mod 5<input class="in" id="g7R5" type="number" min="0" max="4" value="3"></label>
+      <label class="f">mod 7<input class="in" id="g7R7" type="number" min="0" max="6" value="2"></label>
+    </div>
+    <button class="btn primary" id="g7Solve" style="font-size:15px;padding:8px 16px">🔮 Adivinar Número Secreto</button>
+    <div class="game-feedback" id="g7Feedback"></div>
+    <div class="game-foot">
+      <span class="hint">Fórmula: x = Σ aᵢ·Mᵢ·yᵢ mod 105</span>
+      <button class="btn" id="g7Rand">🎲 Probar con número al azar</button>
+    </div>
+  </div>
+
   <div class="quiz" data-quiz="s36"></div>
 </section>
 
@@ -893,16 +1093,75 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
       <li>Las sondas espaciales, el Wi-Fi, el 4G/5G y los discos duros transmiten y guardan datos con códigos correctores.</li>
     </ul>
   </div>
+  <!-- Mini-juego 8 -->
+  <div class="lab game-box" id="game8">
+    <div class="game-head">
+      <span class="game-badge">🎮 Mini-Juego · 2-3 min</span>
+      <span class="game-time">Tema 3-7 · Atrapa al Hacker de Bits</span>
+      <span class="game-score" id="g8Score">Puntos: 0</span>
+    </div>
+    <p class="game-prompt">Pasa un compañero al frente como el «Hacker». Toca un bit en la palabra transmitida para invertirlo; el decodificador de paridad lo atrapará en vivo.</p>
+    <div class="block" style="gap:6px;align-items:center">
+      <div class="bits" id="g8Bits"></div>
+    </div>
+    <div class="game-feedback" id="g8Feedback"></div>
+    <div class="game-foot">
+      <span class="hint" id="g8Hint">Toca un bit para inyectar ruido (0 ↔ 1)</span>
+      <button class="btn" id="g8Reset">🔄 Restaurar Transmisión</button>
+    </div>
+  </div>
+
   <div class="quiz" data-quiz="s37"></div>
 </section>
 
 </main>
 
 <nav class="deck-bar" id="deckBar" aria-label="Diapositivas">
-  <button class="deck-btn prev" id="deckPrev">← Atrás</button>
+  <button class="deck-btn prev" id="deckPrev" title="Anterior (Flecha Izquierda)">← Atrás</button>
+  <span class="deck-speaker badge-exp1" id="deckSpeaker">🎤 Tú</span>
+  <div class="deck-timer" id="deckTimer">
+    <button class="timer-btn" id="btnTimerToggle" title="Iniciar/Pausar (Tecla T)">▶</button>
+    <span id="timerDisplay">00:00</span>
+    <span class="timer-max">/ 60:00</span>
+  </div>
   <span class="deck-info" id="deckInfo"></span>
-  <button class="deck-btn next" id="deckNext">Sigue →</button>
+  <button class="deck-btn-tool" id="btnPrompter" title="Ver apuntes y qué decir (Tecla G)">📋 Guión</button>
+  <button class="deck-btn-tool" id="btnToggleMode" title="Alternar Vista Diapositivas / Continua (Tecla M)">📄 Diapos</button>
+  <button class="deck-btn next" id="deckNext" title="Siguiente (Flecha Derecha / Espacio)">Sigue →</button>
 </nav>
+
+<!-- Teleprompter / Apuntes de Exposición -->
+<div class="prompter-card" id="prompterCard" role="dialog" aria-label="Guión del expositor">
+  <button class="prompter-close" id="btnPrompterClose" aria-label="Cerrar">×</button>
+  <div class="badge-row">
+    <span class="deck-speaker" id="prSpeaker">🎤 Tú</span>
+    <span class="tag" id="prTurn">Turno 1</span>
+  </div>
+  <h4 id="prTitle">Título del Tema</h4>
+  <div class="box-p box-say">
+    <span class="lbl">Qué decir:</span>
+    <span id="prSay">Texto clave para la exposición...</span>
+  </div>
+  <div class="box-p box-act">
+    <span class="lbl">Qué picar / mover en vivo:</span>
+    <span id="prAct">Instrucciones para manipular la app...</span>
+  </div>
+  <div class="box-p box-trans">
+    <span class="lbl">Frase de transición:</span>
+    <span id="prTrans">Pase de estafeta al compañero...</span>
+  </div>
+</div>
+
+<!-- Modal Cuadrado Conmutativo -->
+<div class="square-modal-wrap" id="squareModalWrap" role="dialog" aria-label="Simulador de Cuadrado Conmutativo">
+  <div class="square-modal">
+    <div class="square-modal-head">
+      <h3>Simulador de Homomorfismos · Cuadrado Conmutativo</h3>
+      <button class="btn" id="btnSquareClose" style="min-height:0;padding:3px 12px">Cerrar ✕</button>
+    </div>
+    <iframe src="homomorfismo-pasos.html" title="Cuadrado Conmutativo"></iframe>
+  </div>
+</div>
 <footer>
   <div class="wrap">Unidad 3 · Estructuras algebraicas · Matemáticas discretas. Basado en el capítulo 3 de <em>Estructuras de matemáticas discretas para la computación</em> (Kolman y Busby).</div>
 </footer>
@@ -1739,12 +1998,465 @@ document.querySelector('main.wrap').addEventListener('click',e=>{
   const t=document.querySelector(a.getAttribute('href')); if(!t) return;
   const i=slides.findIndex(s=>s.sec===t || s.show.some(k=>k===t || k.contains(t)) && (s.compact || s.sec===t)); if(i>=0) go(i);
 });
-// Teclado (proyector)
+// Teclado (proyector y herramientas)
 addEventListener('keydown',e=>{
   if(e.target.closest('input,select,textarea')) return;
-  if(e.key==='ArrowRight'||e.key==='PageDown'){ e.preventDefault(); go(cur+1); }
+  if(e.key==='ArrowRight'||e.key==='PageDown'||(e.key===' '&&!e.target.closest('button'))){ e.preventDefault(); go(cur+1); }
   if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); go(cur-1); }
+  if(e.key==='g'||e.key==='G'){ e.preventDefault(); togglePrompter(); }
+  if(e.key==='t'||e.key==='T'){ e.preventDefault(); toggleTimer(); }
+  if(e.key==='m'||e.key==='M'){ e.preventDefault(); toggleMode(); }
 });
+
+/* ========== PLAN DE ALINEAMIENTO / APUNTADOR TELEPROMPTER ========== */
+const SPEAKER_GUIDE = {
+  entrada: {
+    speaker: "Tú", badge: "badge-exp1", turn: "Turno 1 (00:00 - 06:00)",
+    title: "Apertura y Propiedades de las Operaciones",
+    say: "Bienvenida general. Define estructura algebraica: conjunto + operación binaria cerrada. Enfatiza que lo importante no son los números sino las reglas.",
+    act: "Mueve el slider del parámetro c en la gráfica Canvas. Muestra cómo las curvas se superponen con asociatividad y se separan en operaciones como la resta.",
+    trans: "Para ver la jerarquía completa, pasamos al mapa de Muñecas Rusas."
+  },
+  inicio: {
+    speaker: "Tú", badge: "badge-exp1", turn: "Turno 1 (00:00 - 06:00)",
+    title: "El Mapa Jerárquico («Muñecas Rusas»)",
+    say: "Cada axioma que se agrega hace al sistema más estricto y reduce el conjunto de ejemplos. Explica el camino: Sistema → Semigrupo → Monoide → Grupo → Anillo → Campo.",
+    act: "Presiona el botón '▶ Repetir animación' para reproducir la contracción de los óvalos concéntricos.",
+    trans: "Paso la estafeta a mi compañero para explicar la sección 3-1: Sistemas Algebraicos y Homomorfismos."
+  },
+  s31: {
+    speaker: "Compañero", badge: "badge-exp2", turn: "Turno 2 (06:00 - 12:00)",
+    title: "3-1 Sistemas Algebraicos y Homomorfismos",
+    say: "Define (S, *). Explica el diagnóstico visual en la tabla de Cayley (simetría = conmutativo, fila espejo = neutro). Define homomorfismo f(a*b) = f(a)*'f(b) e isomorfismo.",
+    act: "En la tabla de Cayley haz clic en una casilla para alterar la asociatividad en vivo. Abre el botón 'Cuadrado Conmutativo' para mostrar los dos caminos en paralelo.",
+    trans: "Los procesadores a 32 bits forman Z_{2^32} con desbordamiento. Mi compañero explicará Semigrupos y Monoides."
+  },
+  s32: {
+    speaker: "Tú", badge: "badge-exp1", turn: "Turno 3 (12:00 - 17:00)",
+    title: "3-2 Semigrupos, Monoides y Cadenas",
+    say: "Semigrupo = asociativo. Monoide = semigrupo + neutro. Explica el Monoide Libre de Cadenas (A*, ·) con neutro Lambda. La concatenación es asociativa pero no conmutativa.",
+    act: "En el laboratorio de cadenas, escribe x='hola' e y='mundo' para demostrar que x·y ≠ y·x, pero las longitudes se suman ordenadamente: l(xy) = l(x) + l(y).",
+    trans: "Esto permite MapReduce en Big Data. Mi compañero explicará cómo las cadenas dan origen a las Gramáticas y Compiladores."
+  },
+  s33: {
+    speaker: "Compañero", badge: "badge-exp2", turn: "Turno 4 (17:00 - 22:00)",
+    title: "3-3 Gramáticas, Lenguajes y BNF",
+    say: "Un lenguaje formal es L ⊆ A*. Una gramática G=(V,S,v0,↦) genera lenguajes infinitos con reglas finitas. Menciona la jerarquía de Chomsky y la notación BNF.",
+    act: "Presiona los botones de derivación paso a paso para generar a^n b^n (aabb). En la caja BNF prueba un identificador válido vs uno que empiece con número.",
+    trans: "Los parsers de compiladores validan la sintaxis con esto. Ahora mi compañero entrará a los Grupos."
+  },
+  s35: {
+    speaker: "Tú", badge: "badge-exp1", turn: "Turno 5 (22:00 - 29:00)",
+    title: "3-5 Grupos y Simetrías de S₃",
+    say: "Grupo = monoide con inversos únicos (todo se puede deshacer). Grupo abeliano = conmutativo. El grupo simétrico S3 tiene 6 simetrías del triángulo: 3 rotaciones y 3 reflexiones.",
+    act: "En el laboratorio de S3, aplica primero la rotación ρ1 y luego la reflexión μ1. Luego inviértelas para demostrar en pantalla que S3 NO es abeliano.",
+    trans: "Se usa en rotaciones 3D de videojuegos y el Cubo de Rubik. Mi compañero explicará Subgrupos y Lagrange."
+  },
+  lagrange: {
+    speaker: "Compañero", badge: "badge-exp2", turn: "Turno 6 (29:00 - 36:00)",
+    title: "3-5 Subgrupos, Clases Laterales y Lagrange",
+    say: "Un subgrupo H hereda la estructura. Las clases laterales aH parten al grupo en bloques idénticos. Teorema de Lagrange: |H| divide a |G|. Teorema 3-5-11 de descomposición.",
+    act: "En el reloj circular selecciona n=12 y toca el número 4 para iluminar el subgrupo {0,4,8} y sus clases disjuntas. Prueba n=8 para ver las 3 particiones abelianas.",
+    trans: "Se usa en criptografía de curvas elípticas. Mi compañero explicará sistemas con dos operaciones: Anillos y Campos."
+  },
+  anillos: {
+    speaker: "Tú", badge: "badge-exp1", turn: "Turno 7 (36:00 - 42:00)",
+    title: "3-5 Anillos, Dominios y Campos",
+    say: "Sistemas con suma y multiplicación distributiva. Explica los divisores de cero (ab=0 con a,b≠0). Dominio entero = sin divisores de cero. Campo = todo elemento no nulo tiene inverso multiplicativo.",
+    act: "En el probador de Zn selecciona n=6 (muestra en rojo que 2·3=0 y no es campo). Luego cambia a n=7 (confirma en verde que es Campo porque 7 es primo).",
+    trans: "El cifrado militar y bancario AES opera en el campo GF(2^8). Mi compañero explicará la Aritmética de Residuos."
+  },
+  s36: {
+    speaker: "Compañero", badge: "badge-exp2", turn: "Turno 8 (42:00 - 48:00)",
+    title: "3-6 Aritmética de Residuos, TCR y Base Mixta",
+    say: "Evita el retardo de propagación de acarreo en hardware sumando en paralelo por módulos coprimos con el isomorfismo Z_M ≅ Z_m1 × ... × Z_mk. Teoremas de Fermat y Euler.",
+    act: "En la calculadora residual pon x=23, y=41 con módulos 3,5,7. Muestra la tabla operando en paralelo y la reconstrucción por el TCR. Muestra la base mixta para comparar magnitudes.",
+    trans: "Acelera el descifrado RSA y filtros DSP. Mi compañero explicará la detección y corrección de errores con Códigos de Grupo."
+  },
+  s37: {
+    speaker: "Tú", badge: "badge-exp1", turn: "Turno 9 (48:00 - 54:00)",
+    title: "3-7 Códigos de Grupo y Hamming",
+    say: "En canales físicos el ruido invierte bits. Distancia de Hamming: posiciones distintas. Para detectar k errores se requiere d≥k+1; para corregir, d≥2k+1. En códigos de grupo d_min es el peso mínimo no nulo.",
+    act: "En Paridad (4, 5) invierte un bit recibido para mostrar la alerta roja de error. Luego cambia a Repetición triple (4, 12) y muestra la autocorrección por voto de mayoría.",
+    trans: "Se usa en memorias RAM ECC de servidores, códigos QR y satélites. Pasamos a la conclusión y preguntas."
+  }
+};
+
+const deckSpeaker = document.getElementById('deckSpeaker');
+const prompterCard = document.getElementById('prompterCard');
+const prSpeaker = document.getElementById('prSpeaker'), prTurn = document.getElementById('prTurn');
+const prTitle = document.getElementById('prTitle'), prSay = document.getElementById('prSay');
+const prAct = document.getElementById('prAct'), prTrans = document.getElementById('prTrans');
+
+function updateSpeakerUI(secId){
+  const guide = SPEAKER_GUIDE[secId] || {
+    speaker: "Ambos", badge: "badge-exp-both", turn: "Cierre (54-60 min)",
+    title: "Conclusiones y Preguntas",
+    say: "Conclusión general sobre la importancia del álgebra en computación. Agradecer y responder preguntas.",
+    act: "Usa los interactivos para responder dudas del profesor con contraejemplos en vivo.",
+    trans: "Fin de la exposición."
+  };
+  if(deckSpeaker){
+    deckSpeaker.className = 'deck-speaker ' + guide.badge;
+    deckSpeaker.textContent = (guide.speaker==='Tú' ? '🎤 Tú' : (guide.speaker==='Compañero' ? '🎤 Compañero' : '👥 Ambos')) + ' · ' + guide.turn.split(' ')[0];
+  }
+  if(prSpeaker){ prSpeaker.className = 'deck-speaker ' + guide.badge; prSpeaker.textContent = '🎤 ' + guide.speaker; }
+  if(prTurn) prTurn.textContent = guide.turn;
+  if(prTitle) prTitle.textContent = guide.title;
+  if(prSay) prSay.textContent = guide.say;
+  if(prAct) prAct.textContent = guide.act;
+  if(prTrans) prTrans.textContent = guide.trans;
+}
+
+// Hook en go() original
+const origGo = go;
+go = function(i){
+  origGo(i);
+  const sl = slides[cur];
+  if(sl && sl.sec) updateSpeakerUI(sl.sec.id);
+};
+
+// Teleprompter drawer toggle
+function togglePrompter(){
+  prompterCard.classList.toggle('open');
+}
+document.getElementById('btnPrompter').addEventListener('click', togglePrompter);
+document.getElementById('btnPrompterClose').addEventListener('click', togglePrompter);
+
+// Alternar entre modo diapositivas y vista completa con scroll
+function toggleMode(){
+  const isSlides = root.classList.toggle('slides');
+  document.getElementById('btnToggleMode').textContent = isSlides ? '📄 Diapos' : '📜 Scroll';
+  if(!isSlides){
+    sections.forEach(s => { s.classList.remove('cur','compact'); [...s.children].forEach(c=>c.classList.remove('off')); });
+  } else {
+    go(cur);
+  }
+}
+document.getElementById('btnToggleMode').addEventListener('click', toggleMode);
+
+// Cronómetro de 60 minutos
+let timerSec = 0, timerInterval = null;
+const timerDisplay = document.getElementById('timerDisplay'), btnTimerToggle = document.getElementById('btnTimerToggle');
+function renderTimer(){
+  const m = String(Math.floor(timerSec / 60)).padStart(2, '0');
+  const s = String(timerSec % 60).padStart(2, '0');
+  timerDisplay.textContent = `${m}:${s}`;
+  if(timerSec >= 3600) timerDisplay.style.color = 'var(--bad)';
+  else if(timerSec >= 3000) timerDisplay.style.color = 'var(--hi)';
+  else timerDisplay.style.color = 'inherit';
+}
+function toggleTimer(){
+  if(timerInterval){
+    clearInterval(timerInterval); timerInterval = null;
+    btnTimerToggle.textContent = '▶';
+  } else {
+    timerInterval = setInterval(()=>{ timerSec++; renderTimer(); }, 1000);
+    btnTimerToggle.textContent = '⏸';
+  }
+}
+btnTimerToggle.addEventListener('click', toggleTimer);
+
+// Modal Cuadrado Conmutativo
+const squareModal = document.getElementById('squareModalWrap');
+const btnOpenSquare = document.getElementById('btnOpenSquare');
+if(btnOpenSquare){
+  btnOpenSquare.addEventListener('click', () => { squareModal.classList.add('open'); });
+}
+document.getElementById('btnSquareClose').addEventListener('click', () => { squareModal.classList.remove('open'); });
+squareModal.addEventListener('click', (e) => { if(e.target === squareModal) squareModal.classList.remove('open'); });
+
+/* ========== INICIALIZACIÓN DE LOS 9 MINI-JUEGOS INTERACTIVOS ========== */
+function initGames(){
+  // Juego 0: ¿En qué óvalo cae?
+  const g0Data = [
+    {sys: '(ℤ, -)', ans: 'Sistema', why: 'Es cerrado pero la resta NO es asociativa: (5-3)-1=1 ≠ 5-(3-1)=3.'},
+    {sys: '(ℤ⁺, +)', ans: 'Semigrupo', why: 'Es asociativo, pero no tiene neutro: 0 ∉ ℤ⁺.'},
+    {sys: '(ℕ, +)', ans: 'Monoide', why: 'Es asociativo con neutro 0, pero carece de inversos para enteros positivos (-3 ∉ ℕ).'},
+    {sys: 'S₃ (simetrías)', ans: 'Grupo', why: 'Todo elemento tiene inverso, pero NO es conmutativo (ρ₁μ₁ ≠ μ₁ρ₁).'},
+    {sys: '(ℤ, +)', ans: 'Grupo Abeliano', why: 'Es conmutativo con neutro 0 e inversos -a. Tiene una sola operación.'},
+    {sys: 'ℤ₆ con (+, ·)', ans: 'Anillo', why: 'Tiene dos operaciones distributivas, pero 2·3=0 (tiene divisores de cero).'},
+    {sys: 'ℤ con (+, ·)', ans: 'Dominio Entero', why: 'Sin divisores de cero, pero 2 no tiene inverso multiplicativo (1/2 ∉ ℤ).'},
+    {sys: 'ℚ con (+, ·)', ans: 'Campo', why: 'Todo a ≠ 0 tiene inverso multiplicativo formal a⁻¹ = 1/a.'},
+    {sys: 'ℤ₇ con (+, ·)', ans: 'Campo', why: 'Como 7 es primo, no hay divisores de cero y todo número del 1 al 6 tiene inverso mod 7.'}
+  ];
+  let g0Idx = 0, g0Score = 0;
+  const g0OptsEl = $('g0Opts'), g0FbEl = $('g0Feedback'), g0TgtEl = $('g0Target'), g0ScEl = $('g0Score');
+  const g0Cats = ['Sistema', 'Semigrupo', 'Monoide', 'Grupo', 'Grupo Abeliano', 'Anillo', 'Dominio Entero', 'Campo'];
+  function renderG0(){
+    const item = g0Data[g0Idx];
+    g0TgtEl.textContent = item.sys;
+    g0FbEl.className = 'game-feedback'; g0FbEl.style.display = 'none';
+    g0OptsEl.innerHTML = '';
+    g0Cats.forEach(cat => {
+      const b = document.createElement('button');
+      b.className = 'game-btn'; b.textContent = cat;
+      b.onclick = () => {
+        if(cat === item.ans){
+          g0Score += 10; g0ScEl.textContent = 'Puntos: ' + g0Score;
+          g0FbEl.className = 'game-feedback good';
+          g0FbEl.textContent = `¡CORRECTO! ${item.sys} alcanza el nivel de ${item.ans}. ${item.why}`;
+        } else {
+          g0FbEl.className = 'game-feedback bad';
+          g0FbEl.textContent = `¡REBOTÓ! ${item.sys} se detiene en ${item.ans}. ${item.why}`;
+        }
+      };
+      g0OptsEl.appendChild(b);
+    });
+  }
+  $('g0Next').onclick = () => { g0Idx = (g0Idx + 1) % g0Data.length; renderG0(); };
+  renderG0();
+
+  // Juego 1: Sudoku de Cayley
+  const g1Puzzles = [
+    { name: 'Klein', E: ['e','a','b','c'], tbl: [['e','a','b','c'],['a','e','c','?'],['b','c','e','a'],['c','b','a','e']], r: 1, c: 3, ans: 'b' },
+    { name: 'ℤ₄ (+)', E: ['0','1','2','3'], tbl: [['0','1','2','3'],['1','2','3','0'],['2','3','?','1'],['3','0','1','2']], r: 2, c: 2, ans: '0' },
+    { name: 'ℤ₃ (+)', E: ['0','1','2'], tbl: [['0','1','2'],['1','?','0'],['2','0','1']], r: 1, c: 1, ans: '2' }
+  ];
+  let g1Idx = 0, g1Score = 0;
+  function renderG1(){
+    const p = g1Puzzles[g1Idx];
+    const tblEl = $('g1Table'), fb = $('g1Feedback'), opts = $('g1Opts');
+    fb.style.display = 'none'; opts.innerHTML = '';
+    let html = '<tr><th>*</th>' + p.E.map(e=>`<th>${e}</th>`).join('') + '</tr>';
+    for(let i=0; i<p.tbl.length; i++){
+      html += `<tr><th>${p.E[i]}</th>` + p.tbl[i].map((val,j)=>{
+        if(i===p.r && j===p.c) return `<td class="mark"><button style="background:var(--hi-soft);color:var(--hi);font-weight:700">?</button></td>`;
+        return `<td><span>${val}</span></td>`;
+      }).join('') + '</tr>';
+    }
+    tblEl.innerHTML = html;
+    p.E.forEach(val => {
+      const b = document.createElement('button');
+      b.className = 'game-btn'; b.textContent = val;
+      b.onclick = () => {
+        if(val === p.ans){
+          g1Score += 10; $('g1Score').textContent = 'Puntos: ' + g1Score;
+          fb.className = 'game-feedback good';
+          fb.textContent = `¡EXCELENTE! La casilla ? es ${val}. En esa fila ya estaban los demás elementos, así que por el Cuadrado Latino no había otra opción.`;
+        } else {
+          fb.className = 'game-feedback bad';
+          fb.textContent = `¡ERROR! Si pones ${val}, se repetiría en la fila o en la columna. La respuesta correcta es ${p.ans}.`;
+        }
+      };
+      opts.appendChild(b);
+    });
+  }
+  $('g1Next').onclick = () => { g1Idx = (g1Idx + 1) % g1Puzzles.length; renderG1(); };
+  renderG1();
+
+  // Juego 2: Duelo de cadenas
+  const g2Data = [
+    {x: 'ab', y: 'ba', eq: false},
+    {x: 'na', y: 'nana', eq: true},
+    {x: '01', y: '10', eq: false},
+    {x: 'abc', y: 'abc', eq: true},
+    {x: 'la', y: 'lala', eq: true},
+    {x: 'p', y: 'qp', eq: false}
+  ];
+  let g2Idx = 0, g2Score = 0;
+  function renderG2(){
+    const item = g2Data[g2Idx];
+    $('g2X').textContent = item.x; $('g2Y').textContent = item.y;
+    const fb = $('g2Feedback'); fb.style.display = 'none';
+    const evaluate = (choice) => {
+      const xy = item.x + item.y, yx = item.y + item.x;
+      const isEq = xy === yx;
+      if(choice === isEq){
+        g2Score += 10; $('g2Score').textContent = 'Puntos: ' + g2Score;
+        fb.className = 'game-feedback good';
+        fb.textContent = isEq ? `¡CORRECTO! xy = "${xy}" y yx = "${yx}". SÍ conmutan porque son potencias de una misma subcadena base.` : `¡CORRECTO! xy = "${xy}" ≠ yx = "${yx}". NO conmutan; la concatenación general en A* no es conmutativa.`;
+      } else {
+        fb.className = 'game-feedback bad';
+        fb.textContent = isEq ? `¡FALLASTE! En este caso particular xy = "${xy}" = yx = "${yx}", sí conmutan.` : `¡FALLASTE! xy = "${xy}" pero yx = "${yx}". El orden sí altera el producto de cadenas.`;
+      }
+    };
+    $('g2Yes').onclick = () => evaluate(true);
+    $('g2No').onclick = () => evaluate(false);
+  }
+  $('g2Next').onclick = () => { g2Idx = (g2Idx + 1) % g2Data.length; renderG2(); };
+  renderG2();
+
+  // Juego 3: ¿Compila o explota?
+  const g3Data = [
+    {opts: ['total_venta', 'precio2', '9cuenta'], bad: '9cuenta', why: 'Comienza con un dígito "9"; la regla BNF exige comenzar con letra.'},
+    {opts: ['_id', 'mi-variable', 'sumaTotal'], bad: 'mi-variable', why: 'Contiene un guión medio (-), que el compilador interpreta como resta.'},
+    {opts: ['precioFinal', 'p1_final', 'resultado$'], bad: 'resultado$', why: 'Contiene el símbolo reservado "$", no admitido en identificadores estándar.'}
+  ];
+  let g3Idx = 0, g3Score = 0;
+  function renderG3(){
+    const item = g3Data[g3Idx];
+    const opts = $('g3Opts'), fb = $('g3Feedback');
+    fb.style.display = 'none'; opts.innerHTML = '';
+    item.opts.forEach(tok => {
+      const b = document.createElement('button');
+      b.className = 'game-btn'; b.textContent = tok;
+      b.onclick = () => {
+        if(tok === item.bad){
+          g3Score += 10; $('g3Score').textContent = 'Puntos: ' + g3Score;
+          fb.className = 'game-feedback good';
+          fb.textContent = `💥 ¡EXPLOTÓ EL COMPILADOR! "${tok}" es inválido. ${item.why}`;
+        } else {
+          fb.className = 'game-feedback bad';
+          fb.textContent = `✓ "${tok}" sí compila legalmente. El token que hace explotar la sintaxis es "${item.bad}".`;
+        }
+      };
+      opts.appendChild(b);
+    });
+  }
+  $('g3Next').onclick = () => { g3Idx = (g3Idx + 1) % g3Data.length; renderG3(); };
+  renderG3();
+
+  // Juego 4: Triángulo Loco S3
+  const g4Data = [
+    {desc: 'Rotación ρ₁ (120°) seguida de Reflexión μ₁ (espejo vertical)', ans: 'left', name: 'Abajo-Izquierda (Posición 3)', why: 'El vértice 1 en ρ₁ pasa a la derecha (2); luego μ₁ intercambia derecha e izquierda, terminando en la izquierda (3).'},
+    {desc: 'Reflexión μ₁ (espejo vertical) seguida de Rotación ρ₁ (120°)', ans: 'right', name: 'Abajo-Derecha (Posición 2)', why: 'μ₁ mantiene el vértice 1 en el eje superior (1); luego ρ₁ rota 120° llevándolo abajo a la derecha (2). ¡Esto prueba que ρ₁μ₁ ≠ μ₁ρ₁!'},
+    {desc: 'Rotación ρ₂ (240°) seguida de Rotación ρ₁ (120°)', ans: 'top', name: 'Arriba (Posición 1)', why: '240° + 120° = 360° = identidad ρ₀. Vuelve a su posición original arriba (1).'}
+  ];
+  let g4Idx = 0, g4Score = 0, g4Selected = null;
+  function renderG4(){
+    const item = g4Data[g4Idx];
+    $('g4Prompt').textContent = `Maniobra: ${item.desc}. ¿Dónde quedará el Vértice 1?`;
+    const fb = $('g4Feedback'); fb.style.display = 'none'; g4Selected = null;
+    $$('#g4Opts .game-btn').forEach(b => {
+      b.classList.remove('on');
+      b.onclick = () => {
+        $$('#g4Opts .game-btn').forEach(x=>x.classList.remove('on'));
+        b.classList.add('on'); g4Selected = b.dataset.v;
+      };
+    });
+  }
+  $('g4Anim').onclick = () => {
+    const item = g4Data[g4Idx], fb = $('g4Feedback');
+    if(!g4Selected){ fb.className = 'game-feedback info'; fb.textContent = 'Selecciona una posición primero antes de animar.'; return; }
+    if(g4Selected === item.ans){
+      g4Score += 10; $('g4Score').textContent = 'Puntos: ' + g4Score;
+      fb.className = 'game-feedback good';
+      fb.textContent = `¡ACERTASTE! El vértice 1 termina en ${item.name}. ${item.why}`;
+    } else {
+      fb.className = 'game-feedback bad';
+      fb.textContent = `¡INCORRECTO! Terminó en ${item.name}. ${item.why}`;
+    }
+  };
+  $('g4Next').onclick = () => { g4Idx = (g4Idx + 1) % g4Data.length; renderG4(); };
+  renderG4();
+
+  // Juego 5: El Impostor de Lagrange
+  const g5Data = [
+    {ord: 24, cands: [3, 6, 7, 8], imp: 7, why: '7 no divide a 24 (24/7 = 3.42).'},
+    {ord: 20, cands: [2, 4, 5, 6], imp: 6, why: '6 no divide a 20 (20/6 = 3.33).'},
+    {ord: 30, cands: [3, 5, 9, 10], imp: 9, why: '9 no divide a 30 (30/9 = 3.33).'},
+    {ord: 36, cands: [4, 8, 9, 12], imp: 8, why: '8 no divide a 36 (36/8 = 4.5).'}
+  ];
+  let g5Idx = 0, g5Score = 0;
+  function renderG5(){
+    const item = g5Data[g5Idx];
+    $('g5Ord').textContent = `|G| = ${item.ord}`;
+    const opts = $('g5Opts'), fb = $('g5Feedback');
+    fb.style.display = 'none'; opts.innerHTML = '';
+    item.cands.forEach(c => {
+      const b = document.createElement('button');
+      b.className = 'game-btn'; b.textContent = `Subgrupo de orden ${c}`;
+      b.onclick = () => {
+        if(c === item.imp){
+          g5Score += 10; $('g5Score').textContent = 'Puntos: ' + g5Score;
+          fb.className = 'game-feedback good';
+          fb.textContent = `🎯 ¡IMPOSTOR EXPULSADO! Un subgrupo de tamaño ${c} es imposible por el Teorema de Lagrange: ${item.why}`;
+        } else {
+          fb.className = 'game-feedback bad';
+          fb.textContent = `❌ ${c} sí divide a ${item.ord} (${item.ord}/${c} = ${item.ord/c}), por lo que sí es un subgrupo legítimo. El impostor era el ${item.imp}.`;
+        }
+      };
+      opts.appendChild(b);
+    });
+  }
+  $('g5Next').onclick = () => { g5Idx = (g5Idx + 1) % g5Data.length; renderG5(); };
+  renderG5();
+
+  // Juego 6: Caza de divisores de cero
+  const g6Data = [
+    {n: 12, prompt: 'En el anillo ℤ₁₂, ¿cuál par de números son divisores de cero (ab ≡ 0 mod 12)?', opts: [{t: '3 y 4', ok: true}, {t: '5 y 7', ok: false}, {t: 'Es un Campo', ok: false}], why: '3 · 4 = 12 ≡ 0 (mod 12).'},
+    {n: 13, prompt: 'En el sistema ℤ₁₃, ¿cuál es su condición de divisores de cero?', opts: [{t: '2 y 6', ok: false}, {t: '🛡️ ¡Es un Campo! No hay divisores', ok: true}, {t: '3 y 4', ok: false}], why: '13 es un número primo; todo elemento del 1 al 12 tiene inverso y es un Campo.'},
+    {n: 10, prompt: 'En el anillo ℤ₁₀, ¿cuáles son divisores de cero?', opts: [{t: '2 y 5', ok: true}, {t: '3 y 7', ok: false}, {t: 'Es un Campo', ok: false}], why: '2 · 5 = 10 ≡ 0 (mod 10).'},
+    {n: 7, prompt: 'En el sistema ℤ₇, ¿qué ocurre con el producto?', opts: [{t: '2 y 3 dan 0', ok: false}, {t: '🛡️ ¡Es un Campo! Todos tienen inverso', ok: true}, {t: 'No es anillo', ok: false}], why: '7 es primo, por ende ℤ₇ es un Campo formal.'}
+  ];
+  let g6Idx = 0, g6Score = 0;
+  function renderG6(){
+    const item = g6Data[g6Idx];
+    $('g6Prompt').textContent = item.prompt;
+    const opts = $('g6Opts'), fb = $('g6Feedback');
+    fb.style.display = 'none'; opts.innerHTML = '';
+    item.opts.forEach(op => {
+      const b = document.createElement('button');
+      b.className = 'game-btn'; b.textContent = op.t;
+      b.onclick = () => {
+        if(op.ok){
+          g6Score += 10; $('g6Score').textContent = 'Puntos: ' + g6Score;
+          fb.className = 'game-feedback good';
+          fb.textContent = `🎉 ¡CORRECTO! ${item.why}`;
+        } else {
+          fb.className = 'game-feedback bad';
+          fb.textContent = `❌ INCORRECTO. ${item.why}`;
+        }
+      };
+      opts.appendChild(b);
+    });
+  }
+  $('g6Next').onclick = () => { g6Idx = (g6Idx + 1) % g6Data.length; renderG6(); };
+  renderG6();
+
+  // Juego 7: El Oráculo Chino
+  let g7Score = 0;
+  $('g7Solve').onclick = () => {
+    const r3 = mod(parseInt($('g7R3').value, 10)||0, 3);
+    const r5 = mod(parseInt($('g7R5').value, 10)||0, 5);
+    const r7 = mod(parseInt($('g7R7').value, 10)||0, 7);
+    const x = mod(r3 * 70 + r5 * 21 + r7 * 15, 105);
+    g7Score++; $('g7Score').textContent = 'Aciertos: ' + g7Score;
+    const fb = $('g7Feedback');
+    fb.className = 'game-feedback good';
+    fb.innerHTML = `🔮 ¡EL NÚMERO SECRETO ES EL <span style="font-size:22px;color:var(--hi)">${x}</span>!<br><span style="font-size:12px;opacity:.9">Comprobación: ${x}%3=${x%3}, ${x}%5=${x%5}, ${x}%7=${x%7}. Calculado exactamente con x = (${r3}·70 + ${r5}·21 + ${r7}·15) mod 105.</span>`;
+  };
+  $('g7Rand').onclick = () => {
+    const rand = Math.floor(Math.random() * 104) + 1;
+    $('g7R3').value = rand % 3; $('g7R5').value = rand % 5; $('g7R7').value = rand % 7;
+    $('g7Solve').click();
+  };
+
+  // Juego 8: Atrapa al Hacker de Bits
+  let g8BitsData = [1, 0, 1, 1, 1]; // Paridad par: 4 unos
+  let g8Score = 0;
+  function renderG8(){
+    const c = $('g8Bits'), fb = $('g8Feedback');
+    c.innerHTML = '';
+    const ones = g8BitsData.reduce((a,b)=>a+b, 0);
+    const hasError = (ones % 2 !== 0);
+    g8BitsData.forEach((b, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'bit' + (idx === 4 ? ' par' : '') + (hasError ? ' err' : '');
+      btn.textContent = b;
+      btn.title = idx === 4 ? 'Bit de paridad' : `Bit de datos ${idx+1}`;
+      btn.onclick = () => {
+        g8BitsData[idx] = g8BitsData[idx] === 1 ? 0 : 1;
+        renderG8();
+      };
+      c.appendChild(btn);
+    });
+    if(hasError){
+      g8Score += 10; $('g8Score').textContent = 'Puntos: ' + g8Score;
+      fb.className = 'game-feedback bad';
+      fb.textContent = `🚨 ¡HACKER DETECTADO EN EL CANAL! La paridad es impar (${ones} unos). El receptor detectó la alteración de datos automáticamente.`;
+    } else {
+      fb.className = 'game-feedback good';
+      fb.textContent = `✓ Transmisión íntegra y limpia: paridad correcta (${ones} unos, número par). Haz clic en cualquier bit para actuar como el Hacker.`;
+    }
+  }
+  $('g8Reset').onclick = () => { g8BitsData = [1, 0, 1, 1, 1]; renderG8(); };
+  renderG8();
+}
+
+initGames();
+
 go(0);
 })();
 </script>
