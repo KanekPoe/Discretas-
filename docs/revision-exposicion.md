@@ -4,7 +4,7 @@ Revisados el PDF y su fuente `Estructuras_Algebraicas_Guia_Exposicion.tex`, junt
 
 ## Recorrido implementado
 
-La opción predeterminada «Exposición · 60 min» contiene 31 pantallas: apertura, máquinas animadas, viaje del inverso, mapa, nueve retos, demostraciones y cierre. «Consulta · todo el material» conserva las definiciones y laboratorios extensos. Las dos entradas HTML comparten los archivos de interfaz y actividades en `assets/`.
+La opción predeterminada «Exposición · 60 min» contiene 35 pantallas: apertura, máquinas animadas, viaje del inverso, mapa, nueve retos, demostraciones y cierre. «Referencia · por páginas» conserva el material de consulta en páginas breves; su cantidad depende del espacio disponible. Las demostraciones del recorrido principal se presentan por pasos. Las dos entradas HTML comparten los archivos de interfaz y actividades en `assets/`.
 
 Cada bloque muestra el expositor y el intervalo del cronograma del guion. Son referencias para el ensayo, no un cronómetro automático. Expositor 1 corresponde a «Tú» y expositor 2 a «Compañero». En el cierre participan ambos.
 
@@ -58,6 +58,6 @@ node tests/exposicion.cjs
 
 La prueba `node tests/primeros-pasos.cjs` verifica las máquinas, sus estados intermedios, el viaje del inverso, los sellos del pasaporte y el reinicio durante animaciones, con movimiento normal y reducido.
 
-La prueba de exposición recorre las dos entradas, las rondas de los nueve retos, voto incorrecto, explicación, reinicio, las 105 reconstrucciones del oráculo, límites de entrada, fallos y aciertos de los códigos y disposición a 1280×720 y 390×844. En pantallas bajas, las diapositivas permiten desplazamiento vertical en vez de reducir el texto automáticamente hasta hacerlo ilegible.
+La prueba de exposición recorre las dos entradas, las rondas de los nueve retos, explicación, reinicio, las 105 reconstrucciones del oráculo, límites de entrada, fallos y aciertos de los códigos y disposición a 1280×720 y 390×844. La app no utiliza desplazamiento ni zoom automático para encajar contenido. `node tests/sin-desplazamiento.cjs` comprueba el tamaño y los límites reales de cada pantalla y sus estados en móvil, proyector y móvil horizontal.
 
 La validación funcional y la revisión matemática no sustituyen el ensayo con ustedes y el público: ahí se ajustan vocabulario, pausas y tiempos según lo que realmente logren explicar los compañeros.

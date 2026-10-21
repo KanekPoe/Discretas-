@@ -11,7 +11,7 @@
     const el=document.createElement('div');el.id=id;el.className='lab foundations';el.innerHTML=html;section.append(el);return el;
   };
   const machines=make('maquinas',`
-    <div class="foundation-heading"><div><p class="tag">01 · El laboratorio de las dos máquinas</p><h2 class="machine-property-title">Propiedad conmutativa</h2><p class="property-definition machine-property-definition">Cambiar el orden · a * b = b * a</p></div><span class="activity-mark" aria-hidden="true">A ⇄ B</span></div>
+    <div class="foundation-heading"><div><p class="tag">01 · El laboratorio de las dos máquinas</p><h2 class="machine-property-title">Propiedad conmutativa</h2><div class="machine-property-line"><p class="property-definition machine-property-definition">a * b = b * a</p><select class="machine-operation" aria-label="Operación de las máquinas"><option value="minus">Resta</option><option value="plus">Suma</option></select></div></div><span class="activity-mark" aria-hidden="true">A ⇄ B</span></div>
     <div class="machine-toolbar"><div class="machine-tabs" role="group" aria-label="Qué cambia"><button class="btn on" data-kind="order" aria-pressed="true">1. Conmutativa · orden</button><button class="btn" data-kind="group" aria-pressed="false">2. Asociativa · paréntesis</button></div><div class="machine-tabs" role="group" aria-label="Operación de las máquinas"><button class="btn on" data-op="minus" aria-pressed="true">Resta −</button><button class="btn" data-op="plus" aria-pressed="false">Suma +</button></div></div>
     <p class="machine-mission"></p>
     <div class="machine-pair">${['A','B'].map((name,i)=>`<article class="operation-machine" data-machine="${i}"><div class="machine-label"><span class="machine-led" aria-hidden="true"></span>Máquina ${name}<span class="machine-instruction"></span></div><div class="machine-belt"><div class="group-band" aria-hidden="true"></div><div class="number-tiles"></div></div><div class="machine-output"><span class="output-caption">Salida</span><output class="output-number" aria-label="Resultado de máquina ${name}">?</output></div></article>`).join('')}</div>
@@ -37,11 +37,11 @@
   function positionBands(){if(step<2 && !machines.classList.contains('off'))rows.forEach((r,i)=>{const right=i===1&&machines.dataset.phase!=='predict';band(r,right?2:0,right?4:2);});}
   function reset(){
     version++;machines.getAnimations({subtree:true}).forEach(a=>a.cancel());step=0;vote=null;busy=false;
-    machines.dataset.phase='predict';machines.querySelectorAll('[name="machine-vote"]').forEach(r=>{r.checked=false;r.disabled=false;});
+    machines.dataset.phase='predict';machines.dataset.kind=kind;machines.querySelector('.machine-operation').value=op;machines.querySelectorAll('[name="machine-vote"]').forEach(r=>{r.checked=false;r.disabled=false;});
     machines.querySelectorAll('[data-kind]').forEach(b=>{const on=b.dataset.kind===kind;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
     machines.querySelectorAll('[data-op]').forEach(b=>{const on=b.dataset.op===op;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
     machines.querySelector('.machine-property-title').textContent=kind==='order'?'Propiedad conmutativa':'Propiedad asociativa';
-    machines.querySelector('.machine-property-definition').textContent=kind==='order'?'Cambiar el orden · a * b = b * a':'Cambiar la agrupación · (a * b) * c = a * (b * c)';
+    machines.querySelector('.machine-property-definition').textContent=kind==='order'?'a * b = b * a':'(a * b) * c = a * (b * c)';
     machines.querySelector('.machine-mission').textContent=kind==='order'?'Mismos números. En B intercambiaremos las tarjetas 8 y 3. ¿Se conservará la salida?':'Mismos números y mismo orden: 8, 3, 2. Solo cambiaremos qué pareja se calcula primero.';
     rows.forEach((row,i)=>{
       row.classList.remove('processing','finished');
@@ -50,7 +50,7 @@
       row.querySelector('.output-number').textContent='?';
       row.querySelector('.group-band').hidden=kind!=='group';
     });
-    machines.querySelector('.machine-step').textContent='Elijan una predicción. Después ejecuten las máquinas paso a paso.';
+    machines.querySelector('.machine-step').textContent='';
     const run=machines.querySelector('.machine-run');run.disabled=true;run.textContent='Poner a prueba →';
     updateDots();requestAnimationFrame(positionBands);
   }
@@ -59,6 +59,7 @@
   machines.querySelectorAll('[data-op]').forEach(b=>b.addEventListener('click',()=>{op=b.dataset.op;reset();}));
   machines.querySelectorAll('[name="machine-vote"]').forEach(r=>r.addEventListener('change',()=>{vote=r.value;machines.querySelector('.machine-run').disabled=false;}));
   machines.querySelector('.machine-reset').addEventListener('click',reset);
+  machines.querySelector('.machine-operation').addEventListener('change',e=>{op=e.target.value;reset();});
   async function swapCards(row){
     const tiles=row.querySelector('.number-tiles'),a=tiles.querySelector('[data-tile=a]'),b=tiles.querySelector('[data-tile=b]');
     const x1=a.getBoundingClientRect().left,x2=b.getBoundingClientRect().left;
@@ -108,7 +109,7 @@
     const same=a===b,correct=(vote==='same')===same;
     const property=kind==='order'?'conmutatividad':'asociatividad';
     machines.dataset.phase='done';
-    machines.querySelector('.machine-step').innerHTML=`<strong>${correct?'✓ Tu predicción coincide.':'Mira la diferencia.'} ${signed(a)} ${same?'=':'≠'} ${signed(b)}.</strong> ${same?'La suma cumple '+property+'; este caso la ilustra.':'La resta falla en '+property+': este contraejemplo es suficiente.'} <span>${kind==='order'?'Conmutar es cambiar el orden.':'Asociar es cambiar los paréntesis, conservando el orden.'}</span>`;
+    machines.querySelector('.machine-step').innerHTML=`<strong>${signed(a)} ${same?'=':'≠'} ${signed(b)}.</strong> ${same?'Este caso ilustra la '+property+' de la suma.':'Este contraejemplo refuta la '+property+' de la resta.'}`;
     const run=machines.querySelector('.machine-run');run.textContent='✓ Comparación terminada';run.disabled=true;
     rows.forEach(r=>r.classList.remove('processing'));
   }
@@ -142,7 +143,7 @@
     inverse.querySelector('.inverse-property-title').textContent=identity?'Propiedad de identidad (neutro)':'Propiedad del inverso aditivo';
     inverse.querySelector('.inverse-property-definition').textContent=identity?'No cambiar el valor · a + 0 = 0 + a = a':'Deshacer la suma · a + (−a) = 0';
   }
-  function syncCards(){cards.forEach(c=>c.disabled=travelBusy||phase==='ready'||phase==='done'||(+c.dataset.add<0&&!integers));}
+  function syncCards(){inverse.dataset.phase=phase;cards.forEach(c=>c.disabled=travelBusy||phase==='ready'||phase==='done'||(+c.dataset.add<0&&!integers));}
   async function travel(to,token){
     const from=position;position=to;
     const transform=v=>`translate(${50+(v+3)*66}px,88px)`;
@@ -175,7 +176,7 @@
     if(!await travel(target,token))return;
     travelBusy=false;
     if(target===0){
-      phase='done';inverse.classList.add('arrived');c.classList.add('winning');feedback.innerHTML='<strong>✓ Volvimos a casa: 3 + (−3) = 0.</strong> −3 pertenece a ℤ, pero no a ℕ. Por eso (ℕ, +) no es grupo y (ℤ, +) sí lo es.';unlock.hidden=true;
+      phase='done';inverse.classList.add('arrived');c.classList.add('winning');feedback.innerHTML='<strong>✓ 3 + (−3) = 0.</strong> −3 es el inverso aditivo de 3. Está en ℤ, pero no en ℕ.';unlock.hidden=true;
       await animate(inverse.querySelector('.station.home circle'),[{transform:'scale(1)'},{transform:'scale(1.65)'},{transform:'scale(1)'}],600);
       if(token!==travelVersion)return;
     }else{
