@@ -11,8 +11,8 @@
     const el=document.createElement('div');el.id=id;el.className='lab foundations';el.innerHTML=html;section.append(el);return el;
   };
   const machines=make('maquinas',`
-    <div class="foundation-heading"><div><p class="tag">01 · El laboratorio de las dos máquinas</p><h2>¿Cambió el orden o la agrupación?</h2></div><span class="activity-mark" aria-hidden="true">A ⇄ B</span></div>
-    <div class="machine-toolbar"><div class="machine-tabs" role="group" aria-label="Qué cambia"><button class="btn on" data-kind="order" aria-pressed="true">1. Cambiar el orden</button><button class="btn" data-kind="group" aria-pressed="false">2. Mover paréntesis</button></div><div class="machine-tabs" role="group" aria-label="Operación de las máquinas"><button class="btn on" data-op="minus" aria-pressed="true">Resta −</button><button class="btn" data-op="plus" aria-pressed="false">Suma +</button></div></div>
+    <div class="foundation-heading"><div><p class="tag">01 · El laboratorio de las dos máquinas</p><h2 class="machine-property-title">Propiedad conmutativa</h2><p class="property-definition machine-property-definition">Cambiar el orden · a * b = b * a</p></div><span class="activity-mark" aria-hidden="true">A ⇄ B</span></div>
+    <div class="machine-toolbar"><div class="machine-tabs" role="group" aria-label="Qué cambia"><button class="btn on" data-kind="order" aria-pressed="true">1. Conmutativa · orden</button><button class="btn" data-kind="group" aria-pressed="false">2. Asociativa · paréntesis</button></div><div class="machine-tabs" role="group" aria-label="Operación de las máquinas"><button class="btn on" data-op="minus" aria-pressed="true">Resta −</button><button class="btn" data-op="plus" aria-pressed="false">Suma +</button></div></div>
     <p class="machine-mission"></p>
     <div class="machine-pair">${['A','B'].map((name,i)=>`<article class="operation-machine" data-machine="${i}"><div class="machine-label"><span class="machine-led" aria-hidden="true"></span>Máquina ${name}<span class="machine-instruction"></span></div><div class="machine-belt"><div class="group-band" aria-hidden="true"></div><div class="number-tiles"></div></div><div class="machine-output"><span class="output-caption">Salida</span><output class="output-number" aria-label="Resultado de máquina ${name}">?</output></div></article>`).join('')}</div>
     <fieldset class="machine-vote"><legend>Antes de ejecutar, voten: ¿darán lo mismo?</legend><label><input type="radio" name="machine-vote" value="same">Sí, el mismo resultado</label><label><input type="radio" name="machine-vote" value="different">No, resultados distintos</label></fieldset>
@@ -40,6 +40,8 @@
     machines.dataset.phase='predict';machines.querySelectorAll('[name="machine-vote"]').forEach(r=>{r.checked=false;r.disabled=false;});
     machines.querySelectorAll('[data-kind]').forEach(b=>{const on=b.dataset.kind===kind;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
     machines.querySelectorAll('[data-op]').forEach(b=>{const on=b.dataset.op===op;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
+    machines.querySelector('.machine-property-title').textContent=kind==='order'?'Propiedad conmutativa':'Propiedad asociativa';
+    machines.querySelector('.machine-property-definition').textContent=kind==='order'?'Cambiar el orden · a * b = b * a':'Cambiar la agrupación · (a * b) * c = a * (b * c)';
     machines.querySelector('.machine-mission').textContent=kind==='order'?'Mismos números. En B intercambiaremos las tarjetas 8 y 3. ¿Se conservará la salida?':'Mismos números y mismo orden: 8, 3, 2. Solo cambiaremos qué pareja se calcula primero.';
     rows.forEach((row,i)=>{
       row.classList.remove('processing','finished');
@@ -114,7 +116,7 @@
   reset();
 
   const inverse=make('camino-inverso',`
-    <div class="foundation-heading"><div><p class="tag">02 · El viaje de ida y vuelta</p><h2>¿Puedes deshacer el +3?</h2></div><span class="domain-badge">ℕ · solo naturales</span></div>
+    <div class="foundation-heading"><div><p class="tag">02 · El viaje de ida y vuelta</p><h2 class="inverse-property-title">Propiedad del inverso aditivo</h2><p class="property-definition inverse-property-definition">Deshacer la suma · a + (−a) = 0</p></div><span class="domain-badge">ℕ · solo naturales</span></div>
     <p class="inverse-mission">Partimos de 0. Sumar 3 nos lleva a la estación 3. El reto es volver a casa <strong>sumando una sola tarjeta</strong>.</p>
     <div class="journey-board"><svg viewBox="0 0 700 165" role="img" aria-label="Estaciones de menos tres a seis. Casa en cero; las estaciones negativas empiezan bloqueadas.">
       <defs><pattern id="lockStripes" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 8L8 0" stroke="currentColor" stroke-opacity=".15"/></pattern></defs>
@@ -136,6 +138,10 @@
   const start=inverse.querySelector('.start-journey');
   const unlock=inverse.querySelector('.unlock-integers');
   const cards=[...inverse.querySelectorAll('[data-add]')];
+  function nameInverseProperty(identity=false){
+    inverse.querySelector('.inverse-property-title').textContent=identity?'Propiedad de identidad (neutro)':'Propiedad del inverso aditivo';
+    inverse.querySelector('.inverse-property-definition').textContent=identity?'No cambiar el valor · a + 0 = 0 + a = a':'Deshacer la suma · a + (−a) = 0';
+  }
   function syncCards(){cards.forEach(c=>c.disabled=travelBusy||phase==='ready'||phase==='done'||(+c.dataset.add<0&&!integers));}
   async function travel(to,token){
     const from=position;position=to;
@@ -145,6 +151,7 @@
     return token===travelVersion;
   }
   function resetJourney(){
+    nameInverseProperty();
     travelVersion++;inverse.getAnimations({subtree:true}).forEach(a=>a.cancel());phase='ready';integers=false;travelBusy=false;position=0;
     inverse.dataset.domain='natural';inverse.classList.remove('arrived');traveler.style.transform='translate(248px,88px)';traveler.querySelector('text').textContent='0';
     inverse.querySelector('.domain-badge').textContent='ℕ · solo naturales';inverse.querySelector('.territory-label').textContent='FUERA DE ℕ';
@@ -162,7 +169,7 @@
     if(c.disabled||travelBusy)return;travelBusy=true;const token=travelVersion;syncCards();unlock.disabled=true;
     // Each experiment starts at the same checkpoint, so the inverse is always of +3.
     traveler.style.transform='translate(446px,88px)';position=3;
-    const value=+c.dataset.add,target=3+value;
+    const value=+c.dataset.add,target=3+value;nameInverseProperty(value===0);
     inverse.querySelector('.journey-equation').innerHTML=`3 + (${signed(value)}) <span>→</span> ${target}`;
     c.classList.add('tried');
     if(!await travel(target,token))return;
@@ -178,7 +185,7 @@
     syncCards();
   }));
   unlock.addEventListener('click',()=>{
-    if(travelBusy)return;integers=true;inverse.dataset.domain='integer';inverse.querySelector('.domain-badge').textContent='ℤ · enteros habilitados';inverse.querySelector('.territory-label').textContent='AHORA DENTRO DE ℤ';
+    if(travelBusy)return;nameInverseProperty();integers=true;inverse.dataset.domain='integer';inverse.querySelector('.domain-badge').textContent='ℤ · enteros habilitados';inverse.querySelector('.territory-label').textContent='AHORA DENTRO DE ℤ';
     traveler.style.transform='translate(446px,88px)';position=3;inverse.querySelector('.journey-equation').innerHTML='3 + ¿? <span>→</span> 0';
     cards.find(c=>+c.dataset.add===-3).querySelector('small').textContent='Ya pertenece al conjunto';unlock.disabled=true;
     feedback.textContent='Ampliamos el conjunto a ℤ. La tarjeta −3 ya se puede usar. ¿Qué hará con el +3?';syncCards();

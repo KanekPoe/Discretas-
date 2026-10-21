@@ -13,6 +13,7 @@ const assert=require('node:assert/strict');
    // Four experiments: swapping and regrouping, each with addition and subtraction.
    for(const [kind,op,a,b] of [['order','minus','5','−5'],['order','plus','11','11'],['group','minus','3','7'],['group','plus','13','13']]){
     await page.locator(`[data-kind=${kind}]`).click();await page.locator(`[data-op=${op}]`).click();
+    assert.match(await page.locator('.machine-property-title').innerText(),new RegExp(kind==='order'?'conmutativa':'asociativa'));
     assert.ok(await run.isDisabled());assert.deepEqual(await page.locator('.output-number').allTextContents(),['?','?']);
     await page.locator('[name=machine-vote][value=different]').check();await run.click();
     await page.waitForFunction(()=>!document.querySelector('.machine-run').disabled);
@@ -38,11 +39,13 @@ const assert=require('node:assert/strict');
    await page.locator('.start-journey').click();await page.locator('[data-add="0"]').click();
    await page.waitForFunction(()=>!document.querySelector('.unlock-integers').disabled);
    assert.match(await page.locator('.inverse-feedback').innerText(),/identidad/);
+   assert.match(await page.locator('.inverse-property-title').innerText(),/identidad/);
    assert.match(await page.locator('.journey-equation').innerText(),/3 \+ \(0\).*3/);
    assert.ok(await page.locator('[data-add="-3"]').isDisabled());
    await page.locator('[data-add="3"]').click();await page.waitForFunction(()=>!document.querySelector('.unlock-integers').disabled);
    assert.match(await page.locator('.journey-equation').innerText(),/6/);
    await page.locator('.unlock-integers').click();assert.ok(!await page.locator('[data-add="-3"]').isDisabled());
+   assert.match(await page.locator('.inverse-property-title').innerText(),/inverso aditivo/);
    await page.locator('[data-add="-3"]').click();await page.waitForFunction(()=>document.querySelector('#camino-inverso').classList.contains('arrived'));
    assert.match(await page.locator('.inverse-feedback').innerText(),/Volvimos a casa/);
    assert.match(await page.locator('.journey-equation').innerText(),/3 \+ \(−3\).*0/);
