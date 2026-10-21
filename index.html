@@ -275,6 +275,7 @@ html.slides .deck-bar{display:flex;position:fixed;left:0;right:0;bottom:0;z-inde
 footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
 </style>
 
+<link rel="stylesheet" href="assets/exposicion.css">
 <header class="top">
   <div class="wrap" style="position:relative">
     <div class="brand"><span>Unidad 3 · Estructuras algebraicas</span><span id="where">Propiedades</span></div>
@@ -322,11 +323,22 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
   <h1>Estructuras algebraicas</h1>
   <p class="lead">Un conjunto más una operación más unas reglas. Con eso describimos desde la suma de enteros hasta las cadenas de un compilador, la aritmética de un procesador y los códigos que corrigen errores.</p>
   <div class="block">
-    <div class="onion-wrap" id="onionWrap">
-    <p class="tag">Cada regla nueva encierra a menos</p>
-    <svg class="onion" id="onionSvg" viewBox="0 0 1080 960" role="img" aria-label="Estructuras anidadas: Campo dentro de Dominio entero dentro de Anillo… dentro de Sistema algebraico"></svg>
-    <div class="onion-panel" id="onionPanel" aria-live="polite"></div>
-    <button class="btn" id="onionReplay">▶ Repetir animación</button>
+    <div class="structure-map" id="onionWrap">
+      <p class="tag">Mapa · fíjate en las operaciones</p>
+      <h2>Dos recorridos conectados</h2>
+      <div class="map-path"><h3>Una operación *</h3><ol>
+        <li><strong>Semigrupo</strong><span>Operación cerrada y asociativa</span></li>
+        <li><strong>Monoide</strong><span>+ identidad</span></li>
+        <li><strong>Grupo</strong><span>+ inversos de todos los elementos</span></li>
+        <li><strong>Grupo abeliano</strong><span>+ conmutatividad</span></li>
+      </ol></div>
+      <p class="map-bridge">Ahora añadimos una segunda operación: un anillo tiene un <strong>grupo abeliano para la suma</strong>, un producto asociativo y ambas leyes distributivas.</p>
+      <div class="map-path"><h3>Dos operaciones + y ·</h3><ol>
+        <li><strong>Anillo</strong><span>Suma y producto conectados</span></li>
+        <li><strong>Dominio entero</strong><span>+ producto conmutativo, 1 ≠ 0 y sin divisores de cero</span></li>
+        <li><strong>Campo</strong><span>+ inverso multiplicativo para cada elemento ≠ 0</span></li>
+      </ol></div>
+      <p class="hint">Aquí ℕ = {0, 1, 2, …}. Clasificamos un conjunto <strong>junto con sus operaciones</strong>: (ℚ ∖ {0}, ·) es un grupo abeliano; (ℚ, +, ·) es un campo.</p>
     </div>
   </div>
   <p class="hint">Cada tema tiene <strong>concepto</strong>, <strong>ejemplo</strong>, un laboratorio para <strong>probarlo</strong>, su <strong>aplicación</strong> y una pregunta rápida. Todo funciona en el celular.</p>
@@ -337,7 +349,7 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
   <div class="head">
     <p class="eyebrow">3-1</p>
     <h2>Sistemas algebraicos</h2>
-    <p class="lead">Lo importante no son los elementos sino las propiedades de las operaciones. Si dos sistemas cumplen las mismas propiedades, lo que probamos para uno vale para el otro.</p>
+    <p class="lead">Lo importante no son los elementos sino las propiedades de las operaciones. Una misma ley puede aparecer en sistemas distintos. Compartir algunas propiedades no significa que los sistemas sean isomorfos.</p>
   </div>
 
   <div class="block">
@@ -349,7 +361,7 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
       <dt>Identidad</dt><dd>existe <span class="m">e</span> con <span class="m">e * a = a * e = a</span></dd>
       <dt>Inverso</dt><dd>para cada <span class="m">a</span> existe <span class="m">a′</span> con <span class="m">a * a′ = a′ * a = e</span></dd>
       <dt>Distributiva</dt><dd><span class="m">a · (b + c) = a·b + a·c</span> (con dos operaciones)</dd>
-      <dt>Cancelación</dt><dd><span class="m">a·b = a·c</span> y <span class="m">a ≠ 0</span> ⇒ <span class="m">b = c</span></dd>
+      <dt>Cancelación</dt><dd>En un grupo, <span class="m">a * b = a * c ⇒ b = c</span>. Para el producto en un dominio entero se requiere <span class="m">a ≠ 0</span>; no vale en cualquier anillo.</dd>
     </dl>
   </div>
 
@@ -406,7 +418,7 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
   <div class="app">
     <p class="tag">Aplicación</p>
     <ul>
-      <li>Los enteros de 32 bits de un procesador forman <span class="m">ℤ₂³²</span>: la suma es módulo 2³². Por eso <span class="m">2 147 483 647 + 1</span> "da la vuelta" a <span class="m">−2 147 483 648</span> (desbordamiento).</li>
+      <li>En aritmética sin signo de 32 bits, la suma se realiza módulo <span class="m">2³²</span>: <span class="m">4 294 967 295 + 1 = 0</span>. El comportamiento del desbordamiento con signo depende del lenguaje.</li>
       <li>Los tipos de datos abstractos (pilas, colas, conjuntos) se especifican como sistemas algebraicos: valores, operaciones y las leyes que cumplen.</li>
     </ul>
   </div>
@@ -448,7 +460,7 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
         </tbody>
       </table>
     </div>
-    <p><strong>Semigrupo libre <span class="m">A*</span></strong>: todas las cadenas finitas sobre un alfabeto <span class="m">A</span>, con la concatenación. Es asociativa, pero <strong>no</strong> conmutativa.</p>
+    <p><strong>Monoide libre <span class="m">A*</span></strong>: todas las cadenas finitas sobre un alfabeto <span class="m">A</span>, con la concatenación. Incluye la cadena vacía Λ. La concatenación es asociativa; si el alfabeto tiene al menos dos letras, no es conmutativa. El semigrupo libre A⁺ excluye Λ.</p>
   </div>
 
   <div class="lab">
@@ -480,7 +492,7 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
   <div class="app">
     <p class="tag">Aplicación</p>
     <ul>
-      <li><strong>Cómputo en paralelo (reduce/fold, MapReduce):</strong> para sumar millones de datos repartidos en varias máquinas, cada una suma su parte y luego se combinan. Funciona porque <span class="m">(ℕ, +)</span> es monoide: la asociatividad permite agrupar en cualquier orden y la identidad 0 es el valor inicial.</li>
+      <li><strong>Cómputo en paralelo (reduce/fold, MapReduce):</strong> para sumar millones de datos repartidos en varias máquinas, cada una suma su parte y luego se combinan. Funciona porque <span class="m">(ℕ, +)</span> es monoide: la asociatividad permite cambiar los paréntesis sin cambiar el orden de los datos y la identidad 0 es el valor inicial.</li>
       <li>Procesadores de texto y lenguajes de programación trabajan con el monoide de cadenas. Las transiciones de una máquina de estados también forman un monoide.</li>
     </ul>
   </div>
@@ -716,8 +728,8 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
     </dl>
     <dl class="props">
       <dt>Divisores de cero</dt><dd><span class="m">a ≠ 0</span>, <span class="m">b ≠ 0</span> con <span class="m">ab = 0</span>.</dd>
-      <dt>Dominio entero</dt><dd>Anillo conmutativo, con identidad 1 y sin divisores de cero.</dd>
-      <dt>Campo</dt><dd>Anillo conmutativo con identidad donde todo <span class="m">a ≠ 0</span> tiene inverso multiplicativo.</dd>
+      <dt>Dominio entero</dt><dd>Anillo conmutativo, con identidad 1 ≠ 0 y sin divisores de cero.</dd>
+      <dt>Campo</dt><dd>Anillo conmutativo con identidad 1 ≠ 0 donde todo <span class="m">a ≠ 0</span> tiene inverso multiplicativo.</dd>
       <dt>Homomorfismo</dt><dd><span class="m">f(a + b) = f(a) + f(b)</span> y <span class="m">f(ab) = f(a)f(b)</span>. Ejemplo: <span class="m">ℤ → ℤₙ</span>.</dd>
     </dl>
   </div>
@@ -740,7 +752,7 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
   <div class="app">
     <p class="tag">Aplicación</p>
     <ul>
-      <li><strong>AES</strong>, el cifrado de WhatsApp, bancos y Wi-Fi, opera en un campo finito de 256 elementos, <span class="m">GF(2⁸)</span>.</li>
+      <li><strong>AES</strong> usa el campo de 256 elementos <span class="m">GF(2⁸)</span> para operar con bytes. No es <span class="m">ℤ₂₅₆</span>: 256 no es primo.</li>
       <li><strong>Códigos Reed–Solomon</strong> (códigos QR, CD, DVD) usan campos finitos para reconstruir datos dañados.</li>
     </ul>
   </div>
@@ -882,7 +894,9 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
     <div class="block" style="gap:6px"><span class="hint">2. Palabra enviada:</span><div class="bits" id="cSent"></div></div>
     <div class="block" style="gap:6px"><span class="hint">3. Palabra recibida (toca para simular ruido):</span><div class="bits" id="cRecv"></div></div>
     <div class="out" id="cInfo"></div>
-    <div class="verdict" id="cVerdict"></div>
+    <div class="verdict" id="cVerdict" aria-live="polite"></div>
+    <button class="btn" id="cReset">Quitar ruido · nueva transmisión</button>
+    <p class="hint">El simulador conoce la palabra enviada para medir el error. El receptor solo conoce la recibida y la regla del código.</p>
   </div>
 
   <div class="app">
@@ -904,7 +918,7 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
   <button class="deck-btn next" id="deckNext">Sigue →</button>
 </nav>
 <footer>
-  <div class="wrap">Unidad 3 · Estructuras algebraicas · Matemáticas discretas. Basado en el capítulo 3 de <em>Estructuras de matemáticas discretas para la computación</em> (Kolman y Busby).</div>
+  <div class="wrap">Unidad 3 · Estructuras algebraicas · Matemáticas discretas. Ruta alineada con la guía de exposición de la pareja; referencia del guion: Tremblay y Manohar.</div>
 </footer>
 
 <script>
@@ -931,7 +945,7 @@ function setActive(id){
   const s = document.getElementById(id);
   if (s) where.textContent = s.dataset.name || '';
 }
-if ('IntersectionObserver' in window){
+if (!document.getElementById('deckBar') && 'IntersectionObserver' in window){
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) setActive(e.target.id); }), {rootMargin:'-35% 0px -60% 0px'});
   sections.forEach(s => io.observe(s));
 }
@@ -1230,12 +1244,12 @@ function renderC(){
   $('#cSent').innerHTML = sent.map((b,i)=>`<span class="bit ${cs.code==='par'&&i===4?'par':''} ${gapAt(i)?'gap':''}" style="display:grid;place-items:center">${b}</span>`).join('');
   $('#cRecv').innerHTML = recv.map((b,i)=>`<button class="bit ${cs.flips.has(i)?'err':''} ${gapAt(i)?'gap':''}" data-i="${i}" aria-label="bit recibido ${i+1}">${b}</button>`).join('');
   const d = cs.flips.size, w = recv.reduce((s,b)=>s+b,0);
-  let info = `δ(enviada, recibida) = ${d} error(es)   ·   distancia mínima del código = ${cs.code==='par'?2:3}`;
+  let info = `Vista del simulador: δ(enviada, recibida) = ${d} error(es)   ·   distancia mínima del código = ${cs.code==='par'?2:3}`;
   const v = $('#cVerdict');
   if (cs.code==='par'){
     info += `\nPeso de la recibida = ${w} → ${w%2 ? 'impar' : 'par'}`;
     if (w%2){ v.className='verdict warn'; v.textContent='Error DETECTADO: la paridad es impar. No sabemos qué bit cambió, así que hay que pedir que se reenvíe.'; }
-    else if (d===0){ v.className='verdict good'; v.textContent=`Sin errores. Mensaje: ${recv.slice(0,4).join('')}`; }
+    else if (d===0){ v.className='verdict good'; v.textContent=`Paridad correcta: el receptor no detecta error. En esta simulación no aplicamos ruido. Datos recibidos: ${recv.slice(0,4).join('')}`; }
     else { v.className='verdict bad'; v.textContent=`¡${d} errores pasaron sin detectarse! Con distancia 2 solo se garantiza detectar 1 error.`; }
   } else {
     const dec = [0,1,2,3].map(j => (recv[j]+recv[j+4]+recv[j+8]) >= 2 ? 1 : 0);
@@ -1243,13 +1257,14 @@ function renderC(){
     info += `\nVoto por mayoría en cada posición → ${dec.join('')}`;
     if (d===0){ v.className='verdict good'; v.textContent=`Sin errores. Mensaje: ${dec.join('')}`; }
     else if (ok){ v.className='verdict good'; v.textContent=`Error(es) CORREGIDO(S): el receptor recupera ${dec.join('')}.`; }
-    else { v.className='verdict bad'; v.textContent=`Decodificación incorrecta (${dec.join('')}): hubo 2 errores en la misma posición. Este código solo garantiza corregir 1.`; }
+    else { v.className='verdict bad'; v.textContent=`Decodificación incorrecta (${dec.join('')}): cambiaron al menos 2 copias de una misma posición. Este código solo garantiza corregir 1 error total.`; }
   }
   $('#cInfo').textContent = info;
 }
 $('#cCode').addEventListener('click', e=>{ const b=e.target.closest('[data-c]'); if(b){ cs.code=b.dataset.c; cs.flips.clear(); renderC(); } });
 $('#cMsg').addEventListener('click', e=>{ const b=e.target.closest('[data-i]'); if(b){ cs.msg[+b.dataset.i]^=1; cs.flips.clear(); renderC(); } });
 $('#cRecv').addEventListener('click', e=>{ const b=e.target.closest('[data-i]'); if(b){ const i=+b.dataset.i; cs.flips.has(i)?cs.flips.delete(i):cs.flips.add(i); renderC(); } });
+$('#cReset').addEventListener('click',()=>{cs.flips.clear();renderC();});
 renderC();
 
 /* ---------- Preguntas ---------- */
@@ -1270,7 +1285,7 @@ const QUIZ = {
     {q:'¿Cuántos elementos tiene S₄?', o:['8','12','16','24'], a:3, x:'|Sₙ| = n!, y 4! = 24.'},
   ],
   lagrange:[
-    {q:'Un grupo de orden 15 puede tener un subgrupo de orden…', o:['4','5','6','8'], a:1, x:'Por Lagrange el orden del subgrupo divide a 15: solo 1, 3, 5 o 15.'},
+    {q:'¿Qué tamaño NO descarta Lagrange para un subgrupo de un grupo de orden 15?', o:['4','5','6','8'], a:1, x:'5 divide a 15. Lagrange da una condición necesaria: la divisibilidad por sí sola no prueba que un subconjunto sea subgrupo.'},
     {q:'¿Cuáles son los generadores de ℤ₈?', o:['2, 4, 6','0 y 4','1, 3, 5, 7','Solo 1'], a:2, x:'Son los x con mcd(x, 8) = 1. Pruébalo en el reloj con n = 8.'},
     {q:'¿Cuántos grupos abelianos de orden 8 hay (salvo isomorfismo)?', o:['1','2','3','8'], a:2, x:'ℤ₈, ℤ₄ × ℤ₂ y ℤ₂ × ℤ₂ × ℤ₂: uno por cada partición de 3 (3, 2+1, 1+1+1).'},
   ],
@@ -1567,55 +1582,7 @@ loadTab(TABS[0]);
 })();
 </script>
 
-<script>
-(function(){
-const L=[
- {n:'Sistema algebraico',e:'(ℤ, −)',c:'#7B9CFF',d:'un conjunto + <b>una operación cerrada</b>'},
- {n:'Semigrupo',e:'(ℤ⁺, +)',c:'#3FB3CF',d:'Sistema + <b>asociativa</b>',o:'<i>(ℤ, −)</i> se queda afuera: (5−3)−1 ≠ 5−(3−1)'},
- {n:'Monoide',e:'(ℕ, +)',c:'#3DBE9C',d:'Semigrupo + <b>identidad</b>',o:'<i>(ℤ⁺, +)</i> se queda afuera: 0 ∉ ℤ⁺'},
- {n:'Grupo',e:'S₃',c:'#6FB04F',d:'Monoide + <b>inversos</b>',o:'<i>(ℕ, +)</i> se queda afuera: −3 ∉ ℕ'},
- {n:'Grupo abeliano',e:'(ℤ, +)',c:'#A2C04A',d:'Grupo + <b>conmutativa</b>',o:'<i>S₃</i> se queda afuera: ρ₁μ₁ ≠ μ₁ρ₁'},
- {n:'Anillo',e:'ℤ₆',c:'#E39A45',d:'Grupo abeliano + <b>2ª operación (·)</b> y <b>distributiva</b>',o:'<i>(ℤ, +)</i> se queda afuera: solo tiene una operación'},
- {n:'Dominio entero',e:'ℤ',c:'#F0584A',d:'Anillo + <b>sin divisores de cero</b>',o:'<i>ℤ₆</i> se queda afuera: 2 · 3 = 0'},
- {n:'Campo',e:'ℚ, ℝ, ℤ₇',c:'#E3639B',d:'Dominio + <b>inverso para todo a ≠ 0</b>',o:'<i>ℤ</i> se queda afuera: ½ ∉ ℤ'}];
-const cx=540,cy=480,rxOf=k=>k==7?128:490-k*51,ryOf=k=>k==7?82:470-k*50;
-const svg=document.getElementById('onionSvg'),panel=document.getElementById('onionPanel'),wrap=document.getElementById('onionWrap');
-let g=`<ellipse id="og" cx="${cx}" cy="${cy}" rx="200" ry="135" fill="#FFE066" opacity="0"/>`;
-L.forEach((l,k)=>{const rx=rxOf(k),ry=ryOf(k);
- g+=`<ellipse id="of${k}" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${l.c}" fill-opacity="0"/>`+
- `<path id="op${k}" d="M${cx},${cy-ry} A${rx},${ry} 0 1 1 ${cx},${cy+ry} A${rx},${ry} 0 1 1 ${cx},${cy-ry}" pathLength="1" fill="none" stroke="${l.c}" stroke-width="${k==7?5:3}" stroke-dasharray="1" stroke-dashoffset="1"/>`;
- if(k<7){g+=`<text id="on${k}" x="${cx}" y="${cy-ry+37}" text-anchor="middle" font-size="30" font-weight="600" fill="${l.c}" opacity="0">${l.n}</text>`+
-   `<text id="oe${k}" x="${cx}" y="${cy+ry-14}" text-anchor="middle" font-size="28" fill="currentColor" opacity="0">${l.e}</text>`;}
- else{g+=`<text id="on${k}" x="${cx}" y="${cy-12}" text-anchor="middle" font-size="42" font-weight="600" fill="${l.c}" opacity="0">${l.n}</text>`+
-   `<text id="oe${k}" x="${cx}" y="${cy+36}" text-anchor="middle" font-size="34" fill="currentColor" opacity="0">${l.e}</text>`;}});
-svg.innerHTML=g; svg.style.color='var(--ink)';
-// mover brillo justo debajo del campo
-svg.insertBefore(svg.querySelector('#og'), svg.querySelector('#of7'));
-const DT=1.7, FIN=8*DT+.8, cl=(x)=>Math.min(1,Math.max(0,x)), ease=x=>{x=cl(x);return 1-Math.pow(1-x,3)}, pr=(t,a,d)=>ease((t-a)/d);
-const $=id=>svg.querySelector('#'+id);
-let cur=-2;
-function setPanel(k){ if(k===cur) return; cur=k;
- if(k<0){panel.innerHTML='';return;}
- if(k>=8){panel.innerHTML=`<p class="n">Hacia adentro: más reglas, menos miembros</p><ul>${[...L].reverse().map((l,i)=>`<li>${i?'<span style="color:var(--muted)">⊂ </span>':''}<span style="color:${l.c};font-weight:700">${l.n}</span></li>`).join('')}</ul>`;return;}
- const l=L[k]; panel.innerHTML=`<p class="k">PASO ${k+1} DE 8</p><p class="n" style="color:${l.c}">${l.n}</p><p class="d">= ${l.d}</p><p>ej. ${l.e}</p>${l.o?`<p class="o">✗ ${l.o}</p>`:''}`;}
-function render(t){
- L.forEach((l,k)=>{const s=k*DT;
-  $('op'+k).setAttribute('stroke-dashoffset',1-pr(t,s,.8));
-  $('of'+k).setAttribute('fill-opacity',(k==7?.25:.07)*pr(t,s+.5,.5));
-  $('on'+k).setAttribute('opacity',pr(t,s+.4,.4));
-  const ex=$('oe'+k); ex.setAttribute('opacity',pr(t,s+.8,.4));
-  if(k<7){const a=(k+1)*DT+.3,f=cl(pr(t,a,.25)-pr(t,a+1.2,.3)); ex.setAttribute('fill',f>.05?'#E5484D':'currentColor');}});
- $('og').setAttribute('opacity',.18*pr(t,7*DT+.8,.8));
- setPanel(t>=FIN?8:Math.min(7,Math.floor(t/DT)));}
-let t0=null,raf=0;
-const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-function loop(ts){if(t0===null)t0=ts;const t=(ts-t0)/1000;render(t);if(t<FIN+.5)raf=requestAnimationFrame(loop);}
-function play(){cancelAnimationFrame(raf);cur=-2;if(reduce){render(FIN+1);return;}t0=null;raf=requestAnimationFrame(loop);}
-render(FIN+1); // completo en reposo
-if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){play();io.disconnect();}},{threshold:.3});io.observe(svg);}
-document.getElementById('onionReplay').addEventListener('click',play);
-})();
-</script>
+
 
 <script>
 (function(){
@@ -1668,84 +1635,6 @@ function renderMix(){
 })();
 </script>
 
-<script>
-(function(){
-const root=document.documentElement; root.classList.add('slides');
-const header=document.querySelector('header.top'), bar=document.getElementById('deckBar');
-const setVars=()=>{ root.style.setProperty('--hdr',header.offsetHeight+'px'); root.style.setProperty('--bar',bar.offsetHeight+'px'); };
-setVars(); addEventListener('resize',setVars); if('ResizeObserver' in window){ new ResizeObserver(setVars).observe(header); new ResizeObserver(setVars).observe(bar); }
-
-// Armar las diapositivas
-const sections=[...document.querySelectorAll('main.wrap > section')];
-const slides=[];
-sections.forEach(sec=>{
-  const kids=[...sec.children];
-  if(sec.classList.contains('topic')){
-    const head=sec.querySelector(':scope > .head');
-    slides.push({sec,show:[head],compact:false});
-    kids.filter(k=>k!==head).forEach(k=>slides.push({sec,show:[head,k],compact:true}));
-  } else if(sec.id==='inicio'){
-    const onion=kids.find(k=>k.querySelector && k.querySelector('#onionWrap'));
-    const rest=kids.filter(k=>k!==onion);
-    slides.push({sec,show:rest,compact:false});
-    if(onion) slides.push({sec,show:[onion],compact:false});
-  } else {
-    slides.push({sec,show:kids,compact:false});
-  }
-});
-
-const prev=document.getElementById('deckPrev'), next=document.getElementById('deckNext'), info=document.getElementById('deckInfo');
-const links=[...document.querySelectorAll('#nav a')], where=document.getElementById('where'), progress=document.getElementById('progress');
-let cur=0;
-function go(i){
-  i=Math.max(0,Math.min(slides.length-1,i)); cur=i; const sl=slides[i];
-  sections.forEach(sec=>{ sec.classList.toggle('cur',sec===sl.sec); });
-  [...sl.sec.children].forEach(k=>k.classList.toggle('off',!sl.show.includes(k)));
-  sl.sec.classList.toggle('compact',sl.compact);
-  sl.sec.scrollTop=0;
-  prev.disabled = i===0; next.disabled = i===slides.length-1;
-  next.textContent = i===slides.length-1 ? 'Fin' : 'Sigue →';
-  const name=sl.sec.dataset.name||''; info.textContent=`${i+1} / ${slides.length} · ${name}`;
-  if(where) where.textContent=name;
-  links.forEach(a=>{ const on=a.getAttribute('href')==='#'+sl.sec.id; a.classList.toggle('on',on); if(on){ try{a.scrollIntoView({block:'nearest',inline:'center'});}catch(e){} } });
-  if(progress) progress.style.width=((i+1)/slides.length*100)+'%';
-  dispatchEvent(new Event('resize'));
-  fit();
-}
-// Ajuste automático: si la diapositiva no cabe, se reduce lo justo para que quepa
-function fit(){
-  const sl=slides[cur], sec=sl.sec; if(sec.id==='entrada') return;
-  const kids=sl.show; kids.forEach(k=>k.style.zoom='');
-  for(let t=0;t<3;t++){
-    const need=sec.scrollHeight, have=sec.clientHeight;
-    if(need<=have+1) break;
-    const z0=parseFloat(kids[0].style.zoom||'1');
-    const z=Math.max(.58, z0*have/need*.985);
-    kids.forEach(k=>k.style.zoom=z);
-    if(z<=.58) break;
-  }
-}
-let fitT; addEventListener('resize',()=>{ clearTimeout(fitT); fitT=setTimeout(fit,120); });
-prev.addEventListener('click',()=>go(cur-1));
-next.addEventListener('click',()=>go(cur+1));
-// Barra de temas: saltar a la primera diapositiva del tema
-document.getElementById('nav').addEventListener('click',e=>{
-  const a=e.target.closest('a'); if(!a) return; e.preventDefault();
-  const id=a.getAttribute('href').slice(1), i=slides.findIndex(s=>s.sec.id===id); if(i>=0) go(i);
-},true);
-// Enlaces internos (#s31, #tablelab…) dentro del contenido
-document.querySelector('main.wrap').addEventListener('click',e=>{
-  const a=e.target.closest('a[href^="#"]'); if(!a) return; e.preventDefault();
-  const t=document.querySelector(a.getAttribute('href')); if(!t) return;
-  const i=slides.findIndex(s=>s.sec===t || s.show.some(k=>k===t || k.contains(t)) && (s.compact || s.sec===t)); if(i>=0) go(i);
-});
-// Teclado (proyector)
-addEventListener('keydown',e=>{
-  if(e.target.closest('input,select,textarea')) return;
-  if(e.key==='ArrowRight'||e.key==='PageDown'){ e.preventDefault(); go(cur+1); }
-  if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); go(cur-1); }
-});
-go(0);
-})();
-</script>
+<script src="assets/exposicion.js"></script>
+<script src="assets/presentacion.js"></script>
 </body></html>
