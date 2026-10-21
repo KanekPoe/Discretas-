@@ -14,7 +14,9 @@
     if(live){
       const intro=document.getElementById('inicio');
       add(intro,originalKids.get(intro).filter(k=>!k.querySelector('#onionWrap')&&!k.matches('.learning-game')),'Apertura');
-      const props=document.getElementById('entrada');add(props,originalKids.get(props),'Demuestra: cambia orden y paréntesis');
+      const props=document.getElementById('entrada');
+      add(props,[props.querySelector('#maquinas')],'Predice y ejecuta las dos máquinas');
+      add(props,[props.querySelector('#camino-inverso')],'Deshacer sin salir del conjunto');
       add(intro,[intro.querySelector('#onionWrap').parentElement],'Mapa de estructuras');
       add(intro,[intro.querySelector('.learning-game')],'Predice → comprueba → explica');
       sections.filter(s=>!['entrada','inicio','cierre'].includes(s.id)).forEach(sec=>{
@@ -33,7 +35,7 @@
         }else if(sec.id==='inicio'){
           add(sec,kids.filter(k=>!k.querySelector('#onionWrap')&&!k.matches('.learning-game')),'Apertura');
           kids.filter(k=>k.querySelector('#onionWrap')||k.matches('.learning-game')).forEach(k=>add(sec,[k],'Mapa y reto'));
-        }else add(sec,kids,'Exploración');
+        }else kids.forEach(k=>add(sec,[k],k.id==='maquinas'?'Orden y agrupación':k.id==='camino-inverso'?'El inverso':'Laboratorio de gráficas'));
       });
     }
   }
