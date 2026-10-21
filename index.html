@@ -1929,6 +1929,8 @@ function renderMix(){
 
 <script>
 (function(){
+const $ = id => document.getElementById(id);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const root=document.documentElement; root.classList.add('slides');
 const header=document.querySelector('header.top'), bar=document.getElementById('deckBar');
 const setVars=()=>{ root.style.setProperty('--hdr',header.offsetHeight+'px'); root.style.setProperty('--bar',bar.offsetHeight+'px'); };
