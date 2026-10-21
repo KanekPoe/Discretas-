@@ -1,6 +1,11 @@
 /* Actividades de exposición: predecir, comprobar, explicar y transferir. */
 (() => {
   const $ = s => document.querySelector(s);
+  const square = document.getElementById('squareModal');
+  document.getElementById('btnOpenSquare').addEventListener('click',()=>square.showModal());
+  document.getElementById('btnSquareClose').addEventListener('click',()=>square.close());
+  square.addEventListener('click',e=>{if(e.target===square){const r=square.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)square.close();}});
+
   const plan = {
     entrada: {speaker:1, time:'00–06 min', idea:'Cambiar el orden no es lo mismo que cambiar los paréntesis.', lab:'.plab'},
     inicio: {speaker:1, time:'00–06 min', idea:'Una estructura se clasifica por su conjunto y sus operaciones.', lab:'.block'},

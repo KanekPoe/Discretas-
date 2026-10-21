@@ -1,0 +1,603 @@
+\documentclass[11pt,a4paper]{article}
+
+% ================= PACKAGES =================
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-nodecimaldot,es-noquoting]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{geometry}
+\geometry{top=2.2cm, bottom=2.2cm, left=2cm, right=2cm}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[many]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{matrix,arrows.meta,positioning,shapes.geometric,babel}
+\usepackage{hyperref}
+
+% ================= COLORES =================
+\definecolor{primary}{RGB}{30, 58, 138}       % Azul marino institucional
+\definecolor{secondary}{RGB}{107, 33, 168}    % Púrpura
+\definecolor{accent}{RGB}{13, 148, 136}       % Verde azulado
+\definecolor{darkbg}{RGB}{15, 23, 42}         % Texto oscuro
+\definecolor{exp1bg}{RGB}{224, 231, 255}      % Fondo badge Tú
+\definecolor{exp1fg}{RGB}{55, 48, 163}        % Texto badge Tú
+\definecolor{exp2bg}{RGB}{252, 231, 243}      % Fondo badge Compañero
+\definecolor{exp2fg}{RGB}{157, 23, 77}        % Texto badge Compañero
+
+% ================= TCOLORBOX DEFINICIONES =================
+\newtcolorbox{definicion}[1][]{
+  colback=green!5!white,
+  colframe=green!60!black,
+  coltitle=white,
+  fonttitle=\bfseries\sffamily,
+  title=Definición Formal: #1,
+  boxrule=0.8pt,
+  arc=3mm,
+  left=3mm, right=3mm, top=2mm, bottom=2mm
+}
+
+\newtcolorbox{teorema}[1][]{
+  colback=blue!4!white,
+  colframe=primary,
+  coltitle=white,
+  fonttitle=\bfseries\sffamily,
+  title=Teorema Clave: #1,
+  boxrule=0.8pt,
+  arc=3mm,
+  left=3mm, right=3mm, top=2mm, bottom=2mm
+}
+
+\newtcolorbox{aplicacion}[1][]{
+  colback=purple!4!white,
+  colframe=secondary,
+  coltitle=white,
+  fonttitle=\bfseries\sffamily,
+  title=Aplicación en Ciencias de la Computación: #1,
+  boxrule=0.8pt,
+  arc=3mm,
+  left=3mm, right=3mm, top=2mm, bottom=2mm
+}
+
+\newtcolorbox{minijuego}[1][]{
+  colback=orange!5!white,
+  colframe=orange!80!black,
+  coltitle=white,
+  fonttitle=\bfseries\sffamily,
+  title=Dinámica de Mini-Juego (2 a 3 min): #1,
+  boxrule=0.8pt,
+  arc=3mm,
+  left=3mm, right=3mm, top=2mm, bottom=2mm
+}
+
+% ================= COMANDOS PERSONALIZADOS =================
+\newcommand{\badgeTu}{\colorbox{exp1bg}{\textcolor{exp1fg}{\bfseries\sffamily\footnotesize EXPOSITOR 1: TÚ}}}
+\newcommand{\badgeComp}{\colorbox{exp2bg}{\textcolor{exp2fg}{\bfseries\sffamily\footnotesize EXPOSITOR 2: COMPAÑERO}}}
+\newcommand{\badgeAmbos}{\colorbox{green!20}{\textcolor{green!60!black}{\bfseries\sffamily\footnotesize AMBOS EXPOSITORES}}}
+
+% ================= ENCABEZADO Y PIE =================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily\textcolor{gray}{Matemáticas Discretas · Unidad 3: Estructuras Algebraicas}}
+\fancyhead[R]{\small\sffamily\textcolor{gray}{Guía Académica y Plan de Exposición}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% ================= FORMATO DE TÍTULOS =================
+\titleformat{\section}{\Large\bfseries\sffamily\color{primary}}{\thesection.}{0.5em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries\sffamily\color{secondary}}{\thesubsection.}{0.5em}{}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primary,
+  citecolor=secondary,
+  urlcolor=accent
+}
+
+% ================= INICIO DEL DOCUMENTO =================
+\begin{document}
+
+% --- PORTADA ---
+\begin{titlepage}
+  \centering
+  \vspace*{1.5cm}
+  
+  {\Large\bfseries\sffamily\color{primary} FACULTAD DE INGENIERÍA / CIENCIAS DE LA COMPUTACIÓN}\\[0.3cm]
+  {\large\sffamily MATEMÁTICAS DISCRETAS · UNIDAD 3}\\[1.5cm]
+  
+  \rule{\linewidth}{1.5pt}\\[0.5cm]
+  {\huge\bfseries\sffamily Estructuras Algebraicas y sus Aplicaciones en Computación}\\[0.3cm]
+  {\large\sffamily Análisis Teórico Riguroso, Guión de Exposición (60 Minutos) y 9 Mini-Juegos Interactivos}\\[0.5cm]
+  \rule{\linewidth}{1.5pt}\\[2cm]
+  
+  \begin{minipage}{0.45\textwidth}
+    \begin{flushleft} \large
+      \textbf{Expositor 1 (Inicia):}\\
+      \badgeTu\\[0.5cm]
+      \textbf{Expositor 2 (Secundario):}\\
+      \badgeComp
+    \end{flushleft}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.45\textwidth}
+    \begin{flushright} \large
+      \textbf{Texto de Referencia Base:}\\
+      \textit{Discrete Mathematical Structures with Applications to Computer Science}\\
+      \small J.P. Tremblay \& R. Manohar
+    \end{flushright}
+  \end{minipage}\\[2.5cm]
+  
+  \vfill
+  {\large\sffamily\bfseries Modalidad: Exposición Oral Alternada en Pareja con Apoyo de Simuladores Web Interactivos}\\[0.3cm]
+  {\small Semestre Académico 2026}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ================= SECCIÓN 1: DISTRIBUCIÓN =================
+\section{Estrategia de Exposición y Reparto Alternado (60 Minutos)}
+
+Para garantizar el dinamismo de la sesión de 1 hora, la presentación se organiza en \textbf{9 bloques temáticos alternados}. Cada bloque cuenta con un tiempo estimado de entre \textbf{5 y 7 minutos}, dividido internamente en:
+\begin{enumerate}[noitemsep]
+  \item \textbf{Fundamento teórico y definición axiomática:} 2 minutos.
+  \item \textbf{Demostración interactiva en la plataforma web:} 1 a 2 minutos.
+  \item \textbf{Dinámica de mini-juego participativo con el grupo:} 2 a 3 minutos.
+  \item \textbf{Aplicación real en computación y pase de estafeta:} 1 minuto.
+\end{enumerate}
+
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{c c X X}
+\toprule
+\textbf{Minutos} & \textbf{Expositor} & \textbf{Tema / Sección} & \textbf{Herramienta y Mini-Juego Integrado} \\
+\midrule
+00:00 -- 06:00 & \badgeTu & \textbf{Tema 0:} Propiedades y Mapa Concéntrico & Sliders Canvas 2D + \textit{Juego 0: ¿En qué Óvalo Cae?} \\
+06:00 -- 12:00 & \badgeComp & \textbf{Tema 3-1:} Sistemas y Homomorfismos & Cuadrado Conmutativo + \textit{Juego 1: Sudoku de Cayley} \\
+12:00 -- 17:00 & \badgeTu & \textbf{Tema 3-2:} Semigrupos, Monoides y Cadenas & Monoide $(A^*, \cdot)$ + \textit{Juego 2: ¿Conmutan o Chocan?} \\
+17:00 -- 22:00 & \badgeComp & \textbf{Tema 3-3:} Gramáticas y Lenguajes BNF & Derivación $a^n b^n$ + \textit{Juego 3: ¿Compila o Explota?} \\
+22:00 -- 29:00 & \badgeTu & \textbf{Tema 3-5 A:} Grupos y Simetrías de $S_3$ & Triángulo equilátero + \textit{Juego 4: Triángulo Loco} \\
+29:00 -- 36:00 & \badgeComp & \textbf{Tema 3-5 B:} Subgrupos y Teorema de Lagrange & Reloj circular $\mathbb{Z}_n$ + \textit{Juego 5: El Impostor de Lagrange} \\
+36:00 -- 42:00 & \badgeTu & \textbf{Tema 3-5 C:} Anillos, Dominios y Campos & Divisores de cero + \textit{Juego 6: Caza de Divisores} \\
+42:00 -- 48:00 & \badgeComp & \textbf{Tema 3-6:} Aritmética de Residuos (RNS) & Calculadora sin acarreo + \textit{Juego 7: El Oráculo Chino} \\
+48:00 -- 54:00 & \badgeTu & \textbf{Tema 3-7:} Códigos de Grupo y Hamming & Inversión de bits + \textit{Juego 8: Atrapa al Hacker} \\
+54:00 -- 60:00 & \badgeAmbos & \textbf{Cierre:} Conclusión y Banco de Preguntas & Quizzes interactivos y dudas del profesor \\
+\bottomrule
+\end{tabularx}
+\caption{Cronograma maestro de exposición alternada con dinámicas integradas.}
+\end{table}
+
+\newpage
+
+% ================= SECCIÓN 2: TEMA 0 =================
+\section{Tema 0: Fundamentos y Jerarquía Concéntrica («Muñecas Rusas»)}
+\noindent\badgeTu \hfill \textbf{Tiempo estimado: 00:00 -- 06:00 min}
+
+\subsection{Definición de Operación Binaria y Axiomas Fundamentales}
+En álgebra moderna, el foco de estudio no son los elementos numéricos aislados, sino la interacción que las operaciones inducen sobre el conjunto.
+
+\begin{definicion}[Operación Binaria y Axiomas Operacionales]
+Sea $S$ un conjunto no vacío. Una \textbf{operación binaria} $*$ es una función que asigna a cada par ordenado $(a, b) \in S \times S$ un elemento único $a * b \in S$ (propiedad de \textbf{cerradura}).
+\begin{itemize}[noitemsep]
+  \item \textbf{Asociatividad:} $\forall a, b, c \in S, \quad (a * b) * c = a * (b * c)$.
+  \item \textbf{Conmutatividad:} $\forall a, b \in S, \quad a * b = b * a$.
+  \item \textbf{Elemento Neutro (Identidad):} $\exists e \in S \quad \text{tal que} \quad \forall a \in S, \quad a * e = e * a = a$.
+  \item \textbf{Elemento Inverso:} $\forall a \in S, \quad \exists a^{-1} \in S \quad \text{tal que} \quad a * a^{-1} = a^{-1} * a = e$.
+  \item \textbf{Distributividad:} Dadas dos operaciones $*$ y $\cdot$, se cumple que $a \cdot (b * c) = (a \cdot b) * (a \cdot c)$.
+  \item \textbf{Propiedad de Cancelación:} $a * b = a * c \land a \neq 0 \implies b = c$.
+\end{itemize}
+\end{definicion}
+
+\subsection{La Jerarquía de Inclusión («Las Muñecas Rusas»)}
+A medida que se añaden restricciones axiomáticas, la estructura se vuelve más potente formalmente, pero encierra a un subconjunto más reducido de sistemas:
+\begin{align*}
+  \text{Sistemas Algebraicos} &\supset \text{Semigrupos} \supset \text{Monoides} \supset \text{Grupos} \supset \text{Grupos Abelianos} \\
+  &\supset \text{Anillos} \supset \text{Dominios Enteros} \supset \text{Campos}
+\end{align*}
+
+\begin{minijuego}{¿En qué Óvalo Cae? (The Russian Doll Drop)}
+\textbf{Mecánica:} La aplicación proyecta al azar un sistema misterioso, por ejemplo $(\mathbb{Z}, -)$, $(\mathbb{N}, +)$, o $(\mathbb{Q} \setminus \{0\}, \cdot)$. La clase vota en 10 segundos cuál es el nivel máximo alcanzado antes de rebotar. Si eligen Grupo para $(\mathbb{N}, +)$, el sistema emite una alerta roja: \textit{«¡Rebotó! Falta el inverso aditivo de los positivos: $-3 \notin \mathbb{N}$»}.
+\end{minijuego}
+
+\newpage
+
+% ================= SECCIÓN 3: TEMA 3-1 =================
+\section{Tema 3-1: Sistemas Algebraicos, Cayley y Homomorfismos}
+\noindent\badgeComp \hfill \textbf{Tiempo estimado: 06:00 -- 12:00 min}
+
+\subsection{Tablas de Cayley y Diagnóstico Visual}
+Para sistemas finitos de orden pequeño, la operación binaria se representa mediante una matriz cuadrada de Cayley.
+
+\begin{teorema}[Propiedades Visuales en una Tabla de Cayley]
+Sea $(G, *)$ un grupo finito con tabla de Cayley:
+\begin{enumerate}[noitemsep]
+  \item \textbf{Conmutatividad:} La matriz es simétrica respecto a su diagonal principal ($T_{ij} = T_{ji}$).
+  \item \textbf{Elemento Neutro:} La fila y columna de $e$ replican exactamente la fila y columna de encabezado.
+  \item \textbf{Propiedad de Cuadrado Latino:} Todo elemento $x \in G$ aparece \textbf{exactamente una vez en cada fila y en cada columna}. Esto garantiza que la multiplicación por la izquierda y derecha son funciones biyectivas.
+\end{enumerate}
+\end{teorema}
+
+\subsection{Homomorfismos e Isomorfismos: El Cuadrado Conmutativo}
+\begin{definicion}[Homomorfismo de Sistemas]
+Sean $(S, *)$ y $(T, \star)$ dos sistemas algebraicos. Una función $f: S \to T$ es un \textbf{homomorfismo} si satisface:
+\begin{equation}
+  f(a * b) = f(a) \star f(b) \quad \forall a, b \in S
+\end{equation}
+Si además $f$ es biyectiva, se denomina \textbf{isomorfismo} ($S \cong T$).
+\end{definicion}
+
+El homomorfismo garantiza la conmutatividad del siguiente diagrama:
+\begin{center}
+\begin{tikzpicture}[scale=1.5, auto]
+  \node (S2) at (0, 1.5) {$S \times S$};
+  \node (S) at (2.5, 1.5) {$S$};
+  \node (T2) at (0, 0) {$T \times T$};
+  \node (T) at (2.5, 0) {$T$};
+  
+  \draw[->, thick] (S2) to node {$*$} (S);
+  \draw[->, thick] (S2) to node [swap] {$f \times f$} (T2);
+  \draw[->, thick] (S) to node {$f$} (T);
+  \draw[->, thick] (T2) to node [swap] {$\star$} (T);
+\end{tikzpicture}
+\end{center}
+
+\begin{aplicacion}{Desbordamiento Aritmético en Procesadores}
+Los registros de enteros sin signo de 32 bits en hardware no representan los enteros infinitos $\mathbb{Z}$, sino el anillo cociente finito $\mathbb{Z}_{2^{32}}$. Cuando una operación excede $2^{32}-1$, se produce un desbordamiento cíclico volviendo a $0$, gobernado por la congruencia módulo $2^{32}$.
+\end{aplicacion}
+
+\begin{minijuego}{El Sudoku de Cayley}
+\textbf{Mecánica:} La pantalla muestra una tabla de Cayley $4 \times 4$ incompleta con una casilla marcada con \textbf{«?»}. La clase debe deducir en menos de 15 segundos cuál es el elemento faltante basándose en que ningún símbolo puede repetirse en la misma fila ni columna.
+\end{minijuego}
+
+\newpage
+
+% ================= SECCIÓN 4: TEMA 3-2 =================
+\section{Tema 3-2: Semigrupos, Monoides y Cadenas}
+\noindent\badgeTu \hfill \textbf{Tiempo estimado: 12:00 -- 17:00 min}
+
+\subsection{El Monoide Libre de Cadenas $(A^*, \cdot)$}
+\begin{definicion}[Monoide Libre]
+Sea $A$ un alfabeto finito. El conjunto de todas las cadenas finitas formadas con símbolos de $A$ se denota por $A^*$. Definida la operación de concatenación $(\cdot)$, el sistema $(A^*, \cdot, \Lambda)$ constituye un \textbf{monoide libre}:
+\begin{itemize}[noitemsep]
+  \item Es cerrado y asociativo: $(uv)w = u(vw)$ para todo $u, v, w \in A^*$.
+  \item Posee elemento neutro: La cadena vacía $\Lambda$ (o $\varepsilon$), ya que $w \cdot \Lambda = \Lambda \cdot w = w$.
+  \item \textbf{No es conmutativo:} En general $u \cdot v \neq v \cdot u$ (ejemplo: $\text{ab} \cdot \text{cd} = \text{abcd} \neq \text{cdab} = \text{cd} \cdot \text{ab}$).
+\end{itemize}
+\end{definicion}
+
+\subsection{El Homomorfismo de Longitud}
+La función $\ell: A^* \to \mathbb{N}$ que cuenta el número de caracteres cumple que:
+\begin{equation}
+  \ell(u \cdot v) = \ell(u) + \ell(v) \quad \text{y} \quad \ell(\Lambda) = 0
+\end{equation}
+Por ende, $\ell$ es un homomorfismo directo entre el monoide no conmutativo $(A^*, \cdot)$ y el monoide aditivo conmutativo $(\mathbb{N}, +)$.
+
+\begin{aplicacion}{Computación Paralela Masiva (MapReduce / Big Data)}
+Para procesar petabytes de datos en clusters distribuidos (Hadoop, Apache Spark), se requiere paralelizar sumas o agregaciones. La asociatividad del monoide permite que cada máquina compute su partición independientemente sin importar el orden de agrupación:
+\begin{equation*}
+  (D_1 + D_2) + (D_3 + D_4) = ((D_1 + D_2) + D_3) + D_4
+\end{equation*}
+El elemento neutro garantiza la inicialización segura de acumuladores en cero en cada nodo.
+\end{aplicacion}
+
+\begin{minijuego}{Duelo de Cadenas: ¿Conmutan o Chocan?}
+\textbf{Mecánica:} La aplicación proyecta dos cadenas $x$ e $y$. La clase debe gritar si $xy = yx$ o si chocan $xy \neq yx$. La app evalúa el producto y demuestra que únicamente conmutan si ambas palabras provienen de una misma subcadena raíz periódica.
+\end{minijuego}
+
+\newpage
+
+% ================= SECCIÓN 5: TEMA 3-3 =================
+\section{Tema 3-3: Gramáticas Formales, Jerarquía de Chomsky y BNF}
+\noindent\badgeComp \hfill \textbf{Tiempo estimado: 17:00 -- 22:00 min}
+
+\subsection{Definición Formal de Gramática de Estructura de Frase}
+Un lenguaje $L \subseteq A^*$ con infinitas cadenas admisibles requiere un mecanismo generador finito.
+
+\begin{definicion}[Gramática Formal]
+Una gramática es una cuádrupla $G = (V, S, v_0, \mapsto)$ donde:
+\begin{itemize}[noitemsep]
+  \item $V$ es el vocabulario finito total.
+  \item $S \subset V$ son los símbolos \textbf{terminales} (alfabeto del lenguaje final). $N = V \setminus S$ son los \textbf{no terminales}.
+  \item $v_0 \in N$ es el símbolo inicial (axioma).
+  \item $\mapsto$ es el conjunto finito de producciones de la forma $\alpha \mapsto \beta$, con $\alpha \in V^* N V^*$.
+\end{itemize}
+\end{definicion}
+
+\subsection{Clasificación de Chomsky}
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{c l X l}
+\toprule
+\textbf{Tipo} & \textbf{Nombre del Lenguaje} & \textbf{Restricción en Producciones} & \textbf{Autómata Reconocedor} \\
+\midrule
+\textbf{0} & Sin restricciones & $\alpha \mapsto \beta$ sin restricciones & Máquina de Turing \\
+\textbf{1} & Sensible al contexto & $|\alpha| \le |\beta|$ (no contractivas) & Autómata linealmente acotado \\
+\textbf{2} & Libre de contexto & $A \mapsto \gamma$ con $A \in N$ & Autómata de pila (PDA) \\
+\textbf{3} & Regular & $A \mapsto a$ o $A \mapsto aB$ & Autómata finito determinista (DFA) \\
+\bottomrule
+\end{tabularx}
+\caption{La Jerarquía de Chomsky en ciencias de la computación.}
+\end{table}
+
+\begin{aplicacion}{Notación BNF y Analizadores Sintácticos (Parsers)}
+La notación \textbf{BNF} (\textit{Backus-Naur Form}) describe la gramática de lenguajes como C++, Python y SQL. El parser de un compilador construye el árbol de sintaxis abstracta (*AST*) intentando derivar el código fuente desde el axioma $v_0$; si la derivación se traba, emite un error de compilación.
+\end{aplicacion}
+
+\begin{minijuego}{¿Compila o Explota? (The Compiler Trap)}
+\textbf{Mecánica:} La app muestra 3 nombres de variables (ej. \texttt{var\_total}, \texttt{2contador}, \texttt{precio\$}). La clase tiene 10 segundos para señalar cuál de ellos viola la regla BNF y hará explotar al compilador con un \textit{Syntax Error}.
+\end{minijuego}
+
+\newpage
+
+% ================= SECCIÓN 6: TEMA 3-5 GRUPOS =================
+\section{Tema 3-5: Grupos y el Grupo Simétrico $S_3$}
+\noindent\badgeTu \hfill \textbf{Tiempo estimado: 22:00 -- 29:00 min}
+
+\subsection{Axiomática de Grupo y Propiedades Estructurales}
+\begin{definicion}[Grupo]
+Un sistema $(G, *)$ es un \textbf{grupo} si satisface:
+\begin{enumerate}[noitemsep]
+  \item Asociatividad: $(a * b) * c = a * (b * c) \quad \forall a, b, c \in G$.
+  \item Elemento identidad único $e$: $a * e = e * a = a$.
+  \item Inversos únicos: Para cada $a \in G$ existe un único $a^{-1} \in G$ tal que $a * a^{-1} = a^{-1} * a = e$.
+\end{enumerate}
+\end{definicion}
+
+\begin{teorema}[Propiedades Teóricas de Grupos]
+En todo grupo $(G, *)$ se cumple:
+\begin{itemize}[noitemsep]
+  \item Involución del inverso: $(a^{-1})^{-1} = a$.
+  \item Inversión de productos: $(a * b)^{-1} = b^{-1} * a^{-1}$.
+  \item Leyes de cancelación estricta: $a * b = a * c \implies b = c$ y $b * a = c * a \implies b = c$.
+  \item Solución única de ecuaciones lineales: $a * x = b \iff x = a^{-1} * b$.
+\end{itemize}
+\end{teorema}
+
+\subsection{El Grupo Simétrico $S_3$ (Simetrías del Triángulo Equilátero)}
+El conjunto de permutaciones de 3 elementos bajo composición forma el grupo $S_3$ de orden $|S_3| = 3! = 6$. Se conforma por:
+\begin{itemize}[noitemsep]
+  \item 3 Rotaciones: $\rho_0$ (0°), $\rho_1$ (120°), $\rho_2$ (240°).
+  \item 3 Reflexiones axiales: $\mu_1, \mu_2, \mu_3$.
+  \item \textbf{No es abeliano:} $\rho_1 \circ \mu_1 = \mu_3 \neq \mu_2 = \mu_1 \circ \rho_1$.
+\end{itemize}
+
+\begin{aplicacion}{Motores Gráficos 3D y el Cubo de Rubik}
+Las transformaciones espaciales en videojuegos (rotaciones y reflexiones) se computan componiendo elementos de grupos matriciales ortogonales $SO(3)$ y cuaterniones. El Cubo de Rubik constituye un grupo de permutaciones con $4.32 \times 10^{19}$ estados; resolverlo equivale a aplicar secuencias de inversos algebraicos.
+\end{aplicacion}
+
+\begin{minijuego}{Triángulo Loco: Adivina la Posición Final}
+\textbf{Mecánica:} La pantalla muestra el triángulo con vértices 1, 2 y 3. La app propone una maniobra combinada: $\rho_1 \circ \mu_1$. El salón vota dónde quedará el Vértice 1 (¿arriba, abajo-derecha o abajo-izquierda?). Al pulsar \textit{Animar}, la figura rota y se refleja confirmando el resultado.
+\end{minijuego}
+
+\newpage
+
+% ================= SECCIÓN 7: TEMA 3-5 LAGRANGE =================
+\section{Tema 3-5: Subgrupos, Clases Laterales y Teorema de Lagrange}
+\noindent\badgeComp \hfill \textbf{Tiempo estimado: 29:00 -- 36:00 min}
+
+\subsection{Clases Laterales (*Cosets*) y Partición de un Grupo}
+Sea $H \le G$ un subgrupo de $G$. Para cada $a \in G$, la clase lateral izquierda se define como:
+\begin{equation}
+  aH = \{ a * h : h \in H \}
+\end{equation}
+Las clases laterales forman una \textbf{partición exacta} de $G$: dos clases son disjuntas o idénticas, y todas tienen la misma cardinalidad $|aH| = |H|$.
+
+\subsection{El Teorema Fundamental de Lagrange}
+\begin{teorema}[Teorema de Lagrange]
+Si $G$ es un grupo finito y $H$ es un subgrupo de $G$, entonces el orden de $H$ divide al orden de $G$:
+\begin{equation}
+  |G| = |H| \cdot [G : H]
+\end{equation}
+donde $[G : H]$ denota el índice de $H$ en $G$ (número total de clases laterales distintas).
+\end{teorema}
+
+\begin{teorema}[Corolarios Cruciales de Lagrange]
+\begin{enumerate}[noitemsep]
+  \item El orden de todo elemento $a \in G$ divide a $|G|$ (donde $\text{ord}(a) = |\langle a \rangle|$).
+  \item Para todo $a \in G$, se satisface indefectiblemente que $a^{|G|} = e$.
+  \item \textbf{Todo grupo de orden primo $p$ es necesariamente cíclico y abeliano}, y carece de subgrupos propios no triviales.
+\end{enumerate}
+\end{teorema}
+
+\subsection{Descomposición de Grupos Abelianos Finitos}
+El \textbf{Teorema 3-5-11} prueba que todo grupo abeliano finito es isomorfo a un producto directo de grupos cíclicos cuyos órdenes son potencias de números primos:
+\begin{equation*}
+  G \cong \mathbb{Z}_{p_1^{k_1}} \times \mathbb{Z}_{p_2^{k_2}} \times \dots \times \mathbb{Z}_{p_m^{k_m}}
+\end{equation*}
+Para orden $|G| = 8 = 2^3$, existen exactamente 3 grupos abelianos no isomorfos (particiones de 3): $\mathbb{Z}_8$, $\mathbb{Z}_4 \times \mathbb{Z}_2$, y $\mathbb{Z}_2 \times \mathbb{Z}_2 \times \mathbb{Z}_2$.
+
+\begin{aplicacion}{Criptografía de Curva Elíptica (ECC) y Diffie-Hellman}
+Los criptosistemas modernos eligen grupos cíclicos de orden primo gigantesco $p$. Por Lagrange, sus únicos subgrupos son $\{e\}$ y el grupo total, impidiendo que un atacante reduzca la búsqueda de claves privadas dentro de subgrupos más pequeños.
+\end{aplicacion}
+
+\begin{minijuego}{El Impostor de Lagrange (Lagrange Bouncer)}
+\textbf{Mecánica:} La app anuncia un grupo de orden $|G| = 24$ y muestra 4 candidatos a subgrupo de tamaños: 3, 6, 7 y 8. La clase tiene 5 segundos para detectar al impostor: el 7, expulsado con animación porque $24 \pmod 7 \neq 0$.
+\end{minijuego}
+
+\newpage
+
+% ================= SECCIÓN 8: TEMA 3-5 ANILLOS =================
+\section{Tema 3-5: Anillos, Dominios Enteros y Campos}
+\noindent\badgeTu \hfill \textbf{Tiempo estimado: 36:00 -- 42:00 min}
+
+\subsection{Estructuras con Dos Operaciones Conectadas}
+\begin{definicion}[Anillo]
+Un sistema $(R, +, \cdot)$ es un \textbf{anillo} si:
+\begin{enumerate}[noitemsep]
+  \item $(R, +)$ es un grupo abeliano con elemento neutro $0$.
+  \item $(R, \cdot)$ es un semigrupo (cerrado y asociativo).
+  \item Se cumplen las leyes distributivas: $a \cdot (b + c) = a \cdot b + a \cdot c$ y $(b + c) \cdot a = b \cdot a + c \cdot a$.
+\end{enumerate}
+\end{definicion}
+
+\subsection{Divisores de Cero, Dominios y Campos}
+\begin{definicion}[Divisores de Cero]
+En un anillo $R$, dos elementos no nulos $a \neq 0$ y $b \neq 0$ son \textbf{divisores de cero} si $a \cdot b = 0$.
+\end{definicion}
+
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Estructura} & \textbf{Condición Requerida} & \textbf{Ejemplo Típico} \\
+\midrule
+\textbf{Anillo con Unidad} & Posee identidad multiplicativa $1$ tal que $a \cdot 1 = 1 \cdot a = a$. & $\mathbb{Z}_6$ (tiene divisores: $2 \cdot 3 = 0$) \\
+\textbf{Dominio Entero} & Anillo conmutativo con $1$ \textbf{sin divisores de cero}. & $\mathbb{Z}$ (permite cancelación $ab=ac \implies b=c$) \\
+\textbf{Campo (Cuerpo)} & Dominio entero donde \textbf{todo $a \neq 0$ tiene inverso multiplicativo $a^{-1}$}. & $\mathbb{Q}, \mathbb{R}, \mathbb{C}$ y $\mathbb{Z}_p$ ($p$ primo) \\
+\bottomrule
+\end{tabularx}
+\caption{Clasificación formal de estructuras con dos operaciones.}
+\end{table}
+
+\begin{teorema}
+El anillo cociente $\mathbb{Z}_n$ es un \textbf{Campo si y solo si $n$ es un número primo}.
+\end{teorema}
+
+\begin{aplicacion}{Cifrado Estándar Militar y Bancario AES en $\mathrm{GF}(2^8)$}
+El algoritmo de cifrado simétrico \textbf{AES} (\textit{Advanced Encryption Standard}), utilizado para proteger transacciones bancarias, WhatsApp y discos cifrados, ejecuta sus operaciones de sustitución (*S-Box*) calculando el inverso multiplicativo formal dentro del campo finito de Galois de 256 elementos $\mathrm{GF}(2^8)$.
+\end{aplicacion}
+
+\begin{minijuego}{Caza de Divisores de Cero: ¿Bomba o Campo?}
+\textbf{Mecánica:} La pantalla muestra $\mathbb{Z}_{12}$. El público dispone de 15 segundos para dar dos números no nulos que al multiplicarse den 0 ($3 \times 4 = 12 \equiv 0$). En la siguiente ronda aparece $\mathbb{Z}_{13}$ y la clase debe activar el escudo: \textit{«¡Es un Campo! 13 es primo, no tiene divisores»}.
+\end{minijuego}
+
+\newpage
+
+% ================= SECCIÓN 9: TEMA 3-6 RESIDUOS =================
+\section{Tema 3-6: Aritmética de Residuos en Computadoras}
+\noindent\badgeComp \hfill \textbf{Tiempo estimado: 42:00 -- 48:00 min}
+
+\subsection{El Sistema Numérico Residual (RNS) y la Eliminación del Acarreo}
+En procesadores convencionales, sumar números grandes en base 2 genera una cadena de acarreo (*carry ripple*) secuencial que restringe la frecuencia del reloj. La aritmética modular residual resuelve este cuello de botella desacoplando las operaciones.
+
+\begin{teorema}[Isomorfismo Fundamental del RNS]
+Sean $m_1, m_2, \dots, m_k$ enteros positivos primos relativos dos a dos ($\gcd(m_i, m_j) = 1$) y sea $M = \prod_{i=1}^k m_i$. Existe un isomorfismo de anillos:
+\begin{equation}
+  \mathbb{Z}_M \cong \mathbb{Z}_{m_1} \times \mathbb{Z}_{m_2} \times \dots \times \mathbb{Z}_{m_k}
+\end{equation}
+Cada entero $x \in \mathbb{Z}_M$ se representa unívocamente por su tupla residual:
+\begin{equation*}
+  x \mapsto (x \bmod m_1, \ x \bmod m_2, \ \dots, \ x \bmod m_k)
+\end{equation*}
+Las operaciones se efectúan \textbf{en paralelo y sin propagación de acarreo entre componentes}:
+\begin{align*}
+  (x + y) &\mapsto ((x_1 + y_1) \bmod m_1, \dots, (x_k + y_k) \bmod m_k) \\
+  (x \cdot y) &\mapsto ((x_1 \cdot y_1) \bmod m_1, \dots, (x_k \cdot y_k) \bmod m_k)
+\end{align*}
+\end{teorema}
+
+\subsection{El Teorema Chino del Resto (TCR) y Base Mixta}
+\begin{teorema}[Teorema Chino del Resto]
+El sistema de congruencias $x \equiv a_i \pmod{m_i}$ posee solución única en $\mathbb{Z}_M$ dada por:
+\begin{equation}
+  x = \left( \sum_{i=1}^k a_i M_i y_i \right) \bmod M, \quad \text{donde } M_i = \frac{M}{m_i} \ \text{ e } \ y_i \equiv M_i^{-1} \pmod{m_i}
+\end{equation}
+\end{teorema}
+
+\subsection{Teoremas de Fermat y Euler}
+\begin{itemize}[noitemsep]
+  \item \textbf{Pequeño Teorema de Fermat:} Si $p$ es primo y $p \nmid a$, entonces $a^{p-1} \equiv 1 \pmod p$. Inverso: $a^{-1} \equiv a^{p-2} \pmod p$.
+  \item \textbf{Teorema de Euler:} Si $\gcd(a, n) = 1$, entonces $a^{\phi(n)} \equiv 1 \pmod n$, donde $\phi(n)$ es la función totiente.
+\end{itemize}
+
+\begin{aplicacion}{Aceleración en Criptografía RSA y Procesadores DSP}
+En el cifrado \textbf{RSA}, el descifrado modular utiliza el Teorema Chino del Resto para cuadruplicar la velocidad del cálculo. En hardware DSP de radar y procesamiento de audio digital, se implementan unidades aritméticas RNS sin acarreo.
+\end{aplicacion}
+
+\begin{minijuego}{El Oráculo Chino: Adivino tu Número Secreto}
+\textbf{Mecánica:} Un voluntario piensa un número secreto entre 1 y 105. Solo ingresa sus residuos al dividir entre 3, 5 y 7. La aplicación computa $x = (r_3 \cdot 70 + r_5 \cdot 21 + r_7 \cdot 15) \bmod 105$ y revela el número exacto.
+\end{minijuego}
+
+\newpage
+
+% ================= SECCIÓN 10: TEMA 3-7 CODIGOS =================
+\section{Tema 3-7: Códigos de Grupo y Corrección de Errores}
+\noindent\badgeTu \hfill \textbf{Tiempo estimado: 48:00 -- 54:00 min}
+
+\subsection{Métricas de Transmisión en Canales con Ruido}
+Consideremos el espacio binario $B^n = \{0, 1\}^n$ dotado de la operación de suma bit a bit módulo 2 ($\oplus$ o XOR), formando el grupo abeliano $(B^n, \oplus)$.
+
+\begin{definicion}[Peso y Distancia de Hamming]
+\begin{itemize}[noitemsep]
+  \item \textbf{Peso de una palabra ($|x|$):} Número total de bits $1$ en la secuencia $x \in B^n$.
+  \item \textbf{Distancia de Hamming ($\delta(x, y)$):} Número de posiciones en las cuales difieren las palabras $x$ e $y$. Se satisface la identidad:
+  \begin{equation}
+    \delta(x, y) = |x \oplus y|
+  \end{equation}
+  \item \textbf{Distancia Mínima de un Código ($d_{\min}$):} Menor distancia entre dos palabras código válidas cualesquiera: $d_{\min} = \min_{x \neq y} \delta(x, y)$.
+\end{itemize}
+\end{definicion}
+
+\subsection{Teorema Fundamental de Detección y Autocorrección}
+\begin{teorema}
+\begin{itemize}[noitemsep]
+  \item Un código detecta hasta $k$ errores en el canal si y solo si su distancia mínima cumple:
+  \begin{equation}
+    d_{\min} \ge k + 1
+  \end{equation}
+  \item Un código corrige hasta $k$ errores en el canal si y solo si cumple:
+  \begin{equation}
+    d_{\min} \ge 2k + 1
+  \end{equation}
+\end{itemize}
+\end{teorema}
+
+\begin{teorema}[Simplificación por Códigos de Grupo]
+Si las palabras código válidas forman un \textbf{subgrupo} de $(B^n, \oplus)$, entonces la distancia mínima es exactamente igual al \textbf{peso mínimo de las palabras código distintas de cero}:
+\begin{equation}
+  d_{\min} = \min_{x \in C, \, x \neq 0} |x|
+\end{equation}
+Esto reduce la complejidad de verificar todas las parejas $O(2^{2m})$ a revisar únicamente las palabras generadas $O(2^m)$.
+\end{teorema}
+
+\begin{aplicacion}{Memoria RAM ECC y Códigos QR}
+La memoria \textbf{RAM ECC} en servidores de centros de datos utiliza códigos de Hamming con distancia $d_{\min} = 3$ para autocorregir automáticamente alteraciones de bits generadas por interferencia electromagnética o radiación cósmica. Los códigos QR integran códigos Reed-Solomon capaces de reconstruir hasta un 30\% de información destruida físicamente.
+\end{aplicacion}
+
+\begin{minijuego}{Atrapa al Hacker de Bits (Duelo en Vivo)}
+\textbf{Mecánica:} Un compañero pasa al frente como el «Hacker» y altera en secreto un bit de la transmisión en pantalla ($0 \leftrightarrow 1$). La aplicación evalúa la paridad, detecta la anomalía en rojo y ejecuta la autocorrección por voto de mayoría.
+\end{minijuego}
+
+\newpage
+
+% ================= SECCIÓN 11: PREGUNTAS =================
+\section{Banco de Preguntas Típicas del Profesor y Defensa en Vivo}
+\noindent\badgeAmbos \hfill \textbf{Tiempo estimado: 54:00 -- 60:00 min}
+
+\begin{enumerate}[leftmargin=*, label=\bfseries Pregunta \arabic*:]
+  \item \textbf{«¿Por qué el sistema $(\mathbb{Z}, -)$ no es un grupo?»}\\
+  \textit{Defensa formal:} Falla en el requisito más elemental: \textbf{la resta no es asociativa}. Por ejemplo, $(5-3)-1 = 2-1 = 1$, mientras que $5-(3-1) = 5-2 = 3$. Al no ser asociativa, no califica ni siquiera como Semigrupo, quedando fuera de toda la jerarquía de grupos.
+
+  \item \textbf{«¿Puede un grupo de orden 15 tener un subgrupo de 4 elementos?»}\\
+  \textit{Defensa formal:} \textbf{No, es imposible por el Teorema de Lagrange}. El orden de cualquier subgrupo $|H|$ debe dividir estrictamente al orden del grupo $|G|$. Dado que 4 no divide a 15 ($15/4 = 3.75$), ningún subconjunto de 4 elementos puede cumplir la cerradura bajo la operación y sus inversos.
+
+  \item \textbf{«¿Cuál es la diferencia exacta entre un Anillo, un Dominio Entero y un Campo?»}\\
+  \textit{Defensa formal:}
+  \begin{itemize}[noitemsep]
+    \item \textbf{Anillo:} Posee suma (grupo abeliano) y producto asociativo distributivo, pero puede contener \textit{divisores de cero} ($ab=0$ con $a, b \neq 0$, como $2 \cdot 3 = 0$ en $\mathbb{Z}_6$).
+    \item \textbf{Dominio Entero:} Anillo conmutativo con $1$ que \textbf{carece de divisores de cero}, permitiendo la cancelación algebraica ($ab=ac \implies b=c$), pero no garantiza inversos multiplicativos (ejemplo: $\mathbb{Z}$).
+    \item \textbf{Campo:} Dominio entero donde \textbf{todo elemento $a \neq 0$ posee inverso multiplicativo $a^{-1}$}, haciendo posible la división formal (ejemplos: $\mathbb{Q}, \mathbb{R}$, y $\mathbb{Z}_p$ con $p$ primo).
+  \end{itemize}
+
+  \item \textbf{«¿Por qué en los códigos de grupo la distancia mínima equivale al peso mínimo de las palabras no nulas?»}\\
+  \textit{Defensa formal:} Porque la distancia de Hamming es $\delta(x, y) = |x \oplus y|$. Si el código $C$ es un subgrupo de $(B^n, \oplus)$, la cerradura garantiza que para todo par de palabras código $x, y \in C$, su diferencia simétrica $x \oplus y$ es también una palabra código $c \in C$. Por lo tanto, el conjunto de todas las distancias entre pares coincide con el conjunto de todos los pesos de las palabras del subgrupo, reduciendo la minimización a $d_{\min} = \min_{c \in C, c \neq 0} |c|$.
+\end{enumerate}
+
+\vspace{1cm}
+\begin{center}
+  \rule{0.6\linewidth}{0.5pt}\\[0.3cm]
+  {\small\sffamily Documento compilado con estándares tipográficos de la Sociedad Matemática Americana (AMS-LaTeX).\\
+  Proyecto disponible en repositorio institucional sincronizado.}
+\end{center}
+
+\end{document}

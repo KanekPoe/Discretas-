@@ -21,6 +21,16 @@ const assert = require('node:assert/strict');
    await reveal('#juego-0');assert.match(await page.locator('#speakerCue').innerText(),/Expositor 1/);
   }
   await page.goto(base+'/index.html');
+  await reveal('#btnOpenSquare');
+  await page.locator('#btnOpenSquare').click();
+  assert.ok(await page.locator('#squareModal').isVisible());
+  assert.match(await page.frameLocator('#squareModal iframe').locator('body').innerText(), /homomorfismo/i);
+  const slideBefore=await page.locator('#deckInfo').innerText();
+  await page.keyboard.press('ArrowRight');assert.equal(await page.locator('#deckInfo').innerText(),slideBefore);
+  await page.locator('#btnSquareClose').click();assert.ok(!await page.locator('#squareModal').isVisible());
+  await page.locator('#btnOpenSquare').click();await page.keyboard.press('Escape');assert.ok(!await page.locator('#squareModal').isVisible());
+  console.log('PASS preserved homomorphism simulator: iframe, close, Escape, modal keyboard isolation');
+  await page.goto(base+'/index.html');
   const answers=[[1,1,1],[3,1],[1,0,0],[2,1],[2,1],[2,1],[1,1],null,[1,1,1]];
   for(let i=0;i<9;i++){
    const id='#juego-'+i;await reveal(id);

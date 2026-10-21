@@ -73,7 +73,7 @@
   document.getElementById('nav').addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();navigateTo(document.getElementById(a.hash.slice(1)));},true);
   document.querySelector('main.wrap').addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const t=document.getElementById(a.hash.slice(1));if(t){e.preventDefault();navigateTo(t);}});
   addEventListener('keydown',e=>{
-    if(e.defaultPrevented||e.altKey||e.ctrlKey||e.metaKey||e.target.closest('input,select,textarea,[role="tablist"],[role="group"]'))return;
+    if(document.querySelector('dialog[open]')||e.defaultPrevented||e.altKey||e.ctrlKey||e.metaKey||e.target.closest('input,select,textarea,[role="tablist"],[role="group"]'))return;
     if(['ArrowRight','PageDown'].includes(e.key)){e.preventDefault();go(cur+1);}
     if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(cur-1);}
   });

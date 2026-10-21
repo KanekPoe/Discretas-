@@ -403,6 +403,7 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
       <label class="f" for="hB">b<input class="in" id="hB" type="number" value="-5" inputmode="numeric"></label>
     </div>
     <div class="out" id="homOut"></div>
+    <button type="button" class="btn" id="btnOpenSquare">Abrir cuadrado conmutativo interactivo</button>
   </div>
 
   <div class="block">
@@ -917,6 +918,10 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
   <span class="deck-info" id="deckInfo"></span>
   <button class="deck-btn next" id="deckNext">Sigue →</button>
 </nav>
+<dialog class="square-modal" id="squareModal" aria-labelledby="squareTitle">
+  <div class="square-modal-head"><h3 id="squareTitle">Simulador de homomorfismos · Cuadrado conmutativo</h3><button class="btn" id="btnSquareClose" type="button">Cerrar ✕</button></div>
+  <iframe src="homomorfismo-pasos.html" title="Cuadrado conmutativo"></iframe>
+</dialog>
 <footer>
   <div class="wrap">Unidad 3 · Estructuras algebraicas · Matemáticas discretas. Ruta alineada con la guía de exposición de la pareja; referencia del guion: Tremblay y Manohar.</div>
 </footer>

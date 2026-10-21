@@ -68,3 +68,9 @@ html[data-route="live"] section.compact:has(> .learning-game:not(.off)) > .head{
 .computing-connection summary{cursor:pointer;color:var(--accent);padding-block:8px;font-weight:700}
 .computing-connection p{max-width:65ch}
 html.slides section.compact .core-definition,html.slides section.compact .computing-connection{display:none}
+.square-modal{width:min(920px,calc(100vw - 28px));height:86dvh;max-height:820px;padding:0;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink)}
+.square-modal[open]{display:flex;flex-direction:column}
+.square-modal::backdrop{background:#000a;backdrop-filter:blur(4px)}
+.square-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.square-modal-head h3{font-size:18px;margin:0}
+.square-modal iframe{width:100%;flex:1;min-height:0;border:0}
