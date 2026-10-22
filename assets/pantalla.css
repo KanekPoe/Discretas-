@@ -168,3 +168,21 @@ table.game-table td,table.game-table th{text-align:center;vertical-align:middle;
 /* The legacy chart styles must not override the new closure-scene controls. */
 #entrada .scene .btn{min-height:38px;padding:7px 10px;font-size:14px;background:var(--bg);color:var(--ink)}
 #entrada .scene .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+/* Instructions stay with the triangle: angle, direction, centre and mirror axis. */
+.triangle-instructions{display:flex;align-items:center;gap:20px;max-width:680px;margin:auto}
+.triangle-instructions .game-triangle{width:175px;max-height:160px;flex:none}
+.triangle-instructions ol{margin:0;padding-left:24px;display:grid;gap:12px;font-size:17px;line-height:1.35}
+.triangle-instructions li{padding-left:2px}.triangle-instructions strong,.triangle-instructions span{display:block}
+.triangle-instructions strong{color:var(--accent);margin-bottom:3px}
+.learning-game[data-game="4"] .vote-options{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:650px){
+ .triangle-instructions{gap:8px}.triangle-instructions .game-triangle{width:82px;max-height:105px}
+ .triangle-instructions ol{font-size:13px;line-height:1.3;padding-left:18px;gap:8px}.triangle-instructions strong{margin-bottom:2px}
+ .learning-game[data-game="4"] .vote-option{flex-direction:column;text-align:center;justify-content:center;gap:4px;font-size:13px;padding:6px 3px;line-height:1.2}
+}
+@media(max-height:450px) and (min-width:651px){
+ .triangle-instructions{gap:8px}.triangle-instructions .game-triangle{width:100px;max-height:110px}
+ .triangle-instructions ol{font-size:13px;gap:8px;padding-left:18px}
+ .learning-game[data-game="4"] .game-stage.has-visual .vote-options{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .learning-game[data-game="4"] .vote-option{flex-direction:column;gap:4px;text-align:center;font-size:12px;padding:5px 3px}
+}
