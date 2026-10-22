@@ -1,3 +1,5 @@
+<!doctype html>
+<html lang="es" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Laboratorio de propiedades</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,6 +28,7 @@
   --cA:#93A7FF; --cB:#D58BEB; --cG:#5BD08C; --cO:#F2A65A; --cM:#6E7499;
   --grid:#1F2440; --axis:#6E7499;
   --ok:#55C893; --ok-soft:#12321F; --bad:#FF8A8A; --bad-soft:#3B1818; --neu-soft:#1E2752; color-scheme:dark}
+:root[data-theme="light"]{color-scheme:light}
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.35;overflow:hidden}
@@ -350,3 +353,5 @@ new MutationObserver(draw).observe(document.documentElement, {attributes:true, a
 loadTab(TABS[0]);
 })();
 </script>
+
+</body></html>

@@ -1,3 +1,5 @@
+<!doctype html>
+<html lang="es" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Estructuras algebraicas</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,6 +39,7 @@
     --cA:#93A7FF; --cB:#D58BEB; --cG:#5BD08C; --cO:#F2A65A; --cM:#6E7499; --grid:#1F2440; --axis:#6E7499; --neu-soft:#1E2752;
   color-scheme:dark;
 }
+:root[data-theme="light"]{color-scheme:light}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:96px}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important}}
@@ -278,6 +281,7 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
 <link rel="stylesheet" href="assets/exposicion.css">
 <link rel="stylesheet" href="assets/primeros-pasos.css">
 <link rel="stylesheet" href="assets/pantalla.css">
+</head><body>
 <header class="top">
   <div class="wrap" style="position:relative">
     <div class="brand"><span>Unidad 3 · Estructuras algebraicas</span><span id="where">Propiedades</span></div>
@@ -922,7 +926,7 @@ footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--mute
 </nav>
 <dialog class="square-modal" id="squareModal" aria-labelledby="squareTitle">
   <div class="square-modal-head"><h3 id="squareTitle">Simulador de homomorfismos · Cuadrado conmutativo</h3><button class="btn" id="btnSquareClose" type="button">Cerrar ✕</button></div>
-  <iframe src="homomorfismo-pasos.html" title="Cuadrado conmutativo"></iframe>
+  <iframe src="homomorfismo-pasos.html?embed=1" title="Cuadrado conmutativo"></iframe>
 </dialog>
 <footer>
   <div class="wrap">Unidad 3 · Estructuras algebraicas · Matemáticas discretas. Ruta alineada con la guía de exposición de la pareja; referencia del guion: Tremblay y Manohar.</div>

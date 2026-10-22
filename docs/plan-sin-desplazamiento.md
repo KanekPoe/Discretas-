@@ -33,3 +33,9 @@ La prueba de tamaños recorre el modo principal y la referencia, además de resp
 ## Uso durante la exposición
 
 En los seis minutos iniciales, usar cerradura brevemente, un ejemplo de resta para orden y otro para agrupación, el regreso a cero, el mapa y una ronda del pasaporte. Las variantes de suma y las otras rondas son ampliaciones si el público necesita contraste. Los intervalos del guion son referencias para el ensayo; no bloquean ni aceleran las actividades.
+
+## Tema y simulador de homomorfismos
+
+La app y sus páginas de simuladores arrancan en tema claro, independientemente de la preferencia del dispositivo. El cuadrado conmutativo embebido usa vistas separadas para diagrama, cada camino, conclusión y configuración. Los pasos pendientes conservan contraste y muestran `?` o «pendiente», en lugar de revelar resultados con opacidad baja. La ventana reserva espacio para los controles y el cierre.
+
+`node tests/homomorfismo-modal.cjs` comprueba el tema inicial de las cinco páginas de entrada incluso con un sistema oscuro; también verifica contraste y tamaño del modal en 1280×720, 390×844, 320×568 y 844×390, con ambos temas explícitos. Incluye pasos, cambio de función, entradas inválidas y cierre.

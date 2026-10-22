@@ -1,3 +1,5 @@
+<!doctype html>
+<html lang="es" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Simulador de homomorfismos</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,6 +28,7 @@
   --accent:#93A7FF; --accent-ink:#0D1020; --accent-soft:#1E2752;
   --p1:#93A7FF; --p1-soft:#1E2752; --p2:#D58BEB; --p2-soft:#33183D; --cFa:#5BD08C; --cFb:#F2A65A; --grid:#1F2440; --axis:#6E7499;
   --ok:#55C893; --ok-soft:#12321F; --bad:#FF8A8A; --bad-soft:#3B1818; color-scheme:dark}
+:root[data-theme="light"]{color-scheme:light}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55}
 .wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px;display:flex;flex-direction:column;gap:22px}
@@ -60,7 +63,10 @@ input.in{font:inherit;font-family:var(--f-mono);font-size:17px;color:var(--ink);
 .square .p1{stroke:var(--p1)} .square .p2{stroke:var(--p2)}
 .square .t1{fill:var(--p1)} .square .t2{fill:var(--p2)}
 .square .edge{stroke-width:2.5;fill:none;transition:opacity .3s}
-.square .off{opacity:.15}
+.square .off{opacity:1}
+.square .off .box{stroke:var(--muted);stroke-dasharray:4 3}
+.square .off .edge{stroke:var(--muted);stroke-dasharray:5 4}
+.square .off .lbl,.square .off .val{fill:var(--muted)}
 .square .box{fill:var(--bg);stroke:var(--line)}
 
 /* Caminos */
@@ -71,7 +77,7 @@ input.in{font:inherit;font-family:var(--f-mono);font-size:17px;color:var(--ink);
 .path h3{margin:0;font-size:15px}
 .path.one h3{color:var(--p1)} .path.two h3{color:var(--p2)}
 .step{font-family:var(--f-mono);font-size:15px;overflow-wrap:anywhere;transition:opacity .3s}
-.step.hide{opacity:.18}
+.step.hide{opacity:1;color:var(--muted)}
 .step small{display:block;font-family:var(--f-body);font-size:12.5px;color:var(--muted)}
 .result{font-weight:700}
 .verdict{border-radius:10px;padding:12px 14px;font-weight:700;background:var(--accent-soft)}
@@ -107,6 +113,8 @@ canvas.plot{width:100%;display:block;border-radius:10px;background:var(--bg);bor
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 
+<link rel="stylesheet" href="assets/homomorfismo-embed.css">
+</head><body>
 <main class="wrap">
   <header style="display:flex;flex-direction:column;gap:10px">
     <p class="eyebrow">Unidad 3 · 3-1 Sistemas algebraicos</p>
@@ -255,8 +263,9 @@ function render(){
   const steps = document.querySelectorAll('.step');
   if (!A.ok || !B.ok){
     steps.forEach(s=>{ s.textContent=''; });
-    $('#verdict').className='verdict bad'; $('#verdict').textContent = (A.ok?B:A).msg; drawSq(null); return;
+    $('#verdict').className='verdict bad'; $('#verdict').textContent = (A.ok?B:A).msg; document.documentElement.dataset.proofError=(A.ok?B:A).msg; drawSq(null); document.dispatchEvent(new Event('proofrender')); return;
   }
+  delete document.documentElement.dataset.proofError;
   const a = A.v, b = B.v, r = compute(a,b);
   const txt = {
     1: `a ${cur.op} b = ${show(a)} ${cur.op} ${show(b)} = ${show(r.ab)}<small>primero operamos en ${cur.S}</small>`,
@@ -264,7 +273,7 @@ function render(){
     3: `f(a) = ${showT(r.fa)},  f(b) = ${showT(r.fb)}<small>primero transformamos cada uno</small>`,
     4: `f(a) ${cur.opT} f(b) = ${showT(r.fa)} ${cur.opT} ${showT(r.fb)} = ${showT(r.right)}<small>luego operamos en ${cur.T}</small>`,
   };
-  steps.forEach(s => { const k = +s.dataset.s; s.innerHTML = txt[k]; s.classList.toggle('hide', step < k); });
+  steps.forEach(s => { const k = +s.dataset.s; s.innerHTML = step < k ? 'Paso '+k+' · pendiente' : txt[k]; s.classList.toggle('hide', step < k); });
   const v = $('#verdict');
   if (step < 5){ v.className='verdict'; v.textContent = step===0 ? 'Pulsa "Siguiente paso" para recorrer los caminos.' : `Paso ${step} de 5…`; }
   else if (r.eq){ v.className='verdict good'; v.textContent = `✓ Los dos caminos llegan a ${showT(r.left)}: f(a ${cur.op} b) = f(a) ${cur.opT} f(b).`; }
@@ -283,6 +292,8 @@ function render(){
   } else sp.hidden = true;
   $('#next').disabled = step >= 5;
   drawSq(r, a, b);
+  document.documentElement.dataset.proofStep=step;
+  document.dispatchEvent(new CustomEvent('proofrender',{detail:{step}}));
 }
 
 function cut(s, n=11){ s = String(s); return s.length > n ? s.slice(0,n-1)+'…' : s; }
@@ -292,7 +303,7 @@ function drawSq(r, a, b){
   const on = k => step >= k ? '' : 'off';
   const X1=70, X2=290, Y1=55, Y2=195;
   const box = (x,y,top,val,cls,k) => `<g class="${on(k)}" style="transition:opacity .3s"><rect class="box" x="${x-62}" y="${y-26}" width="124" height="52" rx="10"/>
-    <text class="lbl" x="${x}" y="${y-8}" text-anchor="middle">${top}</text><text class="val ${cls}" x="${x}" y="${y+14}" text-anchor="middle">${cut(val)}</text></g>`;
+    <text class="lbl" x="${x}" y="${y-8}" text-anchor="middle">${top}</text><text class="val ${cls}" x="${x}" y="${y+14}" text-anchor="middle">${step>=k?cut(val):'?'}</text></g>`;
   const arrow = (x1,y1,x2,y2,cls,label,lx,ly,k,anchor='middle') =>
     `<g class="${on(k)}" style="transition:opacity .3s"><line class="edge ${cls}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#ar${cls})"/><text class="lbl ${cls==='p1'?'t1':'t2'}" x="${lx}" y="${ly}" text-anchor="${anchor}" style="font-size:13px;font-weight:600">${label}</text></g>`;
   const done = step >= 5;
@@ -300,7 +311,7 @@ function drawSq(r, a, b){
     <marker id="arp1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--p1)"/></marker>
     <marker id="arp2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--p2)"/></marker></defs>
     <text class="lbl" x="6" y="14">${cur.S}</text><text class="lbl" x="6" y="244">${cur.T}</text>
-    <g><rect class="box" x="${X1-62}" y="${Y1-26}" width="124" height="52" rx="10"/><text class="lbl" x="${X1}" y="${Y1-8}" text-anchor="middle">a, b</text><text class="val" x="${X1}" y="${Y1+14}" text-anchor="middle">${cut(show(a)+', '+show(b),14)}</text></g>
+    <g><rect class="box" x="${X1-62}" y="${Y1-26}" width="124" height="52" rx="10"/><text class="lbl" x="${X1}" y="${Y1-8}" text-anchor="middle">a, b</text><text class="val" x="${X1}" y="${Y1+14}" text-anchor="middle">${cut(show(a)+', '+show(b),11)}</text></g>
     ${arrow(X1+64,Y1,X2-66,Y1,'p1',cur.op,(X1+X2)/2,Y1-8,1)}
     ${box(X2,Y1,'a '+cur.op+' b',show(r.ab),'',1)}
     ${arrow(X2,Y1+28,X2,Y2-30,'p1','f',X2+8,(Y1+Y2)/2+4,2,'start')}
@@ -308,8 +319,8 @@ function drawSq(r, a, b){
     ${box(X1,Y2,'f(a), f(b)',showT(r.fa)+', '+showT(r.fb),'',3)}
     ${arrow(X1+64,Y2,X2-66,Y2,'p2',cur.opT,(X1+X2)/2,Y2-8,4)}
     <g class="${step>=2||step>=4?'':'off'}" style="transition:opacity .3s"><rect class="box" x="${X2-62}" y="${Y2-26}" width="124" height="52" rx="10" style="${done?`stroke:${r.eq?'var(--ok)':'var(--bad)'};stroke-width:2.5`:''}"/>
-      <text class="val t1 ${step>=2?'':'off'}" x="${X2}" y="${Y2-4}" text-anchor="middle" style="font-size:13px">${step>=2?cut(showT(r.left)):''}</text>
-      <text class="val t2 ${step>=4?'':'off'}" x="${X2}" y="${Y2+16}" text-anchor="middle" style="font-size:13px">${step>=4?cut(showT(r.right)):''}</text></g>
+      <text class="val t1 ${step>=2?'':'off'}" x="${X2}" y="${Y2-4}" text-anchor="middle" style="font-size:16px">${step>=2?cut(showT(r.left)):''}</text>
+      <text class="val t2 ${step>=4?'':'off'}" x="${X2}" y="${Y2+16}" text-anchor="middle" style="font-size:16px">${step>=4?cut(showT(r.right)):''}</text></g>
     ${done?`<text x="${X2}" y="${Y2+44}" text-anchor="middle" style="font-family:var(--f-mono);font-size:14px;font-weight:700;fill:${r.eq?'var(--ok)':'var(--bad)'}">${r.eq?'= iguales ✓':'≠ distintos ✗'}</text>`:''}`;
 }
 
@@ -480,3 +491,6 @@ new MutationObserver(draw).observe(document.documentElement, {attributes:true, a
 load(G[0]);
 })();
 </script>
+
+<script src="assets/homomorfismo-embed.js"></script>
+</body></html>
