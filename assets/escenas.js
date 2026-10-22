@@ -78,10 +78,15 @@
     {q:'1 + H = {1, 4}. Otra parte del mismo tamaño.',visual:cosets(1),note:'Al sumar 1 a cada elemento obtenemos otra clase con 2 elementos.',action:'Completar la partición →'},
     {q:'Tres clases de 2 elementos cubren los seis elementos.',visual:cosets(2),note:'|G| = |H| · [G : H]: 6 = 2 · 3. El orden de H divide al de G. Tener un tamaño divisor no basta para ser subgrupo.'}
   ]);
-  stageScene('anillos','escena-anillo','El mismo conjunto, otra operación','Anillos y campos · de la suma al producto',[
-    {q:'(ℤ₆, +₆) es grupo abeliano. Ahora añadimos el producto módulo 6.',visual:line(2,'·₆',3),note:'La suma y el producto forman un anillo. ¿Qué ocurre al multiplicar estos dos elementos no nulos?',action:'Calcular el producto →'},
-    {q:'2 · 3 = 6 ≡ 0 (mod 6).',visual:`${chip(2)}${chip('·')}${chip(3)}${chip('=')}${chip(0,'outside')}`,note:'Hay divisores de cero. ℤ₆ no es campo: sus elementos no nulos no tienen todos inverso multiplicativo.',action:'Comparar con ℤ₇ →'},
-    {q:'En ℤ₇, 2 · 3 = 6. Además, 7 es primo.',visual:math('ℤ₇ · campo'),note:'En ℤ₇ cada elemento no nulo tiene inverso. El argumento es que 7 es primo; un solo producto distinto de cero no demostraría que es campo.'}
+  stageScene('anillos','escena-estructuras','Anillo → dominio → campo','3-5 · sistemas con dos operaciones',[
+    {q:'Ejemplo de anillo: los números enteros (ℤ).',visual:math('2 · (3 + 4) = 14')+math('2 · 3 + 2 · 4 = 14'),column:true,note:'Sumar, restar y multiplicar enteros da enteros. El producto se reparte sobre la suma: eso es distributividad.',action:'¿Qué añade un dominio entero? →'},
+    {q:'Dominio entero: dos números distintos de 0 nunca dan 0 al multiplicar.',visual:'<div class="path-card"><h3>Los enteros (ℤ) son un ejemplo</h3>'+math('3 · 4 = 12 ≠ 0')+math('Pero 1 ÷ 2 no es entero')+'</div>',note:'Es un anillo sin divisores de cero. Además, el producto permite cambiar el orden y tiene 1, distinto de 0.',action:'¿Qué añade un campo? →'},
+    {q:'Campo: podemos dividir entre cualquier número distinto de 0 sin salir del conjunto.',visual:'<div class="path-card"><h3>Las fracciones (ℚ) son un ejemplo</h3>'+math('1 ÷ 2 = ½')+math('2 · ½ = 1')+'</div>',note:'Es un dominio entero donde cada número distinto de 0 tiene inverso: otro número que al multiplicarlo da 1. Aquí, ½ es el inverso de 2.'}
+  ]);
+  stageScene('anillos','escena-anillo','¿Dos números pueden dar cero?','Divisores de cero · comparar residuos',[
+    {q:'Usamos residuos al dividir entre 6: 0, 1, 2, 3, 4 y 5. Esto se llama ℤ₆.',visual:line(2,'·',3),note:'Multiplica 2 por 3. Después divide el resultado entre 6 y conserva solo el residuo.',action:'Multiplicar y tomar el residuo →'},
+    {q:'2 · 3 = 6. Al dividir 6 entre 6, el residuo es 0.',visual:`${chip(2)}${chip('·')}${chip(3)}${chip('=')}${chip(0,'outside')}`,note:'Ni 2 ni 3 son cero, pero su producto aquí da cero: son divisores de cero. Por eso ℤ₆ no es dominio entero ni campo.',action:'Cambiar a residuos entre 7 →'},
+    {q:'Con residuos entre 7 (ℤ₇) sí tenemos un campo.',visual:math('2 · 4 = 8 → residuo 1'),note:'Como 7 es primo, cada número del 1 al 6 tiene inverso. Por ejemplo, 4 es el inverso de 2: su producto deja residuo 1.'}
   ]);
   const residual=step=>'<table class="scene-table"><thead><tr><th>Módulo</th><th>23</th><th>41</th><th>Suma</th></tr></thead><tbody>'+[3,5,7].map(m=>`<tr><th>${m}</th><td>${step>=1?23%m:'?'}</td><td>${step>=1?41%m:'?'}</td><td class="${step>=2?'marked':''}">${step>=2?(23+41)%m:'?'}</td></tr>`).join('')+'</tbody></table>';
   stageScene('s36','escena-residuos','Una suma, tres carriles','Sistema residual · módulos 3, 5 y 7',[

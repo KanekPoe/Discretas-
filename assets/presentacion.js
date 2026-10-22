@@ -70,7 +70,7 @@
     if(full){reference(document.getElementById('entrada'));reference(intro);}
     const route={s31:['escena-cayley','escena-homomorfismo'],s32:['escena-cadenas'],s33:['escena-gramatica'],s35:['escena-triangulo'],lagrange:['escena-lagrange'],anillos:['escena-distributiva','escena-anillo'],s36:['escena-residuos'],s37:['escena-codigo']};
     Object.entries(route).forEach(([id,demos])=>{
-      const sec=document.getElementById(id);add(id,':scope > .head','La idea esencial',{key:'idea-'+id});
+      const sec=document.getElementById(id);add(id,id==='anillos'?'#escena-estructuras':':scope > .head','La idea esencial',{key:'idea-'+id});
       demos.forEach(demo=>add(id,'#'+demo,document.getElementById(demo).querySelector('h2').textContent));
       add(id,'.learning-game','Predice → comprueba → explica',{key:'reto-'+id});
       if(full)reference(sec);

@@ -14,7 +14,7 @@
     s33: {speaker:2, time:'17–22 min', idea:'Una cadena pertenece al lenguaje si las reglas permiten generarla.', lab:'#gOut'},
     s35: {speaker:1, time:'22–29 min', idea:'Cada simetría se puede deshacer; cambiar el orden puede cambiar el resultado.', lab:'#s3tris'},
     lagrange: {speaker:2, time:'29–36 min', idea:'El tamaño de un subgrupo divide al del grupo. Eso no basta para verificar un subconjunto.', lab:'#clock'},
-    anillos: {speaker:1, time:'36–42 min', idea:'En un campo todo elemento no nulo permite dividir. En ℤ₁₂, 3 · 4 = 0.', lab:'[data-zn]'},
+    anillos: {speaker:1, time:'36–42 min', idea:'Sumar y multiplicar son dos operaciones. Dividir exige una regla extra.', lab:'[data-zn]'},
     s36: {speaker:2, time:'42–48 min', idea:'Los residuos identifican un número dentro de un rango acordado.', lab:'#rTable'},
     s37: {speaker:1, time:'48–54 min', idea:'Detectar un error y recuperar el mensaje son tareas distintas.', lab:'#cMsg'}
   };
@@ -24,7 +24,7 @@
     s33:['Una gramática usa un símbolo inicial y reglas de reemplazo para generar cadenas. Un no terminal aún puede reemplazarse; un terminal queda en la salida.','Un parser contrasta la estructura del programa con las reglas de su lenguaje.'],
     s35:['Grupo = operación cerrada y asociativa + identidad + inverso para cada elemento. Si además conmuta, es abeliano.','Las transformaciones de figuras se componen; deshacerlas exige aplicar las transformaciones inversas en orden inverso.'],
     lagrange:['Un subgrupo es un subconjunto que sigue siendo grupo con la misma operación. Si G es finito y H es subgrupo, |G| = |H| · número de clases laterales.','Los grupos de orden primo usados en criptografía no tienen subgrupos propios no triviales.'],
-    anillos:['Un anillo conecta suma y producto mediante distributividad. Un dominio entero es conmutativo, tiene 1 ≠ 0 y no tiene divisores de cero; en un campo cada elemento no nulo tiene inverso multiplicativo.','AES opera con bytes en GF(2⁸), un campo de 256 elementos distinto del anillo ℤ₂₅₆.'],
+    anillos:['Un divisor de cero es un número distinto de 0 que, multiplicado por otro distinto de 0, da 0. Un inverso es un número que multiplicamos por otro para obtener 1.','AES opera con bytes en GF(2⁸), un campo de 256 elementos distinto del anillo ℤ₂₅₆.'],
     s36:['Con módulos coprimos dos a dos, cada tupla de residuos corresponde a un único entero entre 0 y M − 1, donde M es el producto de los módulos.','Cada componente puede sumar y multiplicar sin pasar acarreo a las otras; reconstruir el resultado requiere trabajo adicional.'],
     s37:['La distancia de Hamming cuenta los bits diferentes. Con distancia mínima d, se detectan hasta d − 1 errores y se corrigen hasta ⌊(d − 1)/2⌋.','Los códigos correctores protegen datos transmitidos o almacenados, como en memoria ECC y comunicaciones.']
   };
@@ -73,8 +73,8 @@
       {prompt:'En (ℤ₆, +₆), H = {0, 1} tiene 2 elementos y 2 divide a 6. ¿Es subgrupo?',options:['Sí: el tamaño divide a 6','No: falla la cerradura'],answer:1,why:'1 +₆ 1 = 2 y 2 no pertenece a H. En cambio {0, 3} sí es subgrupo. Tener el tamaño adecuado no basta.',take:'Después del tamaño, verifica las operaciones y los inversos.'}
     ]},
     {section:'anillos',title:'Caza de divisores de cero',goal:'Encontrar una evidencia y explicar qué propiedad invalida.',rounds:[
-      {prompt:'En ℤ₁₂, elige dos elementos NO nulos cuyo producto sea 0.',options:['0 y 5','3 y 4','5 y 5'],answer:1,why:'3 · 4 = 12 ≡ 0 (mod 12). Usar 0 no prueba que haya divisores de cero. 5 · 5 ≡ 1, así que 5 es una unidad.',take:'Aquí no podemos cancelar: 3 · 4 = 3 · 0, pero 4 ≠ 0.'},
-      {prompt:'Ahora trabajamos en ℤ₁₃. ¿Se puede encontrar ese mismo tipo de pareja?',options:['Sí: 1 y 12','No: 13 es primo y ℤ₁₃ es campo'],answer:1,why:'En ℤ₁₃ todos los elementos no nulos tienen inverso. Si ab = 0 y a ≠ 0, multiplicar por a⁻¹ obliga a que b = 0.',take:'En ℤₙ, ser campo equivale a que n sea primo.'}
+      {prompt:'En ℤ₁₂ guardamos el residuo al dividir entre 12. ¿Qué pareja sin ceros da 0 al multiplicar?',options:['0 y 5','3 y 4','5 y 5'],answer:1,why:'3 · 4 = 12: al dividir entre 12, el residuo es 0. Ambos son distintos de 0; por eso son divisores de cero. Usar 0 no sirve.',take:'ℤ₁₂ no es dominio entero ni campo.'},
+      {prompt:'Ahora divide entre 13 y guarda el residuo. ¿Dos números distintos de 0 pueden dar 0 al multiplicar?',options:['Sí: 1 y 12','No: 13 es primo'],answer:1,why:'13 es primo: cada número distinto de 0 tiene inverso. Así, dos factores distintos de 0 no pueden dar residuo 0.',take:'Los residuos al dividir entre n forman un campo exactamente cuando n es primo.'}
     ]},
     {section:'s36',title:'El oráculo de los residuos',goal:'Reconstruir desde residuos y reconocer el límite del rango.',kind:'crt'},
     {section:'s37',title:'¿Detectar o corregir?',goal:'Decidir qué sabe realmente el receptor.',rounds:[
