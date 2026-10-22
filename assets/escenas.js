@@ -96,17 +96,19 @@
     {q:'(1, 4, 1) corresponde a 64 dentro de 0–104.',visual:math('23 + 41 = 64'),note:'El teorema chino del resto permite reconstruirlo. El reto siguiente recibe solo residuos para recuperar un número secreto.'}
   ]);
   const code=mount('s37','escena-codigo','Qué puede saber el receptor','Códigos · detectar no es lo mismo que corregir');let codeMode='par',flips=new Set();const msg=[1,0,1,1];
-  function renderCode(){
+  function renderCode(restored=false){
     const sent=codeMode==='par'?[...msg,1]:[...msg,...msg,...msg],recv=sent.map((v,i)=>flips.has(i)?1-v:v);
     code.querySelector('.scene-prompt').textContent=codeMode==='par'?'Enviamos 1011 con paridad par: 10111. Cambia un bit recibido.':'Enviamos 1011 tres veces. Cambia un bit y observa el voto por posición.';
-    const group=(values,start,label)=>`<div class="code-copy"><small>${label}</small><div class="code-word">${values.map((v,i)=>`<button class="code-bit ${flips.has(start+i)?'flipped':''}" data-bit="${start+i}" aria-label="Bit recibido ${start+i+1}: ${v}">${v}</button>`).join('')}</div></div>`;
+    const group=(values,start,label)=>`<div class="code-copy"><small>${label}</small><div class="code-word">${values.map((v,i)=>`<button class="code-bit ${flips.has(start+i)?'flipped':''}" data-bit="${start+i}" aria-pressed="${flips.has(start+i)}" aria-label="Bit recibido ${start+i+1}: ${v}">${v}</button>`).join('')}</div></div>`;
     code.querySelector('.scene-visual').classList.add('column');code.querySelector('.scene-visual').innerHTML=codeMode==='par'?group(recv,0,'Recibe'):group(recv.slice(0,4),0,'Copia 1')+group(recv.slice(4,8),4,'Copia 2')+group(recv.slice(8),8,'Copia 3');
     let note;
-    if(codeMode==='par'){const w=recv.reduce((a,b)=>a+b,0);note=w%2?'Paridad impar: el receptor detecta error, pero no puede localizarlo ni corregirlo.':flips.size?'La paridad es correcta aunque cambiamos '+flips.size+' bits. Un número par de cambios puede pasar inadvertido.':'Paridad correcta. Eso no garantiza ausencia de errores; en esta simulación aún no cambiamos bits.';}
+    if(codeMode==='par'){const w=recv.reduce((a,b)=>a+b,0);note=w%2?'Paridad impar: el receptor detecta error, pero no puede localizarlo ni corregirlo.':flips.size?'La paridad es correcta aunque cambiamos '+flips.size+' bits. Un número par de cambios puede pasar inadvertido.':'Sin ruido añadido: paridad correcta. Toca un bit para cambiarlo.';}
     else{const decoded=msg.map((_,j)=>recv[j]+recv[j+4]+recv[j+8]>=2?1:0).join('');note=decoded==='1011'?`Mayoría → ${decoded}. Se garantiza corregir un error total; el receptor no necesita conocer el original.`:`Mayoría → ${decoded}. Dos copias fallaron en la misma posición: el simulador confirma que la corrección falló.`;}
+    if(!flips.size&&codeMode==='rep')note='Sin ruido añadido: las tres copias siguen iguales. Toca un bit para cambiarlo.';
+    if(restored)note='Cambios deshechos: volvimos a los bits enviados.';
     code.querySelector('.scene-message').textContent=note;
-    code.querySelector('.scene-actions').innerHTML=`<button class="btn code-mode ${codeMode==='par'?'primary':''}" data-code="par">Paridad</button><button class="btn code-mode ${codeMode==='rep'?'primary':''}" data-code="rep">Triple repetición</button><button class="btn reset-code">Quitar ruido</button>`;
+    code.querySelector('.scene-actions').innerHTML=`<button class="btn code-mode ${codeMode==='par'?'primary':''}" data-code="par">Paridad</button><button class="btn code-mode ${codeMode==='rep'?'primary':''}" data-code="rep">Triple repetición</button><button class="btn reset-code" ${flips.size?'':'disabled'} title="${flips.size?'Volver a los bits enviados':'Primero cambia al menos un bit'}">Restablecer bits</button>`;
     code.querySelectorAll('[data-bit]').forEach(b=>b.onclick=()=>{const i=+b.dataset.bit;flips.has(i)?flips.delete(i):flips.add(i);renderCode();code.querySelector(`[data-bit="${i}"]`).focus({preventScroll:true});});
-    code.querySelectorAll('[data-code]').forEach(b=>b.onclick=()=>{codeMode=b.dataset.code;flips.clear();renderCode();});code.querySelector('.reset-code').onclick=()=>{flips.clear();renderCode();};
+    code.querySelectorAll('[data-code]').forEach(b=>b.onclick=()=>{codeMode=b.dataset.code;flips.clear();renderCode();});code.querySelector('.reset-code').onclick=()=>{flips.clear();renderCode(true);code.querySelector(`[data-code="${codeMode}"]`).focus({preventScroll:true});};
   }renderCode();
 })();
