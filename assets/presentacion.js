@@ -4,6 +4,9 @@
   const header=document.querySelector('header.top'),bar=document.getElementById('deckBar'),mode=document.getElementById('routeMode');
   const close=document.createElement('section');close.id='cierre';close.dataset.name='Cierre';close.className='topic';
   close.innerHTML='<div class="scene" id="escena-cierre"><div class="scene-header"><p class="scene-eyebrow">Ambos · 54–60 min</p><h2>Explica con un ejemplo nuevo</h2></div><p class="scene-prompt"></p><div class="scene-visual"></div><p class="scene-message" role="status" aria-live="polite"></p><div class="scene-actions"></div></div>';
+  const credits=document.createElement('div');credits.className='scene credits-final';credits.id='escena-creditos';
+  credits.innerHTML='<p class="scene-eyebrow">Matemáticas discretas · Unidad 3</p><h2>¡Gracias!</h2><p class="credits-sub">Estructuras algebraicas · Exposición de</p><p class="credits-names"><span>Medina González Luis Canek</span><span>Juárez González Sixto Daniel</span></p>';
+  close.append(credits);
   document.querySelector('main.wrap').append(close);
   let closing=0,answer=false;
   const questions=[
@@ -76,6 +79,7 @@
       if(full)reference(sec);
     });
     add('cierre','#escena-cierre','Recupera las ideas y responde preguntas');
+    add('cierre','#escena-creditos','Integrantes',{key:'creditos'});
   }
   function setVars(){root.style.setProperty('--hdr',header.offsetHeight+'px');root.style.setProperty('--bar',bar.offsetHeight+'px');}
   function go(i,save=true){
